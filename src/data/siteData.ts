@@ -8,24 +8,28 @@ export const weekDays = [
   { name: 'Jumat', short: 'JUM' },
 ] as const;
 
-// Jadwal resmi Semester Ganjil 2026/2027 - Kelas REG, Semester I. Perkuliahan mulai Oktober 2026.
-export const classSchedule: Record<string, { start: string; end: string; name: string; type: string; duration: string; room: string }[]> = {
-  Senin: [],
+// Contoh data jadwal. Ganti dengan jadwal resmi sesuai kelas dan semester.
+export const classSchedule = {
+  Senin: [
+    { start: '08.00', end: '09.40', name: 'Algoritma & Pemrograman', type: 'Teori', duration: '2 SKS', room: 'Ruang Kelas 203' },
+    { start: '10.00', end: '12.30', name: 'Praktikum Basis Data', type: 'Praktikum', duration: '3 SKS', room: 'Laboratorium Komputer' },
+  ],
   Selasa: [
-    { start: '09.50', end: '11.50', name: 'Bahasa Indonesia', type: 'Teori', duration: '2 SKS', room: 'Daring' },
+    { start: '08.00', end: '09.40', name: 'Struktur Data', type: 'Teori', duration: '2 SKS', room: 'Ruang Kelas 201' },
+    { start: '10.00', end: '11.40', name: 'Matematika Diskrit', type: 'Teori', duration: '2 SKS', room: 'Ruang Kelas 204' },
+    { start: '13.00', end: '14.40', name: 'Bahasa Inggris', type: 'Teori', duration: '2 SKS', room: 'Ruang Kelas 202' },
   ],
   Rabu: [
-    { start: '08.00', end: '10.30', name: 'Pengenalan Pemrograman', type: 'Praktikum', duration: '3 SKS', room: 'Lab Kom' },
-    { start: '10.30', end: '13.00', name: 'Algoritma Pemrograman', type: 'Teori', duration: '3 SKS', room: 'C302' },
-    { start: '13.00', end: '14.40', name: 'Bahasa Inggris I', type: 'Teori', duration: '2 SKS', room: 'C302' },
-    { start: '14.40', end: '16.40', name: 'Kalkulus', type: 'Teori', duration: '3 SKS', room: 'C303' },
+    { start: '08.00', end: '09.40', name: 'Rekayasa Perangkat Lunak', type: 'Teori', duration: '2 SKS', room: 'Ruang Kelas 203' },
+    { start: '10.00', end: '12.30', name: 'Praktikum Sistem Operasi', type: 'Praktikum', duration: '3 SKS', room: 'Laboratorium Komputer' },
   ],
   Kamis: [
-    { start: '09.50', end: '11.50', name: 'Agama', type: 'Teori', duration: '2 SKS', room: 'Daring' },
-    { start: '15.40', end: '17.20', name: 'Kewarganegaraan', type: 'Teori', duration: '2 SKS', room: 'Daring' },
+    { start: '08.00', end: '09.40', name: 'Jaringan Komputer', type: 'Teori', duration: '2 SKS', room: 'Ruang Kelas 204' },
+    { start: '10.00', end: '12.30', name: 'Praktikum Pemrograman Web', type: 'Praktikum', duration: '3 SKS', room: 'Laboratorium Komputer' },
   ],
   Jumat: [
-    { start: '14.00', end: '15.40', name: 'Pancasila', type: 'Teori', duration: '2 SKS', room: 'Daring' },
+    { start: '08.00', end: '09.40', name: 'Interaksi Manusia dan Komputer', type: 'Teori', duration: '2 SKS', room: 'Ruang Kelas 201' },
+    { start: '10.00', end: '11.40', name: 'Kewirausahaan Digital', type: 'Teori', duration: '2 SKS', room: 'Ruang Kelas 202' },
   ],
 };
 

@@ -41,7 +41,7 @@ export function ScheduleSection() {
               </button>
             ))}
           </div>
-          <span className="schedule-sample-note">KELAS REG · SEMESTER I</span>
+          <span className="schedule-sample-note">JADWAL CONTOH · SESUAIKAN DENGAN KELASMU</span>
         </div>
 
         <div className="schedule-board">
@@ -68,7 +68,7 @@ export function ScheduleSection() {
             )) : <div className="schedule-empty"><CalendarDays size={22} /><p>Hari ini belum ada kelas.<br /><span>Waktunya istirahat atau mengejar tugas.</span></p></div>}
           </div>
         </div>
-        <p className="schedule-disclaimer">Perkuliahan dimulai Oktober 2026. Jumlah total 19 SKS.</p>
+        <p className="schedule-disclaimer">* Mata kuliah, waktu, dan ruangan di atas adalah contoh tampilan. Ganti dengan jadwal resmi dari program studi.</p>
       </div>
     </section>
   );
