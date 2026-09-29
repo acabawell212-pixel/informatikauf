@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { ArrowUpRight, Camera, Play, X } from 'lucide-react';
 import { galleryPhotos, type GalleryItem } from '../data/siteData';
 import { SectionHeading } from '../components/SectionHeading';
@@ -134,10 +135,10 @@ export function GallerySection() {
         <p className="gallery-disclaimer">Coding Session masih memakai gambar contoh. Meme juga bisa diganti dengan karya lucu komunitas sendiri.</p>
       </div>
 
-      {selectedPhoto && (
+      {selectedPhoto && createPortal(
         <div className="gallery-lightbox" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setSelectedPhoto(null); }}>
+          <button className="lightbox-close" type="button" onClick={() => setSelectedPhoto(null)} aria-label="Tutup foto" data-hint="Tutup tampilan foto besar."><X size={22} /><span>Tutup</span></button>
           <div className="lightbox-panel" role="dialog" aria-modal="true" aria-label={`Foto ${selectedPhoto.title}`}>
-            <button className="lightbox-close" type="button" onClick={() => setSelectedPhoto(null)} aria-label="Tutup foto" data-hint="Tutup tampilan foto besar."><X size={20} /></button>
             {selectedPhoto.video ? (
               <video
                 src={selectedPhoto.video}
@@ -164,7 +165,8 @@ export function GallerySection() {
             ) : null}
             <div className="lightbox-caption"><span>{selectedPhoto.category}</span><h3>{selectedPhoto.title}</h3><p>{selectedPhoto.caption}</p></div>
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
     </section>
   );
