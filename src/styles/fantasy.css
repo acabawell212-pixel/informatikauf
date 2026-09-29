@@ -457,6 +457,16 @@ body {
   color: #8b866e;
 }
 
+.schedule-day-tab:hover {
+  border-color: rgba(174, 134, 57, .5);
+  background: rgba(248, 238, 215, .95);
+  color: #315e61;
+}
+
+.schedule-day-tab:hover > span {
+  color: #7a7358;
+}
+
 .schedule-day-tab.active {
   border-color: rgba(174, 134, 57, .55);
   background: linear-gradient(120deg, #f8eed7, #e2f0e9);
