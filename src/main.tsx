@@ -17,6 +17,7 @@ import './styles/effects3d.css';
 import './styles/perf.css';
 import './styles/mobile.css';
 import './styles/wide.css';
+import './styles/admin.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
