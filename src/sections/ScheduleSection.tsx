@@ -1,15 +1,10 @@
-import { useState } from 'react';
-import { BookOpen, CalendarDays, Clock3, MapPin } from 'lucide-react';
+import { CalendarDays } from 'lucide-react';
 import { SectionHeading } from '../components/SectionHeading';
-import { classSchedule, weekDays } from '../data/siteData';
+import { scheduleCourses, scheduleInfo } from '../data/siteData';
 
-const todayIndex = new Date().getDay();
-const defaultDay = todayIndex >= 1 && todayIndex <= 5 ? weekDays[todayIndex - 1].name : 'Senin';
+const totalSks = scheduleCourses.reduce((sum, item) => sum + item.sks, 0);
 
 export function ScheduleSection() {
-  const [selectedDay, setSelectedDay] = useState(defaultDay);
-  const classes = classSchedule[selectedDay] ?? [];
-
   return (
     <section className="section schedule-section" id="schedule">
       <div className="wrap">
@@ -25,50 +20,40 @@ export function ScheduleSection() {
           </div>
         </div>
 
-        <div className="schedule-toolbar">
-          <div className="schedule-day-tabs" role="tablist" aria-label="Pilih hari jadwal kuliah">
-            {weekDays.map((day) => (
-              <button
-                key={day.name}
-                type="button"
-                role="tab"
-                aria-selected={selectedDay === day.name}
-                data-hint={`Klik untuk menampilkan jadwal hari ${day.name}.`}
-                className={`schedule-day-tab${selectedDay === day.name ? ' active' : ''}`}
-                onClick={() => setSelectedDay(day.name)}
-              >
-                <span>{day.short}</span><strong>{day.name}</strong>
-              </button>
-            ))}
+        <div className="jt-card">
+          <div className="jt-head">
+            <h3>{scheduleInfo.title}</h3>
+            <p>{scheduleInfo.className} · {scheduleInfo.semester}</p>
+            <span>{scheduleInfo.start}</span>
           </div>
-          <span className="schedule-sample-note">JADWAL CONTOH · SESUAIKAN DENGAN KELASMU</span>
-        </div>
-
-        <div className="schedule-board">
-          <aside className="schedule-overview">
-            <span className="schedule-overview-icon"><BookOpen size={19} /></span>
-            <span className="schedule-overview-label">JADWAL HARI INI</span>
-            <h3>{selectedDay}<span>.</span></h3>
-            <p>{classes.length ? `${classes.length} mata kuliah terjadwal. Datang lebih awal, siap belajar.` : 'Belum ada mata kuliah yang dijadwalkan.'}</p>
-            <div className="schedule-day-count"><strong>{String(classes.length).padStart(2, '0')}</strong><span>KELAS<br />TERJADWAL</span></div>
-            <div className="schedule-overview-foot"><Clock3 size={13} /> Waktu lokal · WIB</div>
-          </aside>
-
-          <div className="schedule-list" role="tabpanel" aria-label={`Jadwal mata kuliah hari ${selectedDay}`}>
-            {classes.length ? classes.map((item, index) => (
-              <article className="course-row" key={`${selectedDay}-${item.start}-${item.name}`}>
-                <div className="course-time"><strong>{item.start}</strong><span>{item.end}</span></div>
-                <div className="course-timeline"><i className={index === 0 ? 'timeline-dot first' : 'timeline-dot'} /><span /></div>
-                <div className="course-detail">
-                  <div className="course-detail-top"><span className={`course-type ${item.type === 'Praktikum' ? 'practical' : ''}`}>{item.type}</span><span className="course-duration">{item.duration}</span></div>
-                  <h4>{item.name}</h4>
-                  <span className="course-location"><MapPin size={13} />{item.room}</span>
-                </div>
-              </article>
-            )) : <div className="schedule-empty"><CalendarDays size={22} /><p>Hari ini belum ada kelas.<br /><span>Waktunya istirahat atau mengejar tugas.</span></p></div>}
+          <div className="jt-scroll">
+            <table className="jt-table">
+              <thead>
+                <tr>
+                  <th>No</th><th>Kode MK</th><th>Mata Kuliah</th><th>SKS</th>
+                  <th>Koordinator</th><th>Pengajar</th><th>Waktu</th><th>Ruangan</th>
+                </tr>
+              </thead>
+              <tbody>
+                {scheduleCourses.map((c) => (
+                  <tr key={c.code}>
+                    <td data-label="No">{c.no}</td>
+                    <td data-label="Kode MK" className="jt-code">{c.code}</td>
+                    <td data-label="Mata Kuliah" className="jt-course">{c.course}</td>
+                    <td data-label="SKS">{c.sks}</td>
+                    <td data-label="Koordinator">{c.coordinator}</td>
+                    <td data-label="Pengajar">{c.lecturers.map((l) => <div key={l}>{l}</div>)}</td>
+                    <td data-label="Waktu" className="jt-time">{c.time}</td>
+                    <td data-label="Ruangan"><span className={`jt-room${c.room === 'Daring' ? ' online' : ''}`}>{c.room}</span></td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot>
+                <tr><td colSpan={3}>Jumlah SKS</td><td>{totalSks}</td><td colSpan={4} /></tr>
+              </tfoot>
+            </table>
           </div>
         </div>
-        <p className="schedule-disclaimer">* Mata kuliah, waktu, dan ruangan di atas adalah contoh tampilan. Ganti dengan jadwal resmi dari program studi.</p>
       </div>
     </section>
   );

@@ -13,6 +13,7 @@ import './styles/interactive-hints.css';
 import './styles/textures.css';
 import './styles/scroll-motion.css';
 import './styles/opening-intro.css';
+import './styles/schedule-table.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
