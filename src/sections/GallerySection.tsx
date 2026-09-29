@@ -114,6 +114,10 @@ export function GallerySection() {
                   playsInline
                   preload="metadata"
                   aria-label={photo.title}
+                  onLoadedMetadata={(event) => {
+                    const v = event.currentTarget;
+                    if (v.videoWidth && v.videoHeight) v.style.aspectRatio = `${v.videoWidth} / ${v.videoHeight}`;
+                  }}
                   onError={(event) => { event.currentTarget.style.display = 'none'; }}
                 />
               ) : photo.image ? (
@@ -122,7 +126,10 @@ export function GallerySection() {
                   alt={photo.caption}
                   loading="lazy"
                   decoding="async"
-                  onError={(event) => { event.currentTarget.style.display = 'none'; }}
+                  onError={(event) => {
+                    event.currentTarget.style.display = 'none';
+                    event.currentTarget.closest('.gallery-card')?.classList.add('is-missing');
+                  }}
                 />
               ) : null}
               <span className="gallery-image-shade" />
