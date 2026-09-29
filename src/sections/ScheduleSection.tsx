@@ -4,7 +4,7 @@ import { SectionHeading } from '../components/SectionHeading';
 import { classSchedule, weekDays } from '../data/siteData';
 
 const todayIndex = new Date().getDay();
-const defaultDay = todayIndex >= 1 && todayIndex <= 5 ? weekDays[todayIndex - 1].name : 'Senin';
+const defaultDay = weekDays[(todayIndex + 6) % 7].name;
 
 export function ScheduleSection() {
   const [selectedDay, setSelectedDay] = useState(defaultDay);

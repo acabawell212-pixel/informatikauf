@@ -6,6 +6,8 @@ export const weekDays = [
   { name: 'Rabu', short: 'RAB' },
   { name: 'Kamis', short: 'KAM' },
   { name: 'Jumat', short: 'JUM' },
+  { name: 'Sabtu', short: 'SAB' },
+  { name: 'Minggu', short: 'MIN' },
 ] as const;
 
 export type ScheduleClass = {
@@ -38,6 +40,8 @@ export const classSchedule: Record<string, ScheduleClass[]> = {
   Jumat: [
     { start: '14.00', end: '15.40', code: 'UF2101', name: 'Pancasila', sks: 2, coordinator: 'Lani Febriani, SE., MKM', lecturers: ['Drs. H. Dedi Mulyadi, MM', 'Achmad Machron Chairulfalah, M.I.'], room: 'Daring' },
   ],
+  Sabtu: [],
+  Minggu: [],
 };
 
 export const members = [
