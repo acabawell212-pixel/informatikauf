@@ -4,7 +4,7 @@ export function Hero() {
   return (
     <section className="hero wrap" id="home">
       <div className="hero-copy">
-        <div className="hero-badge"><span className="live-dot" /> INFORMATICS COMMUNITY <span className="badge-year">EST. 2018</span></div>
+        <div className="hero-badge"><span className="live-dot" /> INFORMATICS COMMUNITY <span className="badge-year">EST. 2026/2027</span></div>
         <h1>Build.<br />Create.<br /><span>Innovate.</span></h1>
         <p className="hero-description">Ruang bertemu ide, tumbuh bersama teknologi, dan menciptakan dampak. Kami adalah keluarga Informatika Universitas Faletehan.</p>
         <div className="hero-actions">
@@ -16,7 +16,7 @@ export function Hero() {
       <div className="hero-art" aria-label="Ilustrasi antarmuka coding dan jaringan teknologi" role="img">
         <div className="art-orbit orbit-one" /><div className="art-orbit orbit-two" /><div className="art-glow" />
         <div className="art-grid" />
-        <div className="float-tag tag-top"><span className="tag-icon"><Sparkles size={14} /></span><span><b>Ideas in motion</b><small>EST. 2018 · BANTEN</small></span></div>
+        <div className="float-tag tag-top"><span className="tag-icon"><Sparkles size={14} /></span><span><b>Ideas in motion</b><small>EST. 2026/2027 · BANTEN</small></span></div>
         <div className="code-window">
           <div className="window-bar"><div className="window-dots"><i /><i /><i /></div><span>future.tsx</span><ArrowUpRight size={13} /></div>
           <div className="code-lines">
