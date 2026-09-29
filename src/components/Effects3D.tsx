@@ -53,6 +53,50 @@ export function Effects3D() {
     document.addEventListener('pointerdown', onDown);
     cleanups.push(() => document.removeEventListener('pointerdown', onDown));
 
+    // Versi sentuh: kartu miring mengikuti jari saat ditekan (pengganti hover)
+    let pressed: HTMLElement | null = null;
+    const pressRelease = () => {
+      if (!pressed) return;
+      const el = pressed;
+      el.classList.remove('is-tilting');
+      el.classList.add('tilt-release');
+      window.setTimeout(() => el.classList.remove('tilt-release'), 560);
+      pressed = null;
+    };
+    const pressMove = (event: PointerEvent) => {
+      if (event.pointerType !== 'touch') return;
+      const card = (event.target as HTMLElement | null)?.closest<HTMLElement>(tiltSelector) ?? null;
+      if (!card) return;
+      if (pressed && pressed !== card) pressRelease();
+      const box = card.getBoundingClientRect();
+      const px = (event.clientX - box.left) / box.width;
+      const py = (event.clientY - box.top) / box.height;
+      card.style.setProperty('--rx', `${((0.5 - py) * 6).toFixed(2)}deg`);
+      card.style.setProperty('--ry', `${((px - 0.5) * 6).toFixed(2)}deg`);
+      card.style.setProperty('--gx', `${(px * 100).toFixed(1)}%`);
+      card.style.setProperty('--gy', `${(py * 100).toFixed(1)}%`);
+      if (!card.querySelector(':scope > .tilt-glare')) {
+        if (getComputedStyle(card).position === 'static') card.style.position = 'relative';
+        const shine = document.createElement('span');
+        shine.className = 'tilt-glare';
+        shine.setAttribute('aria-hidden', 'true');
+        card.appendChild(shine);
+      }
+      card.classList.remove('tilt-release');
+      card.classList.add('is-tilting');
+      pressed = card;
+    };
+    document.addEventListener('pointerdown', pressMove);
+    document.addEventListener('pointermove', pressMove);
+    document.addEventListener('pointerup', pressRelease);
+    document.addEventListener('pointercancel', pressRelease);
+    cleanups.push(() => {
+      document.removeEventListener('pointerdown', pressMove);
+      document.removeEventListener('pointermove', pressMove);
+      document.removeEventListener('pointerup', pressRelease);
+      document.removeEventListener('pointercancel', pressRelease);
+    });
+
     if (!finePointer) return () => cleanups.forEach((fn) => fn());
 
     // Cahaya yang mengikuti kursor

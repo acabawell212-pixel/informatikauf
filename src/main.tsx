@@ -15,6 +15,7 @@ import './styles/scroll-motion.css';
 import './styles/opening-intro.css';
 import './styles/effects3d.css';
 import './styles/perf.css';
+import './styles/mobile.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

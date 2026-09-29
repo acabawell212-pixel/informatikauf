@@ -10,9 +10,13 @@ const categories = ['Semua', ...new Set(galleryPhotos.map((photo) => photo.categ
 export function GallerySection() {
   const [activeCategory, setActiveCategory] = useState('Semua');
   const [selectedPhoto, setSelectedPhoto] = useState<GalleryPhoto | null>(null);
-  const visiblePhotos = activeCategory === 'Semua'
+  const [pageSize] = useState(() => window.matchMedia('(max-width: 560px)').matches ? 4 : 6);
+  const [limit, setLimit] = useState(pageSize);
+  const filteredPhotos = activeCategory === 'Semua'
     ? galleryPhotos
     : galleryPhotos.filter((photo) => photo.category === activeCategory);
+  const visiblePhotos = filteredPhotos.slice(0, limit);
+  const hiddenCount = filteredPhotos.length - visiblePhotos.length;
 
   useEffect(() => {
     if (!selectedPhoto) return;
@@ -73,13 +77,13 @@ export function GallerySection() {
                 key={category}
                 aria-pressed={activeCategory === category}
                 data-hint={`Tampilkan foto kategori ${category}.`}
-                onClick={() => setActiveCategory(category)}
+                onClick={() => { setActiveCategory(category); setLimit(pageSize); }}
               >
                 {category}
               </button>
             ))}
           </div>
-          <span className="gallery-count">{String(visiblePhotos.length).padStart(2, '0')} MOMEN</span>
+          <span className="gallery-count">{String(filteredPhotos.length).padStart(2, '0')} MOMEN</span>
         </div>
 
         <div className="gallery-grid">
@@ -123,12 +127,33 @@ export function GallerySection() {
               ) : null}
               <span className="gallery-image-shade" />
               <span className="gallery-card-index">MOMENT / 0{index + 1}</span>
-              {photo.video && <span className="gallery-video-badge"><Play size={10} fill="currentColor" /> VIDEO · KLIK UNTUK BUKA SUARA</span>}
+              {photo.video && <span className="gallery-video-badge"><Play size={10} fill="currentColor" /> VIDEO<span className="badge-extra"> · KLIK UNTUK BUKA SUARA</span></span>}
               <span className="gallery-card-open"><ArrowUpRight size={17} /></span>
               <span className="gallery-card-caption"><small>{photo.category}</small><strong>{photo.title}</strong><span>{photo.caption}</span></span>
             </article>
           ))}
         </div>
+        {filteredPhotos.length > pageSize && (
+          <div className="gallery-more">
+            {hiddenCount > 0 ? (
+              <button className="gallery-more-btn" type="button" data-hint="Munculkan foto dan video lainnya." onClick={() => setLimit((current) => current + pageSize)}>
+                Tampilkan lebih banyak <b>+{Math.min(hiddenCount, pageSize)}</b>
+              </button>
+            ) : (
+              <button
+                className="gallery-more-btn"
+                type="button"
+                onClick={() => {
+                  setLimit(pageSize);
+                  document.querySelector('.gallery-toolbar')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }}
+              >
+                Tampilkan lebih sedikit
+              </button>
+            )}
+            <span className="gallery-more-count">Menampilkan {visiblePhotos.length} dari {filteredPhotos.length}</span>
+          </div>
+        )}
         <p className="gallery-disclaimer">Coding Session masih memakai gambar contoh. Meme juga bisa diganti dengan karya lucu komunitas sendiri.</p>
       </div>
 
