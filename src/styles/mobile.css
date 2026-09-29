@@ -90,6 +90,14 @@ img, video, canvas, svg { max-width: 100%; }
 
 /* ---------- Perapihan tampilan HP ---------- */
 @media (max-width: 820px) {
+  /* hero: jangan memotong di batas kolom konten; lebar halaman sudah diamankan oleh `overflow-x: clip` di html/body */
+  .hero { overflow: visible; }
+
+  /* kartu melayang tetap utuh di dalam kolom */
+  .float-tag { right: 0; z-index: 3; }
+  .card-activity { right: 0; }
+  .card-stats { left: 0; }
+
   /* adegan 3D hero jangan menimpa teks */
   .hero-scene {
     inset: 0;
