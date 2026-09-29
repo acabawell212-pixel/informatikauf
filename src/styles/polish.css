@@ -1,0 +1,319 @@
+/* Clearer type, breathing room, and calmer motion refinements */
+:root {
+  --muted: #a5b2c5;
+  --dim: #8291a7;
+}
+
+body {
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.section {
+  padding-block: 96px;
+}
+
+.nav-shell {
+  gap: 30px;
+}
+
+.brand-copy strong {
+  font-size: 16px;
+}
+
+.nav-links {
+  gap: clamp(15px, 1.7vw, 25px);
+}
+
+.nav-links > a {
+  font-size: 11px;
+}
+
+.nav-cta {
+  min-height: 39px;
+  padding-inline: 15px;
+  font-size: 11px;
+}
+
+.section-heading > p {
+  max-width: 500px;
+  font-size: 15px;
+  line-height: 1.85;
+}
+
+.section-row {
+  gap: 36px;
+}
+
+.text-link,
+.arrow-link {
+  font-size: 13px;
+}
+
+.button {
+  font-size: 13px;
+}
+
+.hero-description {
+  max-width: 430px;
+  font-size: 15px;
+  line-height: 1.9;
+}
+
+.hero-badge {
+  padding: 10px 13px;
+}
+
+.hero-social-proof p {
+  font-size: 10px;
+}
+
+.hero-social-proof strong {
+  font-size: 11px;
+}
+
+.about-intro p {
+  font-size: 14px;
+}
+
+.principle-card p,
+.mission-card li,
+.value-row p {
+  font-size: 11px;
+}
+
+.value-row h3 {
+  font-size: 12px;
+}
+
+.stats-strip small {
+  font-size: 10px;
+}
+
+.filter-pill {
+  padding: 9px 15px;
+  font-size: 11px;
+}
+
+.activity-card {
+  min-height: 278px;
+  padding: 21px;
+}
+
+.activity-card h3 {
+  font-size: 16px;
+}
+
+.activity-card > p,
+.project-content > p {
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.activity-meta span {
+  font-size: 9px;
+}
+
+.project-content {
+  padding: 20px;
+}
+
+.project-content h3 {
+  font-size: 19px;
+}
+
+.project-team,
+.tech-list span {
+  font-size: 9px;
+}
+
+.project-link {
+  font-size: 11px;
+}
+
+.member-info h3 {
+  font-size: 13px;
+}
+
+.member-info > div > span {
+  font-size: 10px;
+}
+
+.member-info > small,
+.member-interest {
+  font-size: 8px;
+}
+
+.member-interest b {
+  font-size: 10px;
+}
+
+.event-title h3 {
+  font-size: 15px;
+}
+
+.event-detail span {
+  font-size: 10px;
+}
+
+.past-event-note,
+.article-body > p {
+  font-size: 10px;
+}
+
+.article-body h3 {
+  font-size: 16px;
+}
+
+.article-meta small,
+.article-footer {
+  font-size: 9px;
+}
+
+.contact-details b {
+  font-size: 12px;
+}
+
+.contact-form label {
+  font-size: 10px;
+}
+
+.contact-form input,
+.contact-form textarea {
+  font-size: 12px;
+  padding: 12px 13px;
+}
+
+.form-note {
+  font-size: 9px;
+}
+
+.footer-top > div:first-child > p,
+.footer-links > div a,
+.footer-social > a {
+  font-size: 10px;
+}
+
+/* Reveal and hover movement should feel deliberate, not distracting. */
+.motion-ready .motion-item {
+  transform: translate3d(0, 14px, 0);
+  transition-duration: 620ms;
+  transition-timing-function: cubic-bezier(.22, .75, .25, 1);
+}
+
+.motion-ready .motion-item.is-visible {
+  transform: translate3d(0, 0, 0);
+}
+
+.hero-art .art-grid {
+  animation-duration: 12s;
+}
+
+.art-glow {
+  animation-duration: 8s;
+}
+
+.art-orbit {
+  animation-duration: 70s;
+}
+
+.orbit-two {
+  animation-duration: 86s;
+}
+
+.code-window {
+  animation-duration: 9s;
+}
+
+.float-tag,
+.card-activity,
+.card-stats {
+  animation-duration: 8s;
+}
+
+.activity-card,
+.project-card,
+.article-card,
+.member-portrait,
+.event-row,
+.button,
+.filter-pill {
+  transition-timing-function: cubic-bezier(.2, .7, .2, 1);
+}
+
+.activity-card,
+.project-card,
+.article-card,
+.member-card {
+  will-change: auto;
+}
+
+@media (max-width: 1100px) {
+  .nav-links > a {
+    font-size: 10px;
+  }
+
+  .activity-card {
+    min-height: 258px;
+  }
+}
+
+@media (max-width: 820px) {
+  .section {
+    padding-block: 82px;
+  }
+
+  .nav-links > a {
+    font-size: 13px;
+  }
+
+  .section-heading > p {
+    font-size: 14px;
+  }
+
+  .contact-details b {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 560px) {
+  .section {
+    padding-block: 68px;
+  }
+
+  body {
+    font-size: 13px;
+  }
+
+  .hero-description {
+    font-size: 13px;
+  }
+
+  .section-heading > p {
+    font-size: 13px;
+  }
+
+  .activity-card {
+    min-height: 230px;
+  }
+
+  .activity-card > p,
+  .project-content > p {
+    font-size: 11px;
+  }
+
+  .event-title h3 {
+    font-size: 13px;
+  }
+
+  .footer-bottom {
+    font-size: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-ready .motion-item {
+    transform: none;
+    transition: none;
+  }
+}
