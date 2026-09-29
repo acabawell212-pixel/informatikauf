@@ -57,9 +57,14 @@ export default function Admin() {
     } catch (e) {
       const code = (e as { code?: string }).code ?? '';
       if (code !== 'auth/popup-closed-by-user' && code !== 'auth/cancelled-popup-request') {
-        setError(code === 'auth/unauthorized-domain'
-          ? 'Domain situs belum ditambahkan di Firebase (Authentication → Settings → Authorized domains).'
-          : 'Login gagal. Coba lagi.');
+        const hints: Record<string, string> = {
+          'auth/unauthorized-domain': 'Domain situs belum ditambahkan di Firebase: Authentication → Settings → Authorized domains → tambahkan acabawell212-pixel.github.io.',
+          'auth/configuration-not-found': 'Authentication belum diaktifkan: buka Firebase Console → Authentication → klik "Get started".',
+          'auth/operation-not-allowed': 'Login Google belum diaktifkan: Authentication → Sign-in method → Google → Enable → Save.',
+          'auth/popup-blocked': 'Pop-up diblokir browser. Izinkan pop-up untuk situs ini lalu coba lagi.',
+          'auth/network-request-failed': 'Koneksi internet bermasalah. Coba lagi.',
+        };
+        setError(`${hints[code] ?? 'Login gagal. Coba lagi.'}${code ? ` (${code})` : ''}`);
       }
     } finally {
       setBusy(false);
