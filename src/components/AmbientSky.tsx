@@ -3,7 +3,7 @@ import { makeMeteor, stepMeteor, type Meteor } from './scene3d';
 
 type Mote = { x: number; y: number; depth: number; size: number; phase: number; drift: number; teal: boolean };
 
-/** Lapisan partikel emas + bintang jatuh yang melintas di atas seluruh halaman (tidak menghalangi klik). */
+/** Lapisan partikel emas + bintang jatuh di belakang seluruh konten halaman. */
 export function AmbientSky() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -15,7 +15,7 @@ export function AmbientSky() {
 
     const small = window.matchMedia('(max-width: 820px)').matches;
     let width = 0, height = 0, raf = 0;
-    const motes: Mote[] = Array.from({ length: small ? 26 : 56 }, () => ({
+    const motes: Mote[] = Array.from({ length: small ? 34 : 78 }, () => ({
       x: Math.random(), y: Math.random(), depth: 0.2 + Math.random() * 0.8, size: 1.2 + Math.random() * 3.2,
       phase: Math.random() * Math.PI * 2, drift: 0.4 + Math.random() * 0.9, teal: Math.random() > 0.72,
     }));
@@ -64,7 +64,7 @@ export function AmbientSky() {
         const px = m.x * width + Math.sin(t * 0.5 * m.drift + m.phase) * 22 * m.depth + (pointer.sx - 0.5) * -40 * m.depth;
         const tw = 0.5 + 0.5 * Math.sin(t * 1.4 * m.drift + m.phase);
         const r = m.size * (0.7 + m.depth * 0.6);
-        const a = (0.28 + tw * 0.5) * (0.4 + m.depth * 0.6);
+        const a = (0.4 + tw * 0.55) * (0.45 + m.depth * 0.55);
         const rgb = m.teal ? '60, 168, 158' : '226, 168, 62';
         const g = ctx.createRadialGradient(px, py, 0, px, py, r * 4);
         g.addColorStop(0, `rgba(${rgb}, ${a})`);
@@ -98,7 +98,7 @@ export function AmbientSky() {
         nextMeteor = 3.5 + Math.random() * 5;
       }
       for (let i = meteors.length - 1; i >= 0; i--) {
-        const alive = stepMeteor(ctx, meteors[i], dt, width, height, [224, 160, 52], [236, 176, 64], 'rgba(255, 244, 214, 1)', 0.9);
+        const alive = stepMeteor(ctx, meteors[i], dt, width, height, [214, 148, 40], [232, 170, 56], 'rgba(255, 238, 190, 1)', 1);
         if (!alive) meteors.splice(i, 1);
       }
     };

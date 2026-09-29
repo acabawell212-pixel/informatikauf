@@ -156,9 +156,14 @@
 .motion-ready .course-row.motion-item.is-visible { translate: 0 0; }
 
 /* ---------- Langit ambient (partikel + bintang jatuh) ---------- */
+/* Berada di lapisan paling belakang: html memberi warna dasar, section dibuat semi-transparan
+   sehingga bintang terlihat dari belakang tanpa menutupi teks atau kartu. */
+html body { background: transparent; }
+main > section.section { background-color: rgba(255, 250, 240, .34) !important; }
+
 .ambient-sky {
   position: fixed;
-  z-index: 14;
+  z-index: -1;
   inset: 0;
   width: 100%;
   height: 100%;
