@@ -21,7 +21,7 @@ export default function Admin() {
   const allowed = Boolean(user?.email && user.emailVerified && ADMIN_EMAILS.includes(user.email.toLowerCase()));
 
   useEffect(() => {
-    document.title = 'Kotak Masuk — Informatika Faletehan';
+    document.title = 'Kotak Kritik — Informatika Faletehan';
     if (!firebaseReady) { setUser(null); return; }
     let unsub = () => {};
     getFirebase().then(async ({ auth }) => {
@@ -42,7 +42,7 @@ export default function Admin() {
           const v = d.data();
           return { id: d.id, name: String(v.name ?? ''), message: String(v.message ?? ''), read: Boolean(v.read), at: v.createdAt?.toDate?.() ?? null };
         }));
-      }, () => setError('Tidak bisa membaca pesan. Pastikan aturan Firestore sudah dipasang dan akunmu terdaftar sebagai admin.'));
+      }, () => setError('Tidak bisa membaca kritik. Pastikan aturan Firestore sudah dipasang dan akunmu terdaftar sebagai admin.'));
     });
     return () => unsub();
   }, [allowed]);
@@ -101,7 +101,7 @@ export default function Admin() {
           )}
         </header>
 
-        <h1><Inbox size={26} /> Kotak Masuk</h1>
+        <h1><Inbox size={26} /> Kotak Kritik</h1>
 
         {!firebaseReady && (
           <div className="admin-card">
@@ -115,7 +115,7 @@ export default function Admin() {
         {firebaseReady && user === null && (
           <div className="admin-card admin-login">
             <h2>Khusus admin</h2>
-            <p>Masuk dengan akun Google admin untuk membaca pesan yang dikirim lewat situs.</p>
+            <p>Masuk dengan akun Google admin untuk membaca kritik dan saran yang dikirim lewat situs.</p>
             <button className="admin-btn" type="button" onClick={login} disabled={busy}>{busy ? 'Membuka Google…' : 'Masuk dengan Google'}</button>
             {error && <p className="admin-error">{error}</p>}
           </div>
@@ -139,7 +139,7 @@ export default function Admin() {
             </div>
 
             {error && <p className="admin-error">{error}</p>}
-            {!error && shown.length === 0 && <p className="admin-empty">{filter === 'unread' ? 'Semua pesan sudah dibaca. 🎉' : 'Belum ada pesan masuk.'}</p>}
+            {!error && shown.length === 0 && <p className="admin-empty">{filter === 'unread' ? 'Semua pesan sudah dibaca. 🎉' : 'Belum ada kritik masuk.'}</p>}
 
             <ul className="admin-list">
               {shown.map((m) => (
