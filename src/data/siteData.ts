@@ -1,23 +1,33 @@
 const publicAsset = (path: string) => `${import.meta.env.BASE_URL}${path.replace(/^\/+/, '')}`;
 
-// Jadwal resmi Semester Ganjil 2026/2027 - Kelas REG, Semester I.
-export const scheduleInfo = {
-  title: 'Jadwal Semester Ganjil Tahun Akademik 2026/2027',
-  className: 'Kelas REG',
-  semester: 'Semester I',
-  start: 'Mulai perkuliahan Oktober 2026',
-};
+export const weekDays = [
+  { name: 'Senin', short: 'SEN' },
+  { name: 'Selasa', short: 'SEL' },
+  { name: 'Rabu', short: 'RAB' },
+  { name: 'Kamis', short: 'KAM' },
+  { name: 'Jumat', short: 'JUM' },
+] as const;
 
-export const scheduleCourses = [
-  { no: 1, code: 'IFS.0101', course: 'Algoritma Pemrograman', sks: 3, coordinator: 'Dede Brahma Arianto, S.Kom., M.TI', lecturers: ['Dede Brahma Arianto, S.Kom., M.Kom'], time: 'Rabu, 10.30 s/d 13.00', room: 'C302' },
-  { no: 2, code: 'IFS.0102', course: 'Kalkulus', sks: 3, coordinator: 'Meldi Anggra Saputra, S.Kom., M.TI', lecturers: ['Agnest Mela Dwi Kusmiaty, S.T., M.T'], time: 'Rabu, 14.40 s/d 16.40', room: 'C303' },
-  { no: 3, code: 'IFS.0103', course: 'Pengenalan Pemrograman', sks: 3, coordinator: 'Febri, S.Kom., M.Kom', lecturers: ['Febri, S.Kom., M.Kom'], time: 'Rabu, 08.00 s/d 10.30', room: 'Lab Kom' },
-  { no: 4, code: 'IFS.0104', course: 'Bahasa Inggris I', sks: 2, coordinator: 'Anisa Aulia, S.Kom., M.Kom', lecturers: ['Ulinuha Dahlina, M.Pd.'], time: 'Rabu, 13.00 s/d 14.40', room: 'C302' },
-  { no: 5, code: 'UF2201', course: 'Kewarganegaraan', sks: 2, coordinator: 'Nur Karismawati, S.Ars., M.Ars', lecturers: ['Febrian Alwan Baharudin, S.Pd., M.Pd'], time: 'Kamis, 15.40 - 17.20', room: 'Daring' },
-  { no: 6, code: 'UF2101', course: 'Pancasila', sks: 2, coordinator: 'Lani Febriani, SE., MKM', lecturers: ['Drs. H. Dedi Mulyadi, MM', 'Achmad Machron Chairulfalah, M.I.'], time: "Jum'at, 14.00 - 15.40", room: 'Daring' },
-  { no: 7, code: 'UF2102', course: 'Agama', sks: 2, coordinator: 'Iqbal Fernando, S.Kom., M.TI', lecturers: ['Ustd. Nurjaman, M.Pd'], time: 'Kamis, 09.50 - 11.50', room: 'Daring' },
-  { no: 8, code: 'UF2202', course: 'Bahasa Indonesia', sks: 2, coordinator: 'Erwan Darmawan, S.T., M.T', lecturers: ['Trikawati, M.Pd'], time: 'Selasa, 09.50 - 11.50', room: 'Daring' },
-];
+// Jadwal resmi Semester Ganjil 2026/2027 - Kelas REG, Semester I. Perkuliahan mulai Oktober 2026.
+export const classSchedule: Record<string, { start: string; end: string; name: string; type: string; duration: string; room: string }[]> = {
+  Senin: [],
+  Selasa: [
+    { start: '09.50', end: '11.50', name: 'Bahasa Indonesia', type: 'Teori', duration: '2 SKS', room: 'Daring' },
+  ],
+  Rabu: [
+    { start: '08.00', end: '10.30', name: 'Pengenalan Pemrograman', type: 'Praktikum', duration: '3 SKS', room: 'Lab Kom' },
+    { start: '10.30', end: '13.00', name: 'Algoritma Pemrograman', type: 'Teori', duration: '3 SKS', room: 'C302' },
+    { start: '13.00', end: '14.40', name: 'Bahasa Inggris I', type: 'Teori', duration: '2 SKS', room: 'C302' },
+    { start: '14.40', end: '16.40', name: 'Kalkulus', type: 'Teori', duration: '3 SKS', room: 'C303' },
+  ],
+  Kamis: [
+    { start: '09.50', end: '11.50', name: 'Agama', type: 'Teori', duration: '2 SKS', room: 'Daring' },
+    { start: '15.40', end: '17.20', name: 'Kewarganegaraan', type: 'Teori', duration: '2 SKS', room: 'Daring' },
+  ],
+  Jumat: [
+    { start: '14.00', end: '15.40', name: 'Pancasila', type: 'Teori', duration: '2 SKS', room: 'Daring' },
+  ],
+};
 
 export const members = [
   { name: 'Nadia Putri', role: 'Ketua Group', cohort: 'Angkatan 2026/2027', interest: 'Product & UI/UX', initials: 'NP', tone: 'avatar-rose', photo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=720&q=85' },
