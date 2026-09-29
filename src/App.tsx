@@ -9,7 +9,8 @@ import { Footer } from './sections/Footer';
 import { MotionEffects } from './components/MotionEffects';
 import { InteractiveHints } from './components/InteractiveHints';
 import { OpeningIntro } from './components/OpeningIntro';
+import { Effects3D } from './components/Effects3D';
 
 export default function App() {
-  return <><OpeningIntro /><MotionEffects /><InteractiveHints /><Navbar /><main><Hero /><AboutSection /><ScheduleSection /><MembersSection /><GallerySection /><ContactSection /></main><Footer /></>;
+  return <><OpeningIntro /><MotionEffects /><Effects3D /><InteractiveHints /><Navbar /><main><Hero /><AboutSection /><ScheduleSection /><MembersSection /><GallerySection /><ContactSection /></main><Footer /></>;
 }

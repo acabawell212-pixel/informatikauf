@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Braces, Sparkles } from 'lucide-react';
+import { Intro3D } from './Intro3D';
 
 const introKey = 'faletehan-opening-intro-seen';
 
@@ -79,6 +80,7 @@ export function OpeningIntro() {
       }}
     >
       <div className="intro-atlas" aria-hidden="true" />
+      <Intro3D warp={phase === 'leaving'} />
       <div className="intro-landscape" aria-hidden="true"><i /><i /><i /><span /></div>
       <div className="intro-star intro-star-one" aria-hidden="true">✧</div>
       <div className="intro-star intro-star-two" aria-hidden="true">✦</div>
@@ -95,7 +97,11 @@ export function OpeningIntro() {
           <span className="seal-spark seal-spark-two">✦</span>
         </div>
         <p className="intro-kicker">UNIVERSITAS FALETEHAN <span>·</span> SERANG</p>
-        <h1>INFORMATIKA</h1>
+        <h1 aria-label="INFORMATIKA">
+          {[...'INFORMATIKA'].map((letter, index) => (
+            <span className="intro-letter" aria-hidden="true" style={{ '--i': index } as CSSProperties} key={index}>{letter}</span>
+          ))}
+        </h1>
         <p className="intro-subtitle">GROUP INFORMATIKA UNIVERSITAS FALETEHAN</p>
         <div className="intro-divider"><i /><Sparkles size={15} /><i /></div>
         <p className="intro-motto">Belajar. Berkarya. Bertumbuh bersama.</p>
