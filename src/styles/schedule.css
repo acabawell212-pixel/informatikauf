@@ -55,6 +55,9 @@
   gap: 8px;
   overflow-x: auto;
   scrollbar-width: none;
+  /* ruang agar bayangan & efek angkat tab aktif tidak terpotong */
+  padding: 8px 10px 14px;
+  margin: -8px -10px -14px;
 }
 
 .schedule-day-tabs::-webkit-scrollbar {
@@ -400,7 +403,7 @@
   }
 
   .schedule-day-tabs {
-    width: 100%;
+    width: calc(100% + 20px);
     gap: 6px;
   }
 
