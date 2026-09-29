@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { pageZoom, zoomOf } from './zoom';
 
 const tiltSelector = '.member-card, .activity-card, .project-card, .article-card, .gallery-card, .principle-card, .contact-form';
 const magnetSelector = '.button, .nav-cta';
@@ -41,12 +42,13 @@ export function Effects3D() {
       const target = (event.target as HTMLElement | null)?.closest<HTMLElement>(rippleSelector);
       if (!target) return;
       const box = target.getBoundingClientRect();
-      const size = Math.max(box.width, box.height) * 2;
+      const z = zoomOf(target);
+      const size = Math.max(target.offsetWidth, target.offsetHeight) * 2;
       const ripple = document.createElement('span');
       ripple.className = 'fx-ripple';
       ripple.style.width = ripple.style.height = `${size}px`;
-      ripple.style.left = `${event.clientX - box.left - size / 2}px`;
-      ripple.style.top = `${event.clientY - box.top - size / 2}px`;
+      ripple.style.left = `${(event.clientX - box.left) / z - size / 2}px`;
+      ripple.style.top = `${(event.clientY - box.top) / z - size / 2}px`;
       target.appendChild(ripple);
       ripple.addEventListener('animationend', () => ripple.remove());
     };
@@ -101,12 +103,16 @@ export function Effects3D() {
 
     // Cahaya yang mengikuti kursor
     const glow = glowRef.current;
+    let zoom = pageZoom();
+    const onResizeZoom = () => { zoom = pageZoom(); };
+    window.addEventListener('resize', onResizeZoom);
+    cleanups.push(() => window.removeEventListener('resize', onResizeZoom));
     const cursor = { x: window.innerWidth / 2, y: window.innerHeight / 2, gx: 0, gy: 0, seen: false };
     let glowFrame = 0;
     const glowLoop = () => {
       cursor.gx += (cursor.x - cursor.gx) * 0.14;
       cursor.gy += (cursor.y - cursor.gy) * 0.14;
-      if (glow) glow.style.transform = `translate3d(${cursor.gx - 260}px, ${cursor.gy - 260}px, 0)`;
+      if (glow) glow.style.transform = `translate3d(${cursor.gx / zoom - 260}px, ${cursor.gy / zoom - 260}px, 0)`;
       // berhenti saat sudah menempel ke kursor; dijalankan lagi ketika kursor bergerak
       glowFrame = Math.hypot(cursor.x - cursor.gx, cursor.y - cursor.gy) > 0.5 ? requestAnimationFrame(glowLoop) : 0;
     };
@@ -189,7 +195,8 @@ export function Effects3D() {
       if (hoveredMagnet && hoveredMagnet !== magnet) { setMagnet(hoveredMagnet, 0, 0); hoveredMagnet = null; }
       if (magnet) {
         const box = magnet.getBoundingClientRect();
-        setMagnet(magnet, (event.clientX - (box.left + box.width / 2)) * 0.22, (event.clientY - (box.top + box.height / 2)) * 0.3);
+        const mz = zoomOf(magnet);
+        setMagnet(magnet, ((event.clientX - (box.left + box.width / 2)) * 0.22) / mz, ((event.clientY - (box.top + box.height / 2)) * 0.3) / mz);
         hoveredMagnet = magnet;
       }
     };

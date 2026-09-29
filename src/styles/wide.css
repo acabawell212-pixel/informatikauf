@@ -1,0 +1,30 @@
+/* Layar lebar (monitor PC): konten mengisi layar & seluruh UI membesar proporsional.
+   Dimuat paling akhir. Layar HP/tablet tidak terpengaruh. */
+
+body { --zoom: 1; }
+
+/* Kolom konten lebih lebar dan mengikuti ukuran layar (sebelumnya terkunci 1180px) */
+@media (min-width: 1200px) {
+  .wrap { width: min(1320px, calc(100% - 96px)); }
+}
+
+/* Skala seluruh UI di monitor besar, agar teks tidak terlihat kecil dan sisi kiri-kanan tidak kosong */
+@media (min-width: 1600px) { body { zoom: 1.1; --zoom: 1.1; } }
+@media (min-width: 1800px) { body { zoom: 1.25; --zoom: 1.25; } }
+@media (min-width: 2300px) { body { zoom: 1.6; --zoom: 1.6; } }
+@media (min-width: 3000px) { body { zoom: 2.1; --zoom: 2.1; } }
+
+/* Satuan vh/dvh tidak ikut di-zoom; bagi dengan faktor zoom agar elemen layar-penuh tidak kelebihan tinggi */
+.opening-intro {
+  min-height: calc(100dvh / var(--zoom));
+}
+
+.lightbox-panel > img,
+.lightbox-panel > video {
+  max-height: calc(min(69dvh, 690px * var(--zoom)) / var(--zoom));
+}
+
+@media (max-width: 560px) {
+  .lightbox-panel > img,
+  .lightbox-panel > video { max-height: 62dvh; }
+}

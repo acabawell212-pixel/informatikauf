@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { pageZoom } from './zoom';
 
 const HINT_ID = 'interactive-hint';
 
@@ -32,10 +33,11 @@ export function InteractiveHints() {
 
     const positionHint = (target: HTMLElement) => {
       const bounds = target.getBoundingClientRect();
-      const below = bounds.top < 64;
-      const left = Math.min(window.innerWidth - 145, Math.max(145, bounds.left + bounds.width / 2));
+      const z = pageZoom();
+      const below = bounds.top < 64 * z;
+      const left = Math.min(window.innerWidth / z - 145, Math.max(145, (bounds.left + bounds.width / 2) / z));
       hint.style.left = `${left}px`;
-      hint.style.top = `${below ? bounds.bottom + 8 : bounds.top - 8}px`;
+      hint.style.top = `${(below ? bounds.bottom + 8 * z : bounds.top - 8 * z) / z}px`;
       hint.classList.toggle('hint-below', below);
     };
 

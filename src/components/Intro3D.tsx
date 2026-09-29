@@ -118,9 +118,10 @@ export function Intro3D({ warp }: { warp: boolean }) {
       let cx = width / 2, cy = height * 0.38, base = Math.min(width, height) * 0.2;
       if (medal) {
         const r = medal.getBoundingClientRect();
-        cx = r.left + r.width / 2 - box.left;
-        cy = r.top + r.height / 2 - box.top;
-        base = Math.max(r.width * (small ? 1.5 : 1.9), Math.min(width, height) * 0.16);
+        const z = box.width / (width || box.width); // koreksi CSS zoom di monitor lebar
+        cx = (r.left + r.width / 2 - box.left) / z;
+        cy = (r.top + r.height / 2 - box.top) / z;
+        base = Math.max((r.width / z) * (small ? 1.5 : 1.9), Math.min(width, height) * 0.16);
       }
 
       const appear = Math.min(1, t / 1.6);

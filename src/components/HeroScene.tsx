@@ -42,8 +42,9 @@ export function HeroScene() {
 
     const onMove = (event: PointerEvent) => {
       const box = canvas.getBoundingClientRect();
-      pointer.px = event.clientX - box.left;
-      pointer.py = event.clientY - box.top;
+      const z = box.width / (canvas.clientWidth || box.width);
+      pointer.px = (event.clientX - box.left) / z;
+      pointer.py = (event.clientY - box.top) / z;
       pointer.x = Math.max(-1, Math.min(1, (pointer.px / box.width - 0.5) * 2));
       pointer.y = Math.max(-1, Math.min(1, (pointer.py / box.height - 0.5) * 2));
     };
