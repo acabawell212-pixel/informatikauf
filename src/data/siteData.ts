@@ -55,7 +55,7 @@ export type Member = {
 };
 
 export const members: Member[] = [
-  { name: 'Roina', role: 'Ketua', cohort: 'Angkatan 2026/2027', initials: 'R', tone: 'avatar-rose', photo: publicAsset('/gallery/anggota/rina.jpeg') },
+  { name: 'Rani', role: 'Ketua', cohort: 'Angkatan 2026/2027', initials: 'R', tone: 'avatar-rose', photo: publicAsset('/gallery/anggota/rina.jpeg') },
   { name: 'Fadli', role: 'Wakil Ketua', cohort: 'Angkatan 2026/2027', initials: 'F', tone: 'avatar-blue', photo: publicAsset('/gallery/anggota/fadli.jpeg') },
 ];
 
