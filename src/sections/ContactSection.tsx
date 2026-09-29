@@ -6,13 +6,12 @@ import { getFirebase } from '../lib/firebase';
 
 const CONTACT_EMAIL = 'informatikauf2026@gmail.com';
 
-function gmailFallback(name: string, email: string, message: string) {
+function gmailFallback(name: string, message: string) {
   const subject = `Pesan dari website Informatika: ${name}`;
   const body = `${message}
 
 --
-Nama: ${name}
-Email: ${email}`;
+Nama: ${name}`;
   return `https://mail.google.com/mail/?view=cm&fs=1&to=${CONTACT_EMAIL}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 type SendState = 'idle' | 'sending' | 'sent' | 'error';
@@ -34,7 +33,6 @@ export function ContactSection() {
     setErrorText('');
     setFallbackUrl('');
     const name = String(data.get('name') ?? '').trim().slice(0, 80);
-    const email = String(data.get('email') ?? '').trim().slice(0, 120);
     const message = String(data.get('message') ?? '').trim().slice(0, 2000);
 
     // jeda antar kiriman (pembatas spam sederhana di sisi browser)
@@ -50,7 +48,7 @@ export function ContactSection() {
     const attempt = async () => {
       const { db } = await getFirebase();
       const { addDoc, collection, serverTimestamp } = await import('firebase/firestore');
-      await addDoc(collection(db, 'messages'), { name, email, message, read: false, createdAt: serverTimestamp() });
+      await addDoc(collection(db, 'messages'), { name, message, read: false, createdAt: serverTimestamp() });
     };
     try {
       if (!firebaseReady) throw new Error('not-configured');
@@ -59,7 +57,7 @@ export function ContactSection() {
       form.reset();
       setState('sent');
     } catch {
-      setFallbackUrl(gmailFallback(String(data.get('name') ?? ''), String(data.get('email') ?? ''), String(data.get('message') ?? '')));
+      setFallbackUrl(gmailFallback(name, message));
       setErrorText('Pesan belum bisa dikirim lewat situs saat ini. Pesanmu tidak hilang: kirim lewat Gmail dengan tombol di bawah (isinya sudah terisi otomatis).');
       setState('error');
     }
@@ -71,14 +69,14 @@ export function ContactSection() {
         <div className="contact-details"><a href="https://mail.google.com/mail/?view=cm&fs=1&to=informatikauf2026@gmail.com&su=Halo%20Informatika%20Faletehan" target="_blank" rel="noreferrer" data-hint="Buka Gmail untuk mengirim email ke Group Informatika."><span><Mail size={16} /></span><div><small>EMAIL KAMI</small><b>informatikauf2026@gmail.com</b></div><ArrowRight size={15} /></a><div><span><MapPin size={16} /></span><div><small>TEMUKAN KAMI</small><b>Universitas Faletehan · Serang, Banten</b></div></div></div>
         <div className="contact-social"><small>IKUTI CERITA KAMI</small><a href="https://www.instagram.com/informatikauf/" target="_blank" rel="noreferrer" aria-label="Instagram Informatika Faletehan" data-hint="Buka Instagram resmi Informatika Faletehan."><Instagram size={16} /></a><a href="https://mail.google.com/mail/?view=cm&fs=1&to=informatikauf2026@gmail.com&su=Halo%20Informatika%20Faletehan" target="_blank" rel="noreferrer" aria-label="Kirim email" data-hint="Buka Gmail untuk email ke Group Informatika."><Mail size={16} /></a></div>
       </div>
-      <form className="contact-form" onSubmit={handleSubmit}><div className="form-top"><span className="form-kicker">SAY HELLO <i /></span><span className="form-number">FORM / 01</span></div><h3>Ada yang ingin<br />kamu ceritakan?</h3>
-        <label>Nama kamu<input required name="name" placeholder="Nama lengkap" data-hint="Tulis nama yang ingin kami gunakan untuk menyapamu." /></label><label>Email aktif<input required type="email" name="email" placeholder="nama@email.com" data-hint="Isi email aktif agar kami bisa membalas pesanmu." /></label><label>Ceritakan sedikit<textarea required name="message" rows={3} placeholder="Ide, pertanyaan, atau sekadar halo..." data-hint="Tulis pesan atau pertanyaan yang ingin disampaikan." /></label>
+      <form className="contact-form" onSubmit={handleSubmit}><div className="form-top"><span className="form-kicker">SAY HELLO <i /></span><span className="form-number">FORM / 01</span></div><h3>Ada yang ingin<br />kamu tanyakan?</h3>
+        <label>Nama kamu<input required name="name" placeholder="Nama lengkap" data-hint="Tulis nama yang ingin kami gunakan untuk menyapamu." /></label><label>Pertanyaan atau pesanmu<textarea required name="message" rows={3} placeholder="Ide, pertanyaan, atau sekadar halo..." data-hint="Tulis pesan atau pertanyaan yang ingin disampaikan." /></label>
         <input className="form-honey" name="_honey" tabIndex={-1} autoComplete="off" aria-hidden="true" />
         <button className="button button-primary form-submit" type="submit" disabled={state === 'sending'} data-hint="Kirim pesanmu langsung ke tim Informatika.">
           {state === 'sending' ? <>Mengirim… <Loader2 size={16} className="spin" /></> : state === 'sent' ? <>Terkirim, kirim lagi? <Check size={16} /></> : <>Kirim pesan <Send size={15} /></>}
         </button>
         <p className={`form-note${state === 'error' ? ' is-error' : ''}${state === 'sent' ? ' is-ok' : ''}`} role="status" aria-live="polite">
-          {state === 'sent' && <><Check size={13} /> Terima kasih! Pesanmu sudah kami terima. Kami balas ke emailmu secepatnya.</>}
+          {state === 'sent' && <><Check size={13} /> Terima kasih! Pesanmu sudah kami terima. Kami akan membacanya secepatnya.</>}
           {state === 'error' && <><AlertCircle size={13} /> {errorText}</>}
           {(state === 'idle' || state === 'sending') && <>Pesanmu langsung masuk ke kotak masuk tim Informatika.</>}
         </p>

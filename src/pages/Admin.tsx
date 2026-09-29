@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, Check, Inbox, LogOut, Mail, Trash2 } from 'lucide-react';
+import { ArrowLeft, Check, Inbox, LogOut, Trash2 } from 'lucide-react';
 import type { User } from 'firebase/auth';
 import { ADMIN_EMAILS, firebaseReady } from '../lib/firebaseConfig';
 import { getFirebase } from '../lib/firebase';
 
-type Msg = { id: string; name: string; email: string; message: string; read: boolean; at: Date | null };
+type Msg = { id: string; name: string; message: string; read: boolean; at: Date | null };
 type Filter = 'all' | 'unread';
 
 const fmt = new Intl.DateTimeFormat('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
@@ -40,7 +40,7 @@ export default function Admin() {
         setError('');
         setMessages(snap.docs.map((d) => {
           const v = d.data();
-          return { id: d.id, name: String(v.name ?? ''), email: String(v.email ?? ''), message: String(v.message ?? ''), read: Boolean(v.read), at: v.createdAt?.toDate?.() ?? null };
+          return { id: d.id, name: String(v.name ?? ''), message: String(v.message ?? ''), read: Boolean(v.read), at: v.createdAt?.toDate?.() ?? null };
         }));
       }, () => setError('Tidak bisa membaca pesan. Pastikan aturan Firestore sudah dipasang dan akunmu terdaftar sebagai admin.'));
     });
@@ -147,13 +147,13 @@ export default function Admin() {
                   <div className="admin-msg-top">
                     <div>
                       <strong>{m.name}</strong>
-                      <a href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(m.email)}`} target="_blank" rel="noreferrer">{m.email}</a>
+
                     </div>
                     <time>{m.at ? fmt.format(m.at) : 'baru saja'}</time>
                   </div>
                   <p>{m.message}</p>
                   <div className="admin-actions">
-                    <a className="admin-btn small" href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(m.email)}&su=${encodeURIComponent('Re: pesanmu di website Informatika')}&body=${encodeURIComponent(`Halo ${m.name},\n\n\n\n---\nPesanmu:\n${m.message}`)}`} target="_blank" rel="noreferrer"><Mail size={14} /> Balas</a>
+
                     <button className="admin-btn small ghost" type="button" onClick={() => setRead(m.id, !m.read)}><Check size={14} /> {m.read ? 'Tandai belum dibaca' : 'Tandai sudah dibaca'}</button>
                     {confirmId === m.id ? (
                       <>
