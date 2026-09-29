@@ -1,12 +1,12 @@
 // Tempel isi `firebaseConfig` dari Firebase Console (Project settings -> Your apps) di sini.
 // Nilai ini memang publik; keamanan dijaga oleh aturan Firestore (lihat firestore.rules).
 export const firebaseConfig = {
-  apiKey: '',
-  authDomain: '',
-  projectId: '',
-  storageBucket: '',
-  messagingSenderId: '',
-  appId: '',
+  apiKey: 'AIzaSyCAZmhqVvlGPn8OCUG1E4_yIEDcKoWly_4',
+  authDomain: 'informatika2026-f891a.firebaseapp.com',
+  projectId: 'informatika2026-f891a',
+  storageBucket: 'informatika2026-f891a.firebasestorage.app',
+  messagingSenderId: '120556102311',
+  appId: '1:120556102311:web:e3e0140c661a3100c1f182',
 };
 
 // Hanya akun Google ini yang boleh membuka kotak masuk (harus sama dengan firestore.rules).
