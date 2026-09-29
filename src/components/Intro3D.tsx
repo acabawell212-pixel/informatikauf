@@ -22,7 +22,7 @@ export function Intro3D({ warp }: { warp: boolean }) {
 
     let width = 0, height = 0, raf = 0;
     const small = window.matchMedia('(max-width: 560px)').matches;
-    const stars: Star[] = Array.from({ length: small ? 150 : 320 }, () => ({
+    const stars: Star[] = Array.from({ length: small ? 90 : 190 }, () => ({
       x: (Math.random() - 0.5) * 2.4, y: (Math.random() - 0.5) * 2.4, z: Math.random(), hue: Math.random(),
     }));
     const flares = Array.from({ length: small ? 8 : 16 }, () => ({
@@ -39,9 +39,11 @@ export function Intro3D({ warp }: { warp: boolean }) {
     let nextMeteor = 0.6;
     const start = performance.now();
     let last = start;
+    let lastDraw = 0;
 
     const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      // resolusi internal dibatasi (~1200px sisi terpanjang) lalu dibentangkan CSS: adegan ini ber-glow, jadi tak terasa bedanya
+      const dpr = Math.min(1, 1200 / Math.max(canvas.clientWidth, canvas.clientHeight, 1));
       width = canvas.clientWidth;
       height = canvas.clientHeight;
       canvas.width = Math.round(width * dpr);
@@ -60,18 +62,51 @@ export function Intro3D({ warp }: { warp: boolean }) {
     const gold = (a: number) => `rgba(236, 200, 114, ${a})`;
     const teal = (a: number) => `rgba(126, 218, 196, ${a})`;
 
-    const nebula = (x: number, y: number, r: number, rgb: string, a: number) => {
-      const g = ctx.createRadialGradient(x, y, 0, x, y, r);
-      g.addColorStop(0, `rgba(${rgb}, ${a})`);
-      g.addColorStop(1, `rgba(${rgb}, 0)`);
-      ctx.fillStyle = g;
-      ctx.fillRect(x - r, y - r, r * 2, r * 2);
+    // nebula digambar sekali ke kanvas kecil, lalu hanya digeser tiap frame (jauh lebih hemat)
+    const nebulaCanvas = document.createElement('canvas');
+    const buildNebula = () => {
+      const w = Math.max(2, Math.round(width / 4)), h = Math.max(2, Math.round(height / 4));
+      nebulaCanvas.width = w;
+      nebulaCanvas.height = h;
+      const n = nebulaCanvas.getContext('2d');
+      if (!n) return;
+      const blob = (x: number, y: number, r: number, rgb: string, a: number) => {
+        const g = n.createRadialGradient(x, y, 0, x, y, r);
+        g.addColorStop(0, `rgba(${rgb}, ${a})`);
+        g.addColorStop(1, `rgba(${rgb}, 0)`);
+        n.fillStyle = g;
+        n.fillRect(0, 0, w, h);
+      };
+      const big = Math.max(w, h);
+      blob(w * 0.22, h * 0.3, big * 0.5, '60, 168, 158', 0.16);
+      blob(w * 0.78, h * 0.62, big * 0.46, '214, 164, 84', 0.13);
+      blob(w * 0.55, h * 0.15, big * 0.38, '120, 96, 196', 0.1);
     };
+    buildNebula();
+    window.addEventListener('resize', buildNebula);
+
+    // kualitas adaptif: turun otomatis bila perangkat lambat
+    let quality = 2;
+    let ema = 33;
+    let frames = 0;
 
     const frame = (now: number) => {
+      raf = requestAnimationFrame(frame);
+      // 30 fps sudah cukup untuk latar; animasi CSS tetap 60 fps
+      if (now - lastDraw < 30) return;
+      lastDraw = now;
       const dt = Math.min((now - last) / 16.67, 3);
       last = now;
       const t = Math.max(0, (now - start) / 1000);
+      ema += (dt * 16.67 - ema) * 0.08;
+      if (++frames > 40 && quality > 0 && ema > 42) { quality--; frames = 0; ema = 33; }
+      // (kanvas dibatasi 30 fps: normal ~33 ms/frame; >42 ms = lebih lambat dari ~24 fps)
+      // tetap lambat di kualitas terendah: matikan adegan canvas, intro lanjut hanya dengan animasi CSS
+      if (quality === 0 && frames > 90 && ema > 70) {
+        cancelAnimationFrame(raf);
+        canvas.style.display = 'none';
+        return;
+      }
       ctx.clearRect(0, 0, width, height);
 
       pointer.sx += (pointer.x - pointer.sx) * 0.06;
@@ -95,14 +130,15 @@ export function Intro3D({ warp }: { warp: boolean }) {
       const spinY = t * 0.55 + pointer.sx * 2.2;
       const spinX = t * 0.32 + pointer.sy * 2.2 + 0.4;
 
-      // ---- nebula berlapis (paralaks) ----
-      const nx = pointer.sx * 60, ny = pointer.sy * 40;
-      nebula(width * 0.22 + nx + Math.sin(t * 0.13) * 40, height * 0.3 + ny, Math.max(width, height) * 0.5, '60, 168, 158', 0.16);
-      nebula(width * 0.78 - nx + Math.cos(t * 0.11) * 50, height * 0.62 - ny, Math.max(width, height) * 0.46, '214, 164, 84', 0.13);
-      nebula(width * 0.55 + nx * 0.5, height * 0.15, Math.max(width, height) * 0.38, '120, 96, 196', 0.1);
+      // ---- nebula (satu drawImage, bergeser paralaks) ----
+      if (quality > 0) {
+        ctx.globalAlpha = ease;
+        ctx.drawImage(nebulaCanvas, -width * 0.05 + pointer.sx * 50, -height * 0.05 + pointer.sy * 34, width * 1.1, height * 1.1);
+        ctx.globalAlpha = 1;
+      }
 
       // ---- bintang berkilau (twinkle) ----
-      for (const f of flares) {
+      for (const f of quality > 0 ? flares : []) {
         const tw = 0.45 + 0.55 * Math.sin(t * 1.6 + f.phase);
         drawFlare(ctx, f.x * width + pointer.sx * -22, f.y * height + pointer.sy * -16, f.size * (0.7 + tw * 0.5), tw * 0.85 * ease,
           f.teal ? [150, 236, 214] : [255, 228, 160]);
@@ -112,7 +148,9 @@ export function Intro3D({ warp }: { warp: boolean }) {
       const speed = (0.0035 + warpT * 0.05) * dt;
       const fov = Math.max(width, height) * 0.62;
       ctx.lineCap = 'round';
-      for (const star of stars) {
+      const starLimit = quality === 2 ? stars.length : quality === 1 ? Math.floor(stars.length * 0.6) : Math.floor(stars.length * 0.35);
+      for (let si = 0; si < starLimit; si++) {
+        const star = stars[si];
         const prevZ = star.z;
         star.z -= speed;
         if (star.z <= 0.02) {
@@ -172,10 +210,7 @@ export function Intro3D({ warp }: { warp: boolean }) {
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillStyle = i % 3 === 0 ? teal((0.35 + near * 0.6) * fade * ease) : gold((0.35 + near * 0.6) * fade * ease);
-            ctx.shadowColor = 'rgba(236, 200, 114, .6)';
-            ctx.shadowBlur = 8 * near;
             ctx.fillText(glyph, p.x, p.y);
-            ctx.shadowBlur = 0;
           },
         });
       });
@@ -189,20 +224,26 @@ export function Intro3D({ warp }: { warp: boolean }) {
             const g = ctx.createRadialGradient(p.x - rad * 0.35, p.y - rad * 0.4, rad * 0.1, p.x, p.y, rad);
             g.addColorStop(0, `rgba(${orb.a[0]}, ${orb.a[1]}, ${orb.a[2]}, ${0.98 * ease * fade})`);
             g.addColorStop(1, `rgba(${orb.b[0]}, ${orb.b[1]}, ${orb.b[2]}, ${0.95 * ease * fade})`);
-            ctx.shadowColor = `rgba(${orb.a[0]}, ${orb.a[1]}, ${orb.a[2]}, .7)`;
-            ctx.shadowBlur = rad * 1.6;
+            if (quality > 0) {
+              const halo = ctx.createRadialGradient(p.x, p.y, rad * 0.6, p.x, p.y, rad * 2.4);
+              halo.addColorStop(0, `rgba(${orb.a[0]}, ${orb.a[1]}, ${orb.a[2]}, ${0.4 * ease * fade})`);
+              halo.addColorStop(1, `rgba(${orb.a[0]}, ${orb.a[1]}, ${orb.a[2]}, 0)`);
+              ctx.fillStyle = halo;
+              ctx.beginPath();
+              ctx.arc(p.x, p.y, rad * 2.4, 0, TAU);
+              ctx.fill();
+            }
             ctx.fillStyle = g;
             ctx.beginPath();
             ctx.arc(p.x, p.y, rad, 0, TAU);
             ctx.fill();
-            ctx.shadowBlur = 0;
           },
         });
       }
       items.filter((item) => item.z > 0).forEach((item) => item.draw());
 
       // ---- gelombang kejut ----
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < (quality > 0 ? 3 : 0); i++) {
         const phase = ((t * 0.55 + i / 3) % 1);
         const rad = Math.max(1, base * (0.9 + phase * 3.4) * scale);
         ctx.strokeStyle = gold((1 - phase) * 0.32 * ease * fade);
@@ -214,7 +255,7 @@ export function Intro3D({ warp }: { warp: boolean }) {
 
       // ---- cincin partikel miring ----
       for (let ring = 0; ring < 3; ring++) {
-        const count = small ? 34 : 60;
+        const count = Math.round((small ? 34 : 60) * (quality === 2 ? 1 : quality === 1 ? 0.55 : 0.3));
         const tilt = 0.9 + ring * 0.75;
         for (let i = 0; i < count; i++) {
           const ang = (i / count) * TAU + t * (0.35 + ring * 0.12) * (ring % 2 ? -1 : 1);
@@ -234,14 +275,13 @@ export function Intro3D({ warp }: { warp: boolean }) {
       drawWire(ctx, OCTA, OCTA_EDGES, cx, cy, base * 0.72 * scale, -spinX * 1.4, -spinY * 1.6, 0, teal, (small ? 0.6 : 0.75) * fade * ease);
 
       items.filter((item) => item.z <= 0).forEach((item) => item.draw());
-
-      raf = requestAnimationFrame(frame);
     };
     raf = requestAnimationFrame(frame);
 
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener('resize', resize);
+      window.removeEventListener('resize', buildNebula);
       window.removeEventListener('pointermove', onMove);
     };
   }, []);

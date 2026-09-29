@@ -35,17 +35,19 @@ export function GallerySection() {
       previews.forEach((video) => video.pause());
       return;
     }
-    const startPreview = (video: HTMLVideoElement) => {
-      video.muted = true;
-      void video.play().catch(() => {});
-    };
-    const waitForMedia = (video: HTMLVideoElement) => {
-      if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) startPreview(video);
-      else video.addEventListener('canplay', () => startPreview(video), { once: true });
-    };
-
-    previews.forEach(waitForMedia);
+    // hanya putar video yang sedang terlihat di layar (hemat decoder & baterai)
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        const video = entry.target as HTMLVideoElement;
+        if (entry.isIntersecting) {
+          video.muted = true;
+          void video.play().catch(() => {});
+        } else video.pause();
+      });
+    }, { threshold: 0.25 });
+    previews.forEach((video) => observer.observe(video));
     return () => {
+      observer.disconnect();
       previews.forEach((video) => video.pause());
     };
   }, [visiblePhotos, selectedPhoto]);
@@ -103,23 +105,18 @@ export function GallerySection() {
                   className="gallery-preview-video"
                   src={photo.video}
                   poster={photo.poster}
-                  autoPlay
                   muted
                   loop
                   playsInline
-                  preload="auto"
+                  preload="metadata"
                   aria-label={photo.title}
-                  onCanPlay={(event) => {
-                    const video = event.currentTarget;
-                    if (video.muted) void video.play().catch(() => {});
-                  }}
                   onError={(event) => { event.currentTarget.style.display = 'none'; }}
                 />
               ) : photo.image ? (
                 <img
                   src={photo.image}
                   alt={photo.caption}
-                  loading="eager"
+                  loading="lazy"
                   decoding="async"
                   onError={(event) => { event.currentTarget.style.display = 'none'; }}
                 />

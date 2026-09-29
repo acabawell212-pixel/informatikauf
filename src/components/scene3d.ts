@@ -69,12 +69,13 @@ export function drawWire(
   }
   for (const p of projected) {
     const a = alpha * (0.5 + 0.5 * (1 - (p.z + 1) / 2));
-    const glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, 9);
-    glow.addColorStop(0, color(a));
-    glow.addColorStop(1, color(0));
-    ctx.fillStyle = glow;
+    ctx.fillStyle = color(a * 0.3);
     ctx.beginPath();
-    ctx.arc(p.x, p.y, 9, 0, Math.PI * 2);
+    ctx.arc(p.x, p.y, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = color(a);
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
     ctx.fill();
     ctx.fillStyle = dotColor;
     ctx.beginPath();

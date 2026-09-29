@@ -22,12 +22,15 @@ export function HeroScene() {
       x: Math.random(), y: Math.random(), vx: (Math.random() - 0.5) * 0.00028, vy: (Math.random() - 0.5) * 0.00028, r: 1.2 + Math.random() * 1.8,
     }));
     const start = performance.now();
+    let lastDraw = 0;
+    let slowFrames = 0;
+    let stopped = false;
 
     const gold = (a: number) => `rgba(176, 128, 44, ${a})`;
     const teal = (a: number) => `rgba(34, 116, 112, ${a})`;
 
     const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.25);
       width = canvas.clientWidth;
       height = canvas.clientHeight;
       canvas.width = Math.round(width * dpr);
@@ -50,8 +53,13 @@ export function HeroScene() {
     observer.observe(canvas);
 
     const frame = (now: number) => {
+      if (stopped) return;
       raf = requestAnimationFrame(frame);
-      if (!visible) return;
+      if (!visible || document.hidden) return;
+      // dekorasi cukup 30 fps; lewati frame di antaranya
+      if (now - lastDraw < 32) return;
+      const cost = performance.now();
+      lastDraw = now;
       const t = Math.max(0, (now - start) / 1000);
       ctx.clearRect(0, 0, width, height);
       pointer.sx += (pointer.x - pointer.sx) * 0.05;
@@ -113,6 +121,14 @@ export function HeroScene() {
       const dot = 'rgba(96, 66, 20, .9)';
       drawWire(ctx, ICO, ICO_EDGES, cx, cy, base, t * 0.3 + pointer.sy * 1.2 + 0.4, t * 0.45 + pointer.sx * 1.6, t * 0.1, gold, 0.75, dot);
       drawWire(ctx, OCTA, OCTA_EDGES, cx, cy, base * 0.58, -t * 0.4 - pointer.sy, -t * 0.6 - pointer.sx * 1.4, 0, teal, 0.75, 'rgba(20, 70, 68, .9)');
+
+      // perangkat lambat: bila menggambar terus memakan >12 ms, matikan adegan hiasan ini
+      slowFrames = performance.now() - cost > 12 ? slowFrames + 1 : Math.max(0, slowFrames - 1);
+      if (slowFrames > 45) {
+        stopped = true;
+        cancelAnimationFrame(raf);
+        canvas.style.display = 'none';
+      }
     };
     raf = requestAnimationFrame(frame);
 

@@ -26,6 +26,16 @@ export function Effects3D() {
     window.addEventListener('scroll', onScroll, { passive: true });
     cleanups.push(() => window.removeEventListener('scroll', onScroll));
 
+    // Jeda animasi CSS yang tak terlihat (hemat CPU/GPU)
+    const pausable = document.querySelectorAll<HTMLElement>('main > section, .marquee, .site-footer');
+    const pauseObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        (entry.target as HTMLElement).dataset.offscreen = entry.isIntersecting ? 'false' : 'true';
+      });
+    }, { rootMargin: '120px 0px' });
+    pausable.forEach((el) => pauseObserver.observe(el));
+    cleanups.push(() => { pauseObserver.disconnect(); pausable.forEach((el) => delete el.dataset.offscreen); });
+
     // Riak saat tombol ditekan (semua perangkat)
     const onDown = (event: PointerEvent) => {
       const target = (event.target as HTMLElement | null)?.closest<HTMLElement>(rippleSelector);
@@ -53,9 +63,10 @@ export function Effects3D() {
       cursor.gx += (cursor.x - cursor.gx) * 0.14;
       cursor.gy += (cursor.y - cursor.gy) * 0.14;
       if (glow) glow.style.transform = `translate3d(${cursor.gx - 260}px, ${cursor.gy - 260}px, 0)`;
-      glowFrame = requestAnimationFrame(glowLoop);
+      // berhenti saat sudah menempel ke kursor; dijalankan lagi ketika kursor bergerak
+      glowFrame = Math.hypot(cursor.x - cursor.gx, cursor.y - cursor.gy) > 0.5 ? requestAnimationFrame(glowLoop) : 0;
     };
-    glowFrame = requestAnimationFrame(glowLoop);
+    const wakeGlow = () => { if (!glowFrame) glowFrame = requestAnimationFrame(glowLoop); };
     cleanups.push(() => cancelAnimationFrame(glowFrame));
 
     // Tilt 3D kartu + tombol magnetik
@@ -103,6 +114,7 @@ export function Effects3D() {
       if (!event) return;
       cursor.x = event.clientX;
       cursor.y = event.clientY;
+      wakeGlow();
       if (!cursor.seen && glow) { cursor.seen = true; cursor.gx = cursor.x; cursor.gy = cursor.y; glow.classList.add('is-on'); }
 
       const target = event.target as HTMLElement | null;
