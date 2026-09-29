@@ -3,11 +3,22 @@ import { AlertCircle, ArrowRight, Check, Instagram, Loader2, Mail, MapPin, Send 
 import { SectionHeading } from '../components/SectionHeading';
 
 const CONTACT_EMAIL = 'informatikauf2026@gmail.com';
+
+function gmailFallback(name: string, email: string, message: string) {
+  const subject = `Pesan dari website Informatika: ${name}`;
+  const body = `${message}
+
+--
+Nama: ${name}
+Email: ${email}`;
+  return `https://mail.google.com/mail/?view=cm&fs=1&to=${CONTACT_EMAIL}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
 type SendState = 'idle' | 'sending' | 'sent' | 'error';
 
 export function ContactSection() {
   const [state, setState] = useState<SendState>('idle');
   const [errorText, setErrorText] = useState('');
+  const [fallbackUrl, setFallbackUrl] = useState('');
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -19,27 +30,40 @@ export function ContactSection() {
 
     setState('sending');
     setErrorText('');
-    try {
-      const response = await fetch(`https://formsubmit.co/ajax/${CONTACT_EMAIL}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({
-          name: data.get('name'),
-          email: data.get('email'),
-          message: data.get('message'),
-          _subject: `Pesan baru dari website Informatika: ${String(data.get('name') ?? '')}`,
-          _template: 'table',
-          _captcha: 'false',
-        }),
-      });
-      const result = await response.json().catch(() => ({}));
-      if (!response.ok || result.success === 'false' || result.success === false) {
-        throw new Error(typeof result.message === 'string' ? result.message : 'Gagal mengirim');
+    setFallbackUrl('');
+    const payload = JSON.stringify({
+      name: data.get('name'),
+      email: data.get('email'),
+      message: data.get('message'),
+      _subject: `Pesan baru dari website Informatika: ${String(data.get('name') ?? '')}`,
+      _template: 'table',
+      _captcha: 'false',
+    });
+    const attempt = async () => {
+      const controller = new AbortController();
+      const timer = window.setTimeout(() => controller.abort(), 12000);
+      try {
+        const response = await fetch(`https://formsubmit.co/ajax/${CONTACT_EMAIL}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: payload,
+          signal: controller.signal,
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok || result.success === 'false' || result.success === false) {
+          throw new Error(typeof result.message === 'string' ? result.message : 'Gagal mengirim');
+        }
+      } finally {
+        window.clearTimeout(timer);
       }
+    };
+    try {
+      try { await attempt(); } catch { await new Promise((resolve) => setTimeout(resolve, 1200)); await attempt(); }
       form.reset();
       setState('sent');
-    } catch (error) {
-      setErrorText(error instanceof Error && error.message !== 'Failed to fetch' ? error.message : 'Koneksi bermasalah. Coba lagi sebentar lagi, atau kirim langsung ke email kami.');
+    } catch {
+      setFallbackUrl(gmailFallback(String(data.get('name') ?? ''), String(data.get('email') ?? ''), String(data.get('message') ?? '')));
+      setErrorText('Layanan pengiriman sedang gangguan. Pesanmu belum terkirim, tapi tidak hilang: kirim lewat Gmail dengan tombol di bawah (isinya sudah terisi otomatis).');
       setState('error');
     }
   };
@@ -61,6 +85,11 @@ export function ContactSection() {
           {state === 'error' && <><AlertCircle size={13} /> {errorText}</>}
           {(state === 'idle' || state === 'sending') && <>Pesan dikirim langsung ke {CONTACT_EMAIL}</>}
         </p>
+        {state === 'error' && fallbackUrl && (
+          <a className="button button-outline form-fallback" href={fallbackUrl} target="_blank" rel="noreferrer">
+            Kirim lewat Gmail <ArrowRight size={15} />
+          </a>
+        )}
       </form>
     </div></section>
   );
