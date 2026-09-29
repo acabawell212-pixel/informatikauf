@@ -1,5 +1,20 @@
 /* Tampilan HP / layar sentuh + tombol "Tampilkan lebih banyak" galeri. Dimuat paling akhir. */
 
+/* ---------- Pengaman lebar halaman ----------
+   Di HP asli, satu elemen yang lebih lebar dari layar bisa membuat browser melebarkan/memperkecil
+   tampilan sehingga kanan-kiri terpotong. `clip` memotong tanpa membuat area scroll baru. */
+html {
+  overflow-x: clip;
+  max-width: 100%;
+}
+
+body {
+  overflow-x: clip;
+  max-width: 100%;
+}
+
+img, video, canvas, svg { max-width: 100%; }
+
 /* ---------- Tombol "Tampilkan lebih banyak" ---------- */
 .gallery-more {
   display: flex;
@@ -84,8 +99,12 @@
   }
 
   /* tab hari: jangan terjepit, geser ke samping */
+  .schedule-toolbar { min-width: 0; }
+
   .schedule-day-tabs {
-    width: auto;
+    width: calc(100% + 36px);
+    max-width: calc(100vw);
+    min-width: 0;
     margin-inline: -18px;
     padding-inline: 18px;
     scroll-padding-inline: 18px;
