@@ -421,3 +421,16 @@ main section[id] {
     transition: none;
   }
 }
+
+/* Sedikit anggota: kartu di tengah dengan lebar wajar */
+@media (min-width: 821px) {
+  .members-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 280px));
+    justify-content: center;
+    gap: 22px;
+  }
+
+  .member-portrait {
+    height: 320px;
+  }
+}

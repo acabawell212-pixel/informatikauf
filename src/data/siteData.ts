@@ -44,11 +44,19 @@ export const classSchedule: Record<string, ScheduleClass[]> = {
   Minggu: [],
 };
 
-export const members = [
-  { name: 'Nadia Putri', role: 'Ketua Group', cohort: 'Angkatan 2026/2027', interest: 'Product & UI/UX', initials: 'NP', tone: 'avatar-rose', photo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=720&q=85' },
-  { name: 'Rizky Ramadhan', role: 'Wakil Ketua', cohort: 'Angkatan 2026/2027', interest: 'Backend & Cloud', initials: 'RR', tone: 'avatar-blue', photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=720&q=85' },
-  { name: 'Alya Maharani', role: 'Koordinator Kreatif', cohort: 'Angkatan 2026/2027', interest: 'Visual Design', initials: 'AM', tone: 'avatar-gold', photo: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=720&q=85' },
-  { name: 'Fajar Maulana', role: 'Koordinator Riset', cohort: 'Angkatan 2026/2027', interest: 'Data & AI', initials: 'FM', tone: 'avatar-mint', photo: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=720&q=85' },
+export type Member = {
+  name: string;
+  role: string;
+  cohort: string;
+  interest?: string;
+  initials: string;
+  tone: string;
+  photo: string;
+};
+
+export const members: Member[] = [
+  { name: 'Roina', role: 'Ketua', cohort: 'Angkatan 2026/2027', initials: 'R', tone: 'avatar-rose', photo: publicAsset('/gallery/anggota/rina.jpeg') },
+  { name: 'Fadli', role: 'Wakil Ketua', cohort: 'Angkatan 2026/2027', initials: 'F', tone: 'avatar-blue', photo: publicAsset('/gallery/anggota/fadli.jpeg') },
 ];
 
 export type GalleryItem = {
