@@ -8,28 +8,35 @@ export const weekDays = [
   { name: 'Jumat', short: 'JUM' },
 ] as const;
 
-// Contoh data jadwal. Ganti dengan jadwal resmi sesuai kelas dan semester.
-export const classSchedule = {
-  Senin: [
-    { start: '08.00', end: '09.40', name: 'Algoritma & Pemrograman', type: 'Teori', duration: '2 SKS', room: 'Ruang Kelas 203' },
-    { start: '10.00', end: '12.30', name: 'Praktikum Basis Data', type: 'Praktikum', duration: '3 SKS', room: 'Laboratorium Komputer' },
-  ],
+export type ScheduleClass = {
+  start: string;
+  end: string;
+  code: string;
+  name: string;
+  sks: number;
+  coordinator: string;
+  lecturers: string[];
+  room: string;
+};
+
+// Jadwal resmi Semester Ganjil 2026/2027 - Kelas REG, Semester I. Perkuliahan mulai Oktober 2026.
+export const classSchedule: Record<string, ScheduleClass[]> = {
+  Senin: [],
   Selasa: [
-    { start: '08.00', end: '09.40', name: 'Struktur Data', type: 'Teori', duration: '2 SKS', room: 'Ruang Kelas 201' },
-    { start: '10.00', end: '11.40', name: 'Matematika Diskrit', type: 'Teori', duration: '2 SKS', room: 'Ruang Kelas 204' },
-    { start: '13.00', end: '14.40', name: 'Bahasa Inggris', type: 'Teori', duration: '2 SKS', room: 'Ruang Kelas 202' },
+    { start: '09.50', end: '11.50', code: 'UF2202', name: 'Bahasa Indonesia', sks: 2, coordinator: 'Erwan Darmawan, S.T., M.T', lecturers: ['Trikawati, M.Pd'], room: 'Daring' },
   ],
   Rabu: [
-    { start: '08.00', end: '09.40', name: 'Rekayasa Perangkat Lunak', type: 'Teori', duration: '2 SKS', room: 'Ruang Kelas 203' },
-    { start: '10.00', end: '12.30', name: 'Praktikum Sistem Operasi', type: 'Praktikum', duration: '3 SKS', room: 'Laboratorium Komputer' },
+    { start: '08.00', end: '10.30', code: 'IFS.0103', name: 'Pengenalan Pemrograman', sks: 3, coordinator: 'Febri, S.Kom., M.Kom', lecturers: ['Febri, S.Kom., M.Kom'], room: 'Lab Kom' },
+    { start: '10.30', end: '13.00', code: 'IFS.0101', name: 'Algoritma Pemrograman', sks: 3, coordinator: 'Dede Brahma Arianto, S.Kom., M.TI', lecturers: ['Dede Brahma Arianto, S.Kom., M.Kom'], room: 'C302' },
+    { start: '13.00', end: '14.40', code: 'IFS.0104', name: 'Bahasa Inggris I', sks: 2, coordinator: 'Anisa Aulia, S.Kom., M.Kom', lecturers: ['Ulinuha Dahlina, M.Pd.'], room: 'C302' },
+    { start: '14.40', end: '16.40', code: 'IFS.0102', name: 'Kalkulus', sks: 3, coordinator: 'Meldi Anggra Saputra, S.Kom., M.TI', lecturers: ['Agnest Mela Dwi Kusmiaty, S.T., M.T'], room: 'C303' },
   ],
   Kamis: [
-    { start: '08.00', end: '09.40', name: 'Jaringan Komputer', type: 'Teori', duration: '2 SKS', room: 'Ruang Kelas 204' },
-    { start: '10.00', end: '12.30', name: 'Praktikum Pemrograman Web', type: 'Praktikum', duration: '3 SKS', room: 'Laboratorium Komputer' },
+    { start: '09.50', end: '11.50', code: 'UF2102', name: 'Agama', sks: 2, coordinator: 'Iqbal Fernando, S.Kom., M.TI', lecturers: ['Ustd. Nurjaman, M.Pd'], room: 'Daring' },
+    { start: '15.40', end: '17.20', code: 'UF2201', name: 'Kewarganegaraan', sks: 2, coordinator: 'Nur Karismawati, S.Ars., M.Ars', lecturers: ['Febrian Alwan Baharudin, S.Pd., M.Pd'], room: 'Daring' },
   ],
   Jumat: [
-    { start: '08.00', end: '09.40', name: 'Interaksi Manusia dan Komputer', type: 'Teori', duration: '2 SKS', room: 'Ruang Kelas 201' },
-    { start: '10.00', end: '11.40', name: 'Kewirausahaan Digital', type: 'Teori', duration: '2 SKS', room: 'Ruang Kelas 202' },
+    { start: '14.00', end: '15.40', code: 'UF2101', name: 'Pancasila', sks: 2, coordinator: 'Lani Febriani, SE., MKM', lecturers: ['Drs. H. Dedi Mulyadi, MM', 'Achmad Machron Chairulfalah, M.I.'], room: 'Daring' },
   ],
 };
 

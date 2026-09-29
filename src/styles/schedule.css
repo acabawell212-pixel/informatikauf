@@ -511,3 +511,42 @@
     transition: none;
   }
 }
+
+/* Detail koordinator & pengajar */
+.course-meta {
+  display: grid;
+  gap: 6px;
+  margin: 10px 0 12px;
+}
+
+.course-meta > div {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.course-meta dt {
+  color: #8b866e;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.course-meta dd {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  color: #315e61;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+@media (max-width: 560px) {
+  .course-meta > div {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+}

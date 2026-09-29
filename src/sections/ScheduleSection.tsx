@@ -41,7 +41,7 @@ export function ScheduleSection() {
               </button>
             ))}
           </div>
-          <span className="schedule-sample-note">JADWAL CONTOH · SESUAIKAN DENGAN KELASMU</span>
+          <span className="schedule-sample-note">KELAS REG · SEMESTER I</span>
         </div>
 
         <div className="schedule-board">
@@ -56,19 +56,23 @@ export function ScheduleSection() {
 
           <div className="schedule-list" role="tabpanel" aria-label={`Jadwal mata kuliah hari ${selectedDay}`}>
             {classes.length ? classes.map((item, index) => (
-              <article className="course-row" key={`${selectedDay}-${item.start}-${item.name}`}>
+              <article className="course-row" key={`${selectedDay}-${item.code}`}>
                 <div className="course-time"><strong>{item.start}</strong><span>{item.end}</span></div>
                 <div className="course-timeline"><i className={index === 0 ? 'timeline-dot first' : 'timeline-dot'} /><span /></div>
                 <div className="course-detail">
-                  <div className="course-detail-top"><span className={`course-type ${item.type === 'Praktikum' ? 'practical' : ''}`}>{item.type}</span><span className="course-duration">{item.duration}</span></div>
+                  <div className="course-detail-top"><span className="course-type">{item.code}</span><span className="course-duration">{item.sks} SKS</span></div>
                   <h4>{item.name}</h4>
+                  <dl className="course-meta">
+                    <div><dt>Koordinator</dt><dd>{item.coordinator}</dd></div>
+                    <div><dt>Pengajar</dt><dd>{item.lecturers.map((l) => <span key={l}>{l}</span>)}</dd></div>
+                  </dl>
                   <span className="course-location"><MapPin size={13} />{item.room}</span>
                 </div>
               </article>
             )) : <div className="schedule-empty"><CalendarDays size={22} /><p>Hari ini belum ada kelas.<br /><span>Waktunya istirahat atau mengejar tugas.</span></p></div>}
           </div>
         </div>
-        <p className="schedule-disclaimer">* Mata kuliah, waktu, dan ruangan di atas adalah contoh tampilan. Ganti dengan jadwal resmi dari program studi.</p>
+        <p className="schedule-disclaimer">Perkuliahan dimulai Oktober 2026 · Total 19 SKS.</p>
       </div>
     </section>
   );
