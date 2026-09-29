@@ -1,20 +1,66 @@
 import { FormEvent, useState } from 'react';
-import { ArrowRight, Check, Instagram, Mail, MapPin, Send } from 'lucide-react';
+import { AlertCircle, ArrowRight, Check, Instagram, Loader2, Mail, MapPin, Send } from 'lucide-react';
 import { SectionHeading } from '../components/SectionHeading';
 
+const CONTACT_EMAIL = 'Informatikauf2026@gmail.com';
+type SendState = 'idle' | 'sending' | 'sent' | 'error';
+
 export function ContactSection() {
-  const [sent, setSent] = useState(false);
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => { event.preventDefault(); setSent(true); };
+  const [state, setState] = useState<SendState>('idle');
+  const [errorText, setErrorText] = useState('');
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (state === 'sending') return;
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    // kolom jebakan untuk bot: manusia tidak melihat/mengisinya
+    if (data.get('_honey')) { setState('sent'); return; }
+
+    setState('sending');
+    setErrorText('');
+    try {
+      const response = await fetch(`https://formsubmit.co/ajax/${CONTACT_EMAIL}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          name: data.get('name'),
+          email: data.get('email'),
+          message: data.get('message'),
+          _subject: `Pesan baru dari website Informatika: ${String(data.get('name') ?? '')}`,
+          _template: 'table',
+          _captcha: 'false',
+        }),
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || result.success === 'false' || result.success === false) {
+        throw new Error(typeof result.message === 'string' ? result.message : 'Gagal mengirim');
+      }
+      form.reset();
+      setState('sent');
+    } catch (error) {
+      setErrorText(error instanceof Error && error.message !== 'Failed to fetch' ? error.message : 'Koneksi bermasalah. Coba lagi sebentar lagi, atau kirim langsung ke email kami.');
+      setState('error');
+    }
+  };
+
   return (
     <section className="section contact-section" id="contact"><div className="wrap contact-wrap">
       <div className="contact-copy"><SectionHeading eyebrow="YOUR NEXT CHAPTER" title={<>Karya hebat<br />dimulai dari <span>obrolan.</span></>} description="Mau gabung, kolaborasi, atau sekadar tanya-tanya? Pintu kami selalu terbuka." />
-        <div className="contact-details"><a href="mailto:informatika@uf.ac.id" data-hint="Buka aplikasi email untuk mengirim pesan."><span><Mail size={16} /></span><div><small>EMAIL KAMI</small><b>informatika@uf.ac.id</b></div><ArrowRight size={15} /></a><div><span><MapPin size={16} /></span><div><small>TEMUKAN KAMI</small><b>Universitas Faletehan · Serang, Banten</b></div></div></div>
-        <div className="contact-social"><small>IKUTI CERITA KAMI</small><a href="https://www.instagram.com/informatikauf/" target="_blank" rel="noreferrer" aria-label="Instagram Informatika Faletehan" data-hint="Buka Instagram resmi Informatika Faletehan."><Instagram size={16} /></a><a href="mailto:informatika@uf.ac.id" aria-label="Kirim email" data-hint="Kirim email ke Group Informatika."><Mail size={16} /></a></div>
+        <div className="contact-details"><a href="mailto:Informatikauf2026@gmail.com" data-hint="Buka aplikasi email untuk mengirim pesan."><span><Mail size={16} /></span><div><small>EMAIL KAMI</small><b>Informatikauf2026@gmail.com</b></div><ArrowRight size={15} /></a><div><span><MapPin size={16} /></span><div><small>TEMUKAN KAMI</small><b>Universitas Faletehan · Serang, Banten</b></div></div></div>
+        <div className="contact-social"><small>IKUTI CERITA KAMI</small><a href="https://www.instagram.com/informatikauf/" target="_blank" rel="noreferrer" aria-label="Instagram Informatika Faletehan" data-hint="Buka Instagram resmi Informatika Faletehan."><Instagram size={16} /></a><a href="mailto:Informatikauf2026@gmail.com" aria-label="Kirim email" data-hint="Kirim email ke Group Informatika."><Mail size={16} /></a></div>
       </div>
       <form className="contact-form" onSubmit={handleSubmit}><div className="form-top"><span className="form-kicker">SAY HELLO <i /></span><span className="form-number">FORM / 01</span></div><h3>Ada yang ingin<br />kamu ceritakan?</h3>
         <label>Nama kamu<input required name="name" placeholder="Nama lengkap" data-hint="Tulis nama yang ingin kami gunakan untuk menyapamu." /></label><label>Email aktif<input required type="email" name="email" placeholder="nama@email.com" data-hint="Isi email aktif agar kami bisa membalas pesanmu." /></label><label>Ceritakan sedikit<textarea required name="message" rows={3} placeholder="Ide, pertanyaan, atau sekadar halo..." data-hint="Tulis pesan atau pertanyaan yang ingin disampaikan." /></label>
-        <button className="button button-primary form-submit" type="submit" data-hint="Kirim isi formulir ini. Mode demo belum mengirim email.">{sent ? <>Pesan tersimpan <Check size={16} /></> : <>Kirim pesan <Send size={15} /></>}</button>
-        <p className="form-note">{sent ? 'Terima kasih! Form ini adalah demo—hubungkan ke layanan email untuk menerima pesan.' : 'Form demo · Hubungkan ke layanan backend untuk menerima pesan.'}</p>
+        <input className="form-honey" name="_honey" tabIndex={-1} autoComplete="off" aria-hidden="true" />
+        <button className="button button-primary form-submit" type="submit" disabled={state === 'sending'} data-hint="Kirim pesanmu langsung ke email Group Informatika.">
+          {state === 'sending' ? <>Mengirim… <Loader2 size={16} className="spin" /></> : state === 'sent' ? <>Terkirim, kirim lagi? <Check size={16} /></> : <>Kirim pesan <Send size={15} /></>}
+        </button>
+        <p className={`form-note${state === 'error' ? ' is-error' : ''}${state === 'sent' ? ' is-ok' : ''}`} role="status" aria-live="polite">
+          {state === 'sent' && <><Check size={13} /> Terima kasih! Pesanmu sudah terkirim ke tim Informatika. Kami balas ke emailmu secepatnya.</>}
+          {state === 'error' && <><AlertCircle size={13} /> {errorText}</>}
+          {(state === 'idle' || state === 'sending') && <>Pesan dikirim langsung ke {CONTACT_EMAIL}</>}
+        </p>
       </form>
     </div></section>
   );
