@@ -7,7 +7,9 @@ type Particle = {
 };
 type Ring = { x: number; y: number; life: number; max: number; color: string };
 
-const COLORS = ['#ffcf4d', '#ffe89a', '#ff9ec7', '#8ff0d8', '#b9a4ff', '#ffb45c', '#ffffff'];
+// warna tema situs: emas hangat, teal/hijau tua, mint, dan krem
+const COLORS = ['#e2b04a', '#f3d27a', '#c8963a', '#3c8f86', '#7ccbbd', '#315e61', '#fff3d0'];
+const RING_COLORS = ['#c8963a', '#3c8f86', '#e2b04a'];
 const TAU = Math.PI * 2;
 
 function starPath(ctx: CanvasRenderingContext2D, spikes: number, outer: number, inner: number) {
@@ -128,7 +130,7 @@ export function ClickSparkles() {
           color: '#fff6cf', spikes: 4,
         });
       }
-      rings.push({ x, y, life: 0, max: 26, color: COLORS[Math.floor(Math.random() * 3)] });
+      rings.push({ x, y, life: 0, max: 26, color: RING_COLORS[Math.floor(Math.random() * RING_COLORS.length)] });
       if (particles.length > 320) particles.splice(0, particles.length - 320);
       if (!raf) { last = performance.now(); raf = requestAnimationFrame(loop); }
     };

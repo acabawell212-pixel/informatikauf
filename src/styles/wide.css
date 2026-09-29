@@ -14,7 +14,7 @@ body { --zoom: 1; }
 
 /* Kolom konten lebih lebar dan mengikuti ukuran layar (sebelumnya terkunci 1180px) */
 @media (min-width: 1200px) {
-  .wrap { width: min(1320px, calc(100% - 96px)); }
+  .wrap { width: min(1800px, calc(100% - 64px)); }
 }
 
 /* Skala seluruh UI di monitor besar, agar teks tidak terlihat kecil dan sisi kiri-kanan tidak kosong */
