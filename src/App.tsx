@@ -10,7 +10,9 @@ import { MotionEffects } from './components/MotionEffects';
 import { InteractiveHints } from './components/InteractiveHints';
 import { OpeningIntro } from './components/OpeningIntro';
 import { Effects3D } from './components/Effects3D';
+import { AmbientSky } from './components/AmbientSky';
+import { Marquee } from './components/Marquee';
 
 export default function App() {
-  return <><OpeningIntro /><MotionEffects /><Effects3D /><InteractiveHints /><Navbar /><main><Hero /><AboutSection /><ScheduleSection /><MembersSection /><GallerySection /><ContactSection /></main><Footer /></>;
+  return <><OpeningIntro /><MotionEffects /><Effects3D /><AmbientSky /><InteractiveHints /><Navbar /><main><Hero /><Marquee /><AboutSection /><ScheduleSection /><MembersSection /><GallerySection /><ContactSection /></main><Footer /></>;
 }

@@ -155,7 +155,104 @@
 .motion-ready .course-row.motion-item { translate: -26px 0; }
 .motion-ready .course-row.motion-item.is-visible { translate: 0 0; }
 
+/* ---------- Langit ambient (partikel + bintang jatuh) ---------- */
+.ambient-sky {
+  position: fixed;
+  z-index: 14;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* ---------- Adegan 3D hero ---------- */
+.hero-scene {
+  position: absolute;
+  z-index: 0;
+  inset: -50px -24px -50px -60px;
+  width: calc(100% + 84px);
+  height: calc(100% + 100px);
+  pointer-events: none;
+}
+
+/* ---------- Pita teks berjalan ---------- */
+.marquee {
+  position: relative;
+  z-index: 3;
+  overflow: hidden;
+  padding: 26px 0 30px;
+}
+
+.marquee-band {
+  width: 106%;
+  margin-left: -3%;
+  transform: rotate(-1.4deg);
+  border-block: 1px solid rgba(174, 134, 57, .4);
+  background: linear-gradient(90deg, rgba(248, 238, 215, .92), rgba(226, 240, 233, .92), rgba(248, 238, 215, .92));
+  box-shadow: 0 14px 34px rgba(42, 67, 59, .14);
+  backdrop-filter: blur(6px);
+}
+
+.marquee-row {
+  overflow: hidden;
+  padding: 13px 0;
+}
+
+.marquee-row + .marquee-row {
+  border-top: 1px dashed rgba(174, 134, 57, .32);
+  background: rgba(255, 255, 255, .28);
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marqueeMove 38s linear infinite;
+}
+
+.marquee-row.is-reverse .marquee-track {
+  animation-direction: reverse;
+  animation-duration: 46s;
+}
+
+.marquee:hover .marquee-track { animation-play-state: paused; }
+
+.marquee-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 28px;
+  padding-right: 28px;
+  color: #315e61;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(26px, 3.6vw, 44px);
+  font-weight: 600;
+  letter-spacing: .04em;
+  white-space: nowrap;
+}
+
+.marquee-row.is-reverse .marquee-item {
+  color: transparent;
+  -webkit-text-stroke: 1px #7c6a3c;
+}
+
+.marquee-item i {
+  color: #c8963a;
+  font-size: .5em;
+  font-style: normal;
+  animation: marqueeStar 2.4s ease-in-out infinite;
+}
+
+@keyframes marqueeMove {
+  to { transform: translateX(-50%); }
+}
+
+@keyframes marqueeStar {
+  0%, 100% { transform: rotate(0) scale(1); }
+  50% { transform: rotate(180deg) scale(1.35); }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .ambient-sky, .hero-scene { display: none; }
+  .marquee-track, .marquee-item i { animation: none !important; }
   .intro-letter, .hero h1 span, .section-heading h2 span { animation: none !important; }
   .cursor-glow, .fx-ripple { display: none; }
   .hero-art .code-window, .hero-art .art-orbit, .hero-art .art-glow { translate: none; }

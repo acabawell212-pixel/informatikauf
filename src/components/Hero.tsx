@@ -1,4 +1,5 @@
 import { ArrowDown, ArrowRight, ArrowUpRight, Sparkles } from 'lucide-react';
+import { HeroScene } from './HeroScene';
 
 export function Hero() {
   return (
@@ -14,7 +15,7 @@ export function Hero() {
         <div className="hero-social-proof"><div className="mini-avatars"><span>N</span><span>R</span><span>A</span><span>+</span></div><p><strong>Tempat semua ide dimulai.</strong><br />Komunitas belajar yang terbuka untukmu.</p></div>
       </div>
       <div className="hero-art" aria-label="Ilustrasi antarmuka coding dan jaringan teknologi" role="img">
-        <div className="art-orbit orbit-one" /><div className="art-orbit orbit-two" /><div className="art-glow" />
+        <HeroScene /><div className="art-orbit orbit-one" /><div className="art-orbit orbit-two" /><div className="art-glow" />
         <div className="art-grid" />
         <div className="float-tag tag-top"><span className="tag-icon"><Sparkles size={14} /></span><span><b>Ideas in motion</b><small>EST. 2026/2027 · BANTEN</small></span></div>
         <div className="code-window">
