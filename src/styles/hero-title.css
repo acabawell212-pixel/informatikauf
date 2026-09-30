@@ -3,6 +3,17 @@
    ink #263e50, gold muda #e2b04a). Dimuat setelah perf.css karena perf.css mematikan
    animasi pada semua span di dalam .hero h1; selector di sini lebih spesifik & lebih akhir. */
 
+/* Posisi gradasi teks yang dianimasikan (gradasi huruf INFORMATIKA mengalir).
+   Custom property harus didaftarkan lewat @property agar bisa dianimasikan
+   (Chrome 85+, Safari 16.4+, Firefox 128+). Bila browser belum mendukung,
+   animasinya otomatis dilewati dan teks tampil dengan gradasi statis karena
+   semua pemakaian di bawah memakai fallback var(--hero-flow, 0%). */
+@property --hero-flow {
+  syntax: '<percentage>';
+  inherits: true;
+  initial-value: 0%;
+}
+
 .hero h1.hero-title {
   display: flex;
   flex-direction: column;
@@ -73,16 +84,20 @@
 
 .hero-title .hero-letter {
   display: inline-block;
-  background: linear-gradient(100deg, #267c7a 4%, #b2833c 52%, #418f82 96%);
-  background-size: 320% 100%;
-  background-position-x: calc(var(--i) * 10%);
+  /* Gradasi mendatar (90deg) supaya ujung gambar bertemu di warna yang sama (teal),
+     jadi saat digeser terus-menerus tidak ada garis batas yang terlihat.
+     Satu lebar gambar = 300% lebar huruf; periode penuh = 150% pergeseran posisi. */
+  background: linear-gradient(90deg, #267c7a 0%, #b2833c 34%, #418f82 68%, #267c7a 100%);
+  background-size: 300% 100%;
+  background-position-x: calc(var(--i) * 9% + var(--hero-flow, 0%));
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   transform-origin: 50% 100%;
   animation:
     heroLetterIn .95s calc(var(--i) * 58ms) both cubic-bezier(.16, .8, .23, 1),
-    heroLetterDrift 5.4s calc(1.1s + var(--i) * 150ms) ease-in-out infinite;
+    heroLetterDrift 5.4s calc(1.1s + var(--i) * 150ms) ease-in-out infinite,
+    heroGradientFlow 13s linear infinite;
 }
 
 /* Leret emas yang menyapu di bawah kata (transform-only, ringan untuk GPU) */
@@ -130,6 +145,12 @@
 @keyframes heroLetterDrift {
   0%, 100% { translate: 0 0; scale: 1; }
   50% { translate: 0 -5px; scale: 1.035; }
+}
+
+/* 150% = tepat satu periode gambar gradasi (300% lebar huruf), jadi warna
+   mengalir terus ke satu arah dan putarannya menyambung mulus (tanpa lompat). */
+@keyframes heroGradientFlow {
+  to { --hero-flow: 150%; }
 }
 
 @keyframes heroWordSweep {

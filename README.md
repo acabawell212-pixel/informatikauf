@@ -40,7 +40,7 @@ Setiap push berikutnya ke `main` atau `master` akan memicu deploy otomatis. Foto
 - `src/styles/scroll-motion.css` — animasi reveal berulang yang mengikuti arah scroll.
 - `src/styles/opening-intro.css` — splash screen pembuka bergaya fantasy untuk kunjungan pertama per tab.
 - `src/styles/ui-sounds.css` — tombol kendali suara klik & hover di sudut kanan bawah.
-- `src/styles/hero-title.css` — judul hero "Welcome to INFORMATIKA Universitas Faletehan" dengan animasi huruf.
+- `src/styles/hero-title.css` — judul hero "Welcome to INFORMATIKA Universitas Faletehan": animasi huruf masuk satu per satu, mengambang pelan, dan gradasi warna (teal–emas–mint) yang mengalir terus tanpa putus.
 
 ## Catatan sebelum publikasi
 
