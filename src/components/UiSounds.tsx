@@ -3,8 +3,8 @@ import { Volume2, VolumeX } from 'lucide-react';
 
 /**
  * Suara antarmuka (klik & hover) tanpa file audio: nada disintesis langsung dengan Web Audio API,
- * jadi tetap ringan dan tidak menambah aset yang perlu diunduh. Volumenya dibuat lembut mengikuti
- * tema fantasy situs (teal & emas).
+ * jadi tetap ringan dan tidak menambah aset yang perlu diunduh. Semua nada diambil dari satu
+ * tangga nada pentatonik supaya hover dan klik terdengar nyambung dan enak didengar.
  */
 
 const STORAGE_KEY = 'faletehan-ui-sound';
@@ -34,7 +34,15 @@ const PRESS_SELECTOR = [
 
 const HOVER_GAP = 45; // jeda minimum antar suara hover (ms) supaya tidak beruntun
 const PRESS_GAP = 70; // jeda minimum antar suara tekan (ms)
-const MAX_VOICES = 8; // batas nada berbunyi bersamaan agar tidak berisik dan boros
+const MAX_VOICES = 24; // batas nada berbunyi bersamaan agar tidak berisik dan boros
+
+/* ---------- Nada UI: satu keluarga suara ----------
+   Hover = nada kaca/marimba yang naik satu derajat setiap kontrol baru, tombol = nada kayu
+   satu oktaf di bawahnya, jadi hover dan klik terdengar nyambung, bukan dua suara asing. */
+const SCALE = [0, 2, 4, 7, 9, 12, 14, 16, 19]; // A mayor pentatonik (A, B, C#, E, F#) sampai ±2 oktaf
+const ROOT = 880; // A5 untuk hover; tombol berbunyi satu oktaf di bawahnya (A4)
+const PHRASE_GAP = 1100; // diam lebih lama dari ini: tangga nada kembali ke derajat pertama
+const scaleFreq = (step: number) => ROOT * Math.pow(2, SCALE[step % SCALE.length] / 12);
 
 /** Elemen mana pun bisa dibisukan dengan atribut data-sound="off" (termasuk anak-anaknya). */
 const MUTE_SELECTOR = '[data-sound="off"]';
@@ -57,9 +65,12 @@ function preparePlaybackSession() {
 let context: AudioContext | null = null;
 let master: GainNode | null = null;
 let voices = 0;
+let noise: AudioBuffer | null = null;
 let lastHovered: Element | null = null;
 let lastHoverAt = 0;
 let lastPressAt = 0;
+let noteStep = 0; // derajat tangga nada yang sedang dipakai
+let noteStepAt = 0; // kapan nada terakhir berbunyi (untuk memutus frasa)
 
 function audio(): AudioContext | null {
   if (context) return context;
@@ -118,7 +129,70 @@ function voice(ctx: AudioContext, options: VoiceOptions) {
   osc.stop(at + dur + 0.02);
 }
 
-/** Hover: "tick" pendek dan tipis, nadanya sedikit berubah tiap kali agar terdengar alami. */
+/** Sampel noise singkat (dibuat sekali) untuk transien "klik" tombol. */
+function noiseFor(ctx: AudioContext) {
+  if (noise) return noise;
+  const frames = Math.max(1, Math.floor(ctx.sampleRate * 0.06));
+  const buffer = ctx.createBuffer(1, frames, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < frames; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / frames);
+  noise = buffer;
+  return buffer;
+}
+
+/** Letupan noise sangat singkat: yang bikin suara tombol terasa fisik, bukan sekadar nada. */
+function clickNoise(ctx: AudioContext, at: number, gain: number, freq: number) {
+  if (!master) return;
+  const src = ctx.createBufferSource();
+  src.buffer = noiseFor(ctx);
+  const band = ctx.createBiquadFilter();
+  band.type = 'bandpass';
+  band.frequency.setValueAtTime(freq, at);
+  band.Q.value = 0.9;
+  const amp = ctx.createGain();
+  amp.gain.setValueAtTime(0.0001, at);
+  amp.gain.exponentialRampToValueAtTime(gain, at + 0.003);
+  amp.gain.exponentialRampToValueAtTime(0.0001, at + 0.055);
+  src.connect(band);
+  band.connect(amp);
+  amp.connect(master);
+  voices += 1;
+  src.onended = () => {
+    voices = Math.max(0, voices - 1);
+    src.disconnect();
+    band.disconnect();
+    amp.disconnect();
+  };
+  src.start(at);
+  src.stop(at + 0.07);
+}
+
+/** Nada hover: kaca/marimba — partial atas lebih tipis dan lebih cepat meredup. */
+function bellNote(ctx: AudioContext, freq: number, at: number, gain: number, dur: number) {
+  voice(ctx, { type: 'sine', from: freq, at, dur, gain, attack: 0.004 });
+  voice(ctx, { type: 'sine', from: freq * 2.01, at, dur: dur * 0.55, gain: gain * 0.3, attack: 0.003 });
+  voice(ctx, { type: 'sine', from: freq * 2.98, at, dur: dur * 0.3, gain: gain * 0.09, attack: 0.002 });
+}
+
+/** Nada tombol: kayu hangat + klik noise; di layar sentuh dibuat lebih tebal. */
+function pluckNote(ctx: AudioContext, freq: number, at: number, touch: boolean) {
+  const gain = touch ? 0.075 : 0.055;
+  const dur = touch ? 0.24 : 0.17;
+  voice(ctx, { type: 'triangle', from: freq, to: freq * 0.94, at, dur, gain, attack: 0.005 });
+  voice(ctx, { type: 'sine', from: freq * 2.01, to: freq * 1.9, at, dur: dur * 0.55, gain: gain * 0.3, attack: 0.003 });
+  voice(ctx, { type: 'sine', from: freq * 3.02, to: freq * 2.8, at: at + 0.008, dur: dur * 0.3, gain: gain * 0.12, attack: 0.002 });
+  clickNoise(ctx, at, touch ? 0.05 : 0.032, touch ? 1850 : 2500);
+}
+
+/** Derajat nada berikutnya: naik satu langkah, kembali ke bawah setelah frasa selesai (jeda). */
+function advanceNote(now: number, advance: boolean) {
+  if (now - noteStepAt > PHRASE_GAP) noteStep = 0;
+  else if (advance) noteStep = (noteStep + 1) % SCALE.length;
+  if (advance) noteStepAt = now;
+  return noteStep;
+}
+
+/** Hover: naik satu derajat tiap kontrol baru, jadi terasa seperti menaiki tangga nada. */
 function playHoverSound() {
   const ctx = audio();
   // Browser menahan suara sebelum ada interaksi: jangan mengantre, cukup diam sampai pengguna mengklik.
@@ -126,13 +200,12 @@ function playHoverSound() {
   const now = performance.now();
   if (now - lastHoverAt < HOVER_GAP || voices >= MAX_VOICES) return;
   lastHoverAt = now;
-  const at = ctx.currentTime + 0.004;
-  const base = 940 + (Math.random() - 0.5) * 70;
-  voice(ctx, { type: 'sine', from: base, to: base * 0.86, at, dur: 0.075, gain: 0.026, attack: 0.004 });
-  voice(ctx, { type: 'triangle', from: base * 2, to: base * 1.72, at, dur: 0.05, gain: 0.008, attack: 0.004 });
+  // detune acak sangat tipis supaya tidak terdengar seperti mesin
+  const freq = scaleFreq(advanceNote(now, true)) * (1 + (Math.random() - 0.5) * 0.006);
+  bellNote(ctx, freq, ctx.currentTime + 0.004, 0.032, 0.24);
 }
 
-/** Tekan: "tap" hangat tiga nada (nada tinggi memberi kesan emas/keramik). */
+/** Tekan: nada kayu satu oktaf di bawah nada hover + klik noise. */
 function playPressSound(touch = false) {
   const ctx = audio();
   if (!ctx) return;
@@ -140,14 +213,11 @@ function playPressSound(touch = false) {
   const now = performance.now();
   if (now - lastPressAt < PRESS_GAP || voices >= MAX_VOICES) return;
   lastPressAt = now;
-  const at = ctx.currentTime + 0.004;
-  const base = 380 + (Math.random() - 0.5) * 26;
-  // Speaker HP kecil: ketukan dari layar sentuh dibuat lebih tebal & sedikit lebih panjang.
-  const scale = touch ? 1.7 : 1;
-  const dur = touch ? 0.19 : 0.15;
-  voice(ctx, { type: 'triangle', from: base, to: base * 0.72, at, dur, gain: 0.07 * scale, attack: 0.005 });
-  voice(ctx, { type: 'sine', from: base * 2.55, to: base * 2, at, dur: dur * 0.6, gain: 0.028 * scale, attack: 0.003 });
-  voice(ctx, { type: 'sine', from: base * 4.1, to: base * 3.4, at: at + 0.01, dur: 0.06, gain: 0.011 * scale, attack: 0.003 });
+  // Mouse: memakai nada kontrol yang sedang di-hover (terasa "mengunci" pilihan).
+  // Layar sentuh: setiap ketuk naik satu derajat karena di HP tidak ada hover.
+  const step = advanceNote(now, touch);
+  const freq = scaleFreq(step) * 0.5 * (1 + (Math.random() - 0.5) * 0.008);
+  pluckNote(ctx, freq, ctx.currentTime + 0.004, touch);
 }
 
 function soundTarget(target: EventTarget | null, selector: string): HTMLElement | null {
