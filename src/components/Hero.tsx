@@ -1,12 +1,23 @@
+import { type CSSProperties } from 'react';
 import { ArrowDown, ArrowRight, ArrowUpRight, Sparkles } from 'lucide-react';
 import { HeroScene } from './HeroScene';
+
+const HERO_WORD = 'INFORMATIKA';
 
 export function Hero() {
   return (
     <section className="hero wrap" id="home">
       <div className="hero-copy">
         <div className="hero-badge"><span className="live-dot" /> INFORMATICS COMMUNITY <span className="badge-year">EST. 2026/2027</span></div>
-        <h1>Build.<br />Create.<br /><span>Innovate.</span></h1>
+        <h1 className="hero-title" aria-label={`Welcome to ${HERO_WORD} Universitas Faletehan`}>
+          <span className="hero-title-kicker" aria-hidden="true"><i className="hero-title-rule" />Welcome to</span>
+          <span className="hero-word" aria-hidden="true">
+            {[...HERO_WORD].map((letter, index) => (
+              <span className="hero-letter" key={`${letter}-${index}`} style={{ '--i': index } as CSSProperties}>{letter}</span>
+            ))}
+          </span>
+          <span className="hero-title-uni" aria-hidden="true">Universitas Faletehan</span>
+        </h1>
         <p className="hero-description">Ruang bertemu ide, tumbuh bersama teknologi, dan menciptakan dampak. Kami adalah keluarga Informatika Universitas Faletehan.</p>
         <div className="hero-actions">
           <a className="button button-primary" href="#about" data-hint="Lompat ke profil, visi, dan misi komunitas.">Kenali kami <ArrowRight size={16} /></a>
