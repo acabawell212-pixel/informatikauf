@@ -1,0 +1,63 @@
+/* Tombol kendali suara klik & hover antarmuka. Dimuat paling akhir. */
+
+.ui-sound-toggle {
+  position: fixed;
+  z-index: 70; /* di atas header & progress bar, di bawah intro pembuka (850) dan lightbox (1000) */
+  right: 18px;
+  bottom: 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid rgba(174, 134, 57, .5);
+  border-radius: 99px;
+  background: linear-gradient(120deg, #f8eed7, #e2f0e9);
+  color: #315e61;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  cursor: pointer;
+  opacity: .8;
+  box-shadow: 0 8px 22px rgba(72, 111, 95, .18);
+  transition: opacity .2s, transform .2s, box-shadow .2s, filter .2s;
+}
+
+.ui-sound-toggle:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(72, 111, 95, .24);
+}
+
+.ui-sound-toggle:active { transform: scale(.96); }
+
+.ui-sound-toggle:focus-visible {
+  outline: 2px solid #177b7d;
+  outline-offset: 2px;
+}
+
+/* Saat suara mati: tombol meredup agar tetap terlihat tapi tidak menarik perhatian */
+.ui-sound-toggle:not(.is-on) {
+  opacity: .58;
+  filter: grayscale(.4);
+}
+
+.ui-sound-toggle svg { flex: none; }
+
+@media (max-width: 560px) {
+  .ui-sound-toggle {
+    min-width: 42px;
+    min-height: 42px;
+    padding: 0 11px;
+    bottom: max(14px, env(safe-area-inset-bottom));
+    right: 12px;
+  }
+
+  .ui-sound-label { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-sound-toggle { transition: none; }
+  .ui-sound-toggle:hover { transform: none; }
+}

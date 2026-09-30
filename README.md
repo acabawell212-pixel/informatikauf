@@ -39,6 +39,7 @@ Setiap push berikutnya ke `main` atau `master` akan memicu deploy otomatis. Foto
 - `src/styles/textures.css` — tekstur kertas, garis peta, dan ornamen fantasy original.
 - `src/styles/scroll-motion.css` — animasi reveal berulang yang mengikuti arah scroll.
 - `src/styles/opening-intro.css` — splash screen pembuka bergaya fantasy untuk kunjungan pertama per tab.
+- `src/styles/ui-sounds.css` — tombol kendali suara klik & hover di sudut kanan bawah.
 
 ## Catatan sebelum publikasi
 
