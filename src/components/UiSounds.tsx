@@ -40,6 +40,19 @@ const MAX_VOICES = 8; // batas nada berbunyi bersamaan agar tidak berisik dan bo
 const MUTE_SELECTOR = '[data-sound="off"]';
 
 type AudioWindow = Window & { webkitAudioContext?: typeof AudioContext };
+type AudioSessionSupport = Navigator & { audioSession?: { type: string } };
+
+/** Layar sentuh tidak punya kursor, jadi tidak ada suara hover: labelnya disesuaikan. */
+const touchPrimary = window.matchMedia?.('(hover: hover) and (pointer: fine)')?.matches === false;
+
+/**
+ * iOS membungkam Web Audio saat saklar silent/ringer mati, kecuali sesi audio halaman
+ * dinyatakan sebagai "playback" (Safari 16.4+). Android tidak terpengaruh.
+ */
+function preparePlaybackSession() {
+  const nav = navigator as AudioSessionSupport;
+  if (nav.audioSession && nav.audioSession.type !== 'playback') nav.audioSession.type = 'playback';
+}
 
 let context: AudioContext | null = null;
 let master: GainNode | null = null;
@@ -50,6 +63,7 @@ let lastPressAt = 0;
 
 function audio(): AudioContext | null {
   if (context) return context;
+  preparePlaybackSession();
   const Ctor = window.AudioContext ?? (window as AudioWindow).webkitAudioContext;
   if (!Ctor) return null;
   try {
@@ -58,9 +72,16 @@ function audio(): AudioContext | null {
     return null;
   }
   master = context.createGain();
-  master.gain.value = 0.7; // volume keseluruhan: cukup terdengar, tidak mengagetkan
+  master.gain.value = 0.85; // volume keseluruhan: cukup terdengar, tidak mengagetkan
   master.connect(context.destination);
   return context;
+}
+
+/** Nyalakan audio di dalam gesture pengguna (syarat iOS & Android) dan pulihkan bila tertidur. */
+function unlockAudio() {
+  preparePlaybackSession();
+  const ctx = audio();
+  if (ctx && ctx.state !== 'running') void ctx.resume().catch(() => { /* tunggu gesture berikutnya */ });
 }
 
 type VoiceOptions = {
@@ -112,18 +133,21 @@ function playHoverSound() {
 }
 
 /** Tekan: "tap" hangat tiga nada (nada tinggi memberi kesan emas/keramik). */
-function playPressSound() {
+function playPressSound(touch = false) {
   const ctx = audio();
   if (!ctx) return;
-  if (ctx.state === 'suspended') void ctx.resume().catch(() => { /* diabaikan bila browser menolak */ });
+  unlockAudio();
   const now = performance.now();
   if (now - lastPressAt < PRESS_GAP || voices >= MAX_VOICES) return;
   lastPressAt = now;
   const at = ctx.currentTime + 0.004;
   const base = 380 + (Math.random() - 0.5) * 26;
-  voice(ctx, { type: 'triangle', from: base, to: base * 0.72, at, dur: 0.15, gain: 0.07, attack: 0.005 });
-  voice(ctx, { type: 'sine', from: base * 2.55, to: base * 2, at, dur: 0.09, gain: 0.028, attack: 0.003 });
-  voice(ctx, { type: 'sine', from: base * 4.1, to: base * 3.4, at: at + 0.01, dur: 0.06, gain: 0.011, attack: 0.003 });
+  // Speaker HP kecil: ketukan dari layar sentuh dibuat lebih tebal & sedikit lebih panjang.
+  const scale = touch ? 1.7 : 1;
+  const dur = touch ? 0.19 : 0.15;
+  voice(ctx, { type: 'triangle', from: base, to: base * 0.72, at, dur, gain: 0.07 * scale, attack: 0.005 });
+  voice(ctx, { type: 'sine', from: base * 2.55, to: base * 2, at, dur: dur * 0.6, gain: 0.028 * scale, attack: 0.003 });
+  voice(ctx, { type: 'sine', from: base * 4.1, to: base * 3.4, at: at + 0.01, dur: 0.06, gain: 0.011 * scale, attack: 0.003 });
 }
 
 function soundTarget(target: EventTarget | null, selector: string): HTMLElement | null {
@@ -154,18 +178,16 @@ export function UiSounds() {
   }, [enabled]);
 
   // AudioContext baru boleh menyala setelah interaksi pertama (kebijakan autoplay browser).
+  // Beberapa browser HP (iOS) lebih yakin bila unlock datang dari sentuhan/selesai-klik, jadi
+  // beberapa jenis event sekaligus dicoba; resume ini juga memulihkan audio yang tertidur.
   useEffect(() => {
-    const unlockOnce = () => {
+    const unlock = () => {
       if (!enabledRef.current) return;
-      const ctx = audio();
-      if (ctx && ctx.state === 'suspended') void ctx.resume().catch(() => { /* diabaikan */ });
+      unlockAudio();
     };
-    document.addEventListener('pointerdown', unlockOnce, { capture: true, once: true });
-    document.addEventListener('keydown', unlockOnce, { capture: true, once: true });
-    return () => {
-      document.removeEventListener('pointerdown', unlockOnce, { capture: true });
-      document.removeEventListener('keydown', unlockOnce, { capture: true });
-    };
+    const types: Array<keyof DocumentEventMap> = ['pointerdown', 'touchend', 'click', 'keydown'];
+    types.forEach((type) => document.addEventListener(type, unlock, { capture: true }));
+    return () => types.forEach((type) => document.removeEventListener(type, unlock, { capture: true }));
   }, []);
 
   useEffect(() => {
@@ -186,7 +208,8 @@ export function UiSounds() {
       if (event.pointerType === 'mouse' && event.button !== 0) return;
       const target = soundTarget(event.target, PRESS_SELECTOR);
       if (!target || isUnavailable(target)) return;
-      playPressSound();
+      // Ketukan di layar sentuh terdengar lebih tebal daripada klik mouse.
+      playPressSound(event.pointerType !== 'mouse');
     };
 
     const onKeyDown = (event: KeyboardEvent) => {
@@ -217,16 +240,18 @@ export function UiSounds() {
     } catch {
       // Pilihan tetap berlaku untuk sesi ini walau penyimpanan tidak bisa ditulis.
     }
-    if (next) playPressSound(); // contoh suara saat suara dinyalakan kembali
+    if (next) playPressSound(touchPrimary); // contoh suara saat suara dinyalakan kembali
   };
+
+  const soundName = touchPrimary ? 'suara ketukan' : 'suara klik dan hover';
 
   return (
     <button
       type="button"
       className={`ui-sound-toggle${enabled ? ' is-on' : ''}`}
       aria-pressed={enabled}
-      aria-label={enabled ? 'Matikan suara antarmuka' : 'Nyalakan suara antarmuka'}
-      data-hint={enabled ? 'Matikan suara klik dan hover.' : 'Nyalakan suara klik dan hover.'}
+      aria-label={enabled ? `Matikan ${soundName} antarmuka` : `Nyalakan ${soundName} antarmuka`}
+      data-hint={enabled ? `Matikan ${soundName}.` : `Nyalakan ${soundName}.`}
       data-sound="off"
       onClick={toggle}
     >
