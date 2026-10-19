@@ -13,12 +13,15 @@ import { OpeningIntro } from './components/OpeningIntro';
 import { Effects3D } from './components/Effects3D';
 import { ClickSparkles } from './components/ClickSparkles';
 import { Marquee } from './components/Marquee';
+import { PptModal } from './components/PptModal';
 
 const Admin = lazy(() => import('./pages/Admin'));
 const isAdminRoute = () => window.location.hash.startsWith('#/admin');
 
 export default function App() {
   const [admin, setAdmin] = useState(isAdminRoute);
+  const [pptOpen, setPptOpen] = useState(false);
+
   useEffect(() => {
     const onHash = () => setAdmin(isAdminRoute());
     window.addEventListener('hashchange', onHash);
@@ -28,5 +31,25 @@ export default function App() {
   if (admin) {
     return <Suspense fallback={null}><Admin /></Suspense>;
   }
-  return <><OpeningIntro /><MotionEffects /><Effects3D /><ClickSparkles /><InteractiveHints /><Navbar /><main><Hero /><Marquee /><AboutSection /><ScheduleSection /><MembersSection /><GallerySection /><ContactSection /></main><Footer /></>;
+  return (
+    <>
+      <OpeningIntro />
+      <MotionEffects />
+      <Effects3D />
+      <ClickSparkles />
+      <InteractiveHints />
+      <Navbar onOpenPpt={() => setPptOpen(true)} />
+      <main>
+        <Hero onOpenPpt={() => setPptOpen(true)} />
+        <Marquee />
+        <AboutSection />
+        <ScheduleSection />
+        <MembersSection />
+        <GallerySection />
+        <ContactSection />
+      </main>
+      <Footer />
+      <PptModal isOpen={pptOpen} onClose={() => setPptOpen(false)} />
+    </>
+  );
 }

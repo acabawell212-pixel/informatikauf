@@ -1,0 +1,67 @@
+/* Tombol Pembuka di Navbar & Hero — selaras dengan tema UI beranda (Fantasy / Cream / Teal) */
+.nav-ppt-btn {
+  height: 36px;
+  padding: 0 13px;
+  border: 1px solid rgba(23, 123, 125, 0.35);
+  border-radius: 4px;
+  background: rgba(255, 250, 240, 0.8);
+  color: #177b7d;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s, transform 0.2s, color 0.2s;
+  backdrop-filter: blur(6px);
+}
+
+.nav-ppt-btn:hover {
+  border-color: #177b7d;
+  background: rgba(23, 123, 125, 0.15);
+  color: #20384a;
+  transform: translateY(-1px);
+}
+
+.nav-ppt-badge {
+  font-family: var(--mono, monospace);
+  font-size: 8px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(23, 123, 125, 0.12);
+  color: #71b6b3;
+  border: 1px solid rgba(23, 123, 125, 0.3);
+}
+
+.nav-cta-desktop-ppt {
+  display: inline-flex;
+}
+
+@media (max-width: 820px) {
+  .nav-cta-desktop-ppt {
+    display: none;
+  }
+}
+
+.button-ppt {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(23, 123, 125, 0.45);
+  background: linear-gradient(135deg, rgba(255, 250, 240, 0.95), rgba(249, 245, 233, 0.95));
+  color: #177b7d;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(23, 123, 125, 0.12) inset;
+  font-weight: 700;
+}
+
+.button-ppt:hover {
+  border-color: #177b7d;
+  background: linear-gradient(135deg, #f5edd9, rgba(255, 250, 240, 0.95));
+  color: #20384a;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(23, 123, 125, 0.18), 0 0 0 1px rgba(23, 123, 125, 0.25) inset;
+}
+
+/* Responsif mobile untuk tombol pembuka PPT ada di ppt.css */
+
+

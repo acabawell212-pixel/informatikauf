@@ -137,6 +137,7 @@ export function ClickSparkles() {
 
     const onDown = (event: PointerEvent) => {
       if (event.pointerType === 'mouse' && event.button !== 0) return;
+      if (event.target instanceof Element && event.target.closest('.ppt-overlay')) return;
       burst(event.clientX, event.clientY);
     };
     document.addEventListener('pointerdown', onDown, { capture: true });

@@ -21,6 +21,8 @@ import './styles/mobile.css';
 import './styles/wide.css';
 import './styles/admin.css';
 import './styles/ui-sounds.css';
+import './styles/ppt.css';
+import './styles/ppt-theme.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

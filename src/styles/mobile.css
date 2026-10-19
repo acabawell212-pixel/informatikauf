@@ -216,7 +216,6 @@ img, video, canvas, svg { max-width: 100%; }
   .gallery-grid { columns: 2; column-gap: 12px; }
   .gallery-card { margin-bottom: 12px; }
 }
-}
 
 .form-fallback {
   width: 100%;
