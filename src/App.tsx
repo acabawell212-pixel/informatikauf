@@ -21,6 +21,7 @@ const isAdminRoute = () => window.location.hash.startsWith('#/admin');
 export default function App() {
   const [admin, setAdmin] = useState(isAdminRoute);
   const [pptOpen, setPptOpen] = useState(false);
+  const [introOpen, setIntroOpen] = useState(true);
 
   useEffect(() => {
     const onHash = () => setAdmin(isAdminRoute());
@@ -28,19 +29,30 @@ export default function App() {
     return () => window.removeEventListener('hashchange', onHash);
   }, []);
 
+  const handleOpenPpt = () => {
+    if (introOpen) {
+      // Tutup intro dulu sebelum membuka presentasi agar keduanya tidak tumpang tindih.
+      setIntroOpen(false);
+      return;
+    }
+    setPptOpen(true);
+  };
+
+  const handleIntroEnd = () => setIntroOpen(false);
+
   if (admin) {
     return <Suspense fallback={null}><Admin /></Suspense>;
   }
   return (
     <>
-      <OpeningIntro />
+      <OpeningIntro onIntroEnd={handleIntroEnd} />
       <MotionEffects />
       <Effects3D />
       <ClickSparkles />
       <InteractiveHints />
-      <Navbar onOpenPpt={() => setPptOpen(true)} />
+      <Navbar onOpenPpt={handleOpenPpt} />
       <main>
-        <Hero onOpenPpt={() => setPptOpen(true)} />
+        <Hero onOpenPpt={handleOpenPpt} />
         <Marquee />
         <AboutSection />
         <ScheduleSection />
