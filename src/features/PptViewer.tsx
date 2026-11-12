@@ -70,33 +70,38 @@ const slides: ReactNode[] = [
     <span className="tpl-slide-sigil" aria-hidden="true">✧</span>
     <Orbits />
     <IconDot gold size="lg"><Laptop /></IconDot>
-    <span className="tpl-kicker"><T id="cover.kicker">TUGAS · [NAMA MATA KULIAH]</T></span>
-    <h1><T id="cover.title">[Judul Tugas]</T></h1>
-    <p className="tpl-sub"><T id="cover.subtitle">[Subjudul atau topik singkat]</T></p>
+    <span className="tpl-kicker"><T id="cover.kicker">PRESENTASI · INFORMATIKA FALETEHAN</T></span>
+    <h1><T id="cover.title">Kenalan Yuk sama Dunia Coding</T></h1>
+    <p className="tpl-sub"><T id="cover.subtitle">Dari nol, pelan-pelan, dan bareng-bareng.</T></p>
     <div className="tpl-id-card">
-      <small><T id="cover.byLabel">Disusun oleh</T></small>
-      <b><T id="cover.author">[Nama Lengkap] · [NIM]</T></b>
-      <span><T id="cover.lecturer">Dosen: [Nama Dosen] · [Tanggal]</T></span>
+      <small><T id="cover.byLabel">Dibawakan oleh</T></small>
+      <b><T id="cover.author">Keluarga Informatika · Angkatan 2026/2027</T></b>
+      <span><T id="cover.lecturer">Universitas Faletehan · Serang, Banten</T></span>
     </div>
   </div>,
 
-  <Content id="members" title="Anggota Kelompok" n={2} key="members">
+  <Content id="members" title="Di Informatika Kita Ngapain?" n={2} key="members">
     <div className="tpl-members">
-      {['A', 'B', 'C', 'D'].map((ini, i) => (
-        <div className="tpl-card tpl-member" key={ini}>
+      {[
+        ['</>', 'Belajar Bareng', 'Kelas & diskusi rutin', 'Nggak ada pertanyaan bodoh'],
+        ['{ }', 'Bikin Proyek', 'Dari web sampai game', 'Belajar sambil praktik'],
+        ['★', 'Ikut Lomba', 'Asah skill, cari pengalaman', 'Menang kalah tetap belajar'],
+        ['☕', 'Nongkrong', 'Ngopi sambil ngobrol', 'Teman seperjuangan'],
+      ].map(([ini, name, sub, note], i) => (
+        <div className="tpl-card tpl-member" key={name}>
           <span className={`tpl-avatar${i % 2 ? ' is-gold' : ''}`}><T id={`members.${i}.initial`}>{ini}</T></span>
-          <b><T id={`members.${i}.name`}>{`[Nama Anggota ${i + 1}]`}</T></b>
-          <span><T id={`members.${i}.nim`}>[NIM]</T></span>
-          <em><T id={`members.${i}.task`}>[Tugas: materi / slide]</T></em>
+          <b><T id={`members.${i}.name`}>{name}</T></b>
+          <span><T id={`members.${i}.nim`}>{sub}</T></span>
+          <em><T id={`members.${i}.task`}>{note}</T></em>
         </div>
       ))}
     </div>
   </Content>,
 
-  <Content id="toc" title="Daftar Isi" n={3} key="toc">
+  <Content id="toc" title="Yang Mau Kita Obrolin" n={3} key="toc">
     <div className="tpl-split">
       <ol className="tpl-toc">
-        {['Pendahuluan', '[Bagian Pembahasan 1]', '[Bagian Pembahasan 2]', 'Kesimpulan'].map((t, i) => (
+        {['Apa itu Informatika?', 'Coding itu sebenarnya apa?', 'Mitos dan fakta soal coding', 'Mulai dari mana?'].map((t, i) => (
           <li key={t} className={i % 2 ? '' : 'is-tinted'}><span>{String(i + 1).padStart(2, '0')}</span><T id={`toc.${i}`}>{t}</T></li>
         ))}
       </ol>
@@ -108,16 +113,16 @@ const slides: ReactNode[] = [
     <span className="tpl-slide-sigil" aria-hidden="true">✧</span>
     <Orbits variant="divider" />
     <span className="tpl-big-number"><T id="divider.number">01</T></span>
-    <h2><T id="divider.title">Pendahuluan</T></h2>
-    <p className="tpl-sub"><T id="divider.subtitle">[Satu kalimat tentang isi bagian ini]</T></p>
+    <h2><T id="divider.title">Apa itu Informatika?</T></h2>
+    <p className="tpl-sub"><T id="divider.subtitle">Lebih dari sekadar jago main komputer.</T></p>
   </div>,
 
-  <Content id="background" title="Latar Belakang" n={5} key="background">
+  <Content id="background" title="Informatika Itu Belajar Apa?" n={5} key="background">
     <div className="tpl-rows">
       {([
-        [<Target key="t" />, 'Masalah', '[Jelaskan masalah atau pertanyaan yang dibahas dalam tugas ini.]'],
-        [<Lightbulb key="l" />, 'Tujuan', '[Tuliskan apa yang ingin dicapai atau dijelaskan.]'],
-        [<Cog key="c" />, 'Metode', '[Cara kamu mengerjakan: studi pustaka, eksperimen, survei, dll.]'],
+        [<Target key="t" />, 'Berpikir Logis', 'Memecah masalah besar jadi langkah-langkah kecil yang bisa diselesaikan satu per satu.'],
+        [<Lightbulb key="l" />, 'Membuat Program', 'Menulis instruksi supaya komputer bisa bantu pekerjaan kita jadi lebih cepat.'],
+        [<Cog key="c" />, 'Mengelola Data', 'Mengolah informasi yang berantakan jadi sesuatu yang rapi dan berguna.'],
       ] as const).map(([icon, h, d], i) => (
         <div className="tpl-row" key={h}>
           <IconDot gold={i === 1}>{icon}</IconDot>
@@ -127,57 +132,65 @@ const slides: ReactNode[] = [
     </div>
   </Content>,
 
-  <Content id="text" title="[Judul Pembahasan]" n={6} key="text-image">
+  <Content id="text" title="Coding Itu Sebenarnya Apa?" n={6} key="text-image">
     <div className="tpl-split">
       <ul className="tpl-bullets">
-        {['[Poin penting pertama tentang materi]', '[Poin penting kedua, singkat dan jelas]', '[Poin penting ketiga]', '[Contoh atau penjelasan tambahan]'].map((t, i) => (
+        {[
+          'Coding artinya menulis perintah untuk komputer pakai bahasa yang dia ngerti.',
+          'Mirip nulis resep masakan: urutannya harus jelas dan langkahnya lengkap.',
+          'Bahasanya macam-macam, misalnya Python, JavaScript, dan C++.',
+          'Hasilnya ada di sekitar kita: aplikasi, game, website, sampai mesin ATM.',
+        ].map((t, i) => (
           <li key={t}><T id={`text.${i}`}>{t}</T></li>
         ))}
       </ul>
-      <div className="tpl-card tpl-image-slot"><Image /><span><T id="text.imageHint">Tempel gambar / diagram di sini</T></span></div>
+      <div className="tpl-card tpl-image-slot"><Image /><span><T id="text.imageHint">print("Halo, Faletehan!")</T></span></div>
     </div>
   </Content>,
 
-  <Content id="stats" title="Data Penting" n={7} key="stats">
+  <Content id="stats" title="Kenapa Perlu Belajar?" n={7} key="stats">
     <div className="tpl-stats">
-      {[['[85%]', '[Keterangan angka pertama]'], ['[120]', '[Keterangan angka kedua]'], ['[3x]', '[Keterangan angka ketiga]']].map(([num, label], i) => (
+      {[['1', 'Baris kode sudah cukup buat bikin program pertamamu'], ['∞', 'Ide yang bisa kamu wujudkan jadi aplikasi sendiri'], ['Rp0', 'Banyak tempat belajar coding yang gratis']].map(([num, label], i) => (
         <div className={`tpl-card tpl-stat${i === 1 ? ' is-teal' : ''}`} key={num}>
           <strong><T id={`stats.${i}.num`}>{num}</T></strong><span><T id={`stats.${i}.label`}>{label}</T></span>
         </div>
       ))}
     </div>
-    <p className="tpl-source"><T id="stats.source">Sumber: [tulis sumber data]</T></p>
+    <p className="tpl-source"><T id="stats.source">Angka di atas cuma gambaran, bukan hasil survei.</T></p>
   </Content>,
 
-  <Content id="compare" title="Perbandingan" n={8} key="compare">
+  <Content id="compare" title="Mitos vs Fakta" n={8} key="compare">
     <div className="tpl-compare">
-      {([[<ThumbsUp key="u" />, '[Kelebihan / Opsi A]', false], [<ThumbsDown key="d" />, '[Kekurangan / Opsi B]', true]] as const).map(([icon, h, gold], c) => (
+      {([
+        [<ThumbsDown key="d" />, 'Katanya…', true, ['Harus jago matematika dulu', 'Harus punya laptop mahal', 'Cuma buat orang jenius']],
+        [<ThumbsUp key="u" />, 'Padahal…', false, ['Yang penting mau mikir pelan-pelan', 'Laptop biasa pun sudah cukup', 'Semua orang bisa, asal rajin latihan']],
+      ] as const).map(([icon, h, gold, points], c) => (
         <div className="tpl-card" key={h}>
           <div className="tpl-compare-head"><IconDot gold={gold} size="sm">{icon}</IconDot><b><T id={`compare.${c}.head`}>{h}</T></b></div>
           <ul className="tpl-bullets">
-            {['[Poin pertama]', '[Poin kedua]', '[Poin ketiga]'].map((t, j) => <li key={t}><T id={`compare.${c}.${j}`}>{t}</T></li>)}
+            {points.map((t, j) => <li key={t}><T id={`compare.${c}.${j}`}>{t}</T></li>)}
           </ul>
         </div>
       ))}
     </div>
   </Content>,
 
-  <Content id="conclusion" title="Kesimpulan" n={9} key="conclusion">
-    <p className="tpl-key-message"><T id="conclusion.message">[Tulis inti / pesan utama tugasmu dalam satu atau dua kalimat.]</T></p>
+  <Content id="conclusion" title="Jadi, Mulai dari Mana?" n={9} key="conclusion">
+    <p className="tpl-key-message"><T id="conclusion.message">Nggak usah nunggu merasa siap. Mulai aja dari satu baris kode hari ini.</T></p>
     <ul className="tpl-checks">
-      {['[Poin kesimpulan pertama]', '[Poin kesimpulan kedua]', '[Saran atau langkah selanjutnya]'].map((t, i) => (
+      {['Pilih satu bahasa dulu, misalnya Python', 'Latihan sedikit tapi rutin, 20 menit sehari sudah bagus', 'Belajar bareng teman biar nggak gampang menyerah'].map((t, i) => (
         <li key={t}><IconDot gold size="sm"><Check /></IconDot><T id={`conclusion.${i}`}>{t}</T></li>
       ))}
     </ul>
   </Content>,
 
-  <Content id="refs" title="Daftar Pustaka" n={10} key="refs">
+  <Content id="refs" title="Tempat Belajar yang Asyik" n={10} key="refs">
     <div className="tpl-split">
       <ol className="tpl-refs">
         {[
-          '[Penulis]. ([Tahun]). [Judul buku atau artikel]. [Penerbit / Jurnal].',
-          '[Penulis]. ([Tahun]). [Judul]. Diakses dari [URL] pada [tanggal].',
-          '[Tambahkan sumber lain sesuai format yang diminta dosen]',
+          'Dicoding Academy: kelas dasar pemrograman berbahasa Indonesia.',
+          'W3Schools: tutorial HTML, CSS, JavaScript, dan Python yang bisa langsung dicoba.',
+          'freeCodeCamp: latihan coding gratis, dari dasar sampai bikin proyek.',
         ].map((t, i) => <li key={t}><T id={`refs.${i}`}>{t}</T></li>)}
       </ol>
       <div className="tpl-side-art is-gold"><i /><IconDot gold size="lg"><BookOpen /></IconDot></div>
@@ -188,14 +201,14 @@ const slides: ReactNode[] = [
     <span className="tpl-slide-sigil" aria-hidden="true">✧</span>
     <Orbits />
     <IconDot gold size="lg"><MessageCircle /></IconDot>
-    <span className="tpl-kicker"><T id="thanks.kicker">SESI TANYA JAWAB</T></span>
-    <h1><T id="thanks.title">Terima Kasih</T></h1>
-    <p className="tpl-sub"><T id="thanks.subtitle">Ada pertanyaan? Silakan bertanya.</T></p>
-    <span className="tpl-closing"><T id="thanks.closing">[Nama / Kelompok] · Informatika Universitas Faletehan</T></span>
+    <span className="tpl-kicker"><T id="thanks.kicker">TERIMA KASIH SUDAH MENYIMAK</T></span>
+    <h1><T id="thanks.title">Yuk, Ngoding Bareng!</T></h1>
+    <p className="tpl-sub"><T id="thanks.subtitle">Ada pertanyaan? Tanya aja, nggak ada pertanyaan yang salah.</T></p>
+    <span className="tpl-closing"><T id="thanks.closing">Informatika Universitas Faletehan · Belajar. Berkarya. Bertumbuh bersama.</T></span>
   </div>,
 ];
 
-const slideNames = ['Cover', 'Anggota', 'Daftar Isi', 'Pembatas', 'Latar Belakang', 'Teks + Gambar', 'Data', 'Perbandingan', 'Kesimpulan', 'Pustaka', 'Penutup'];
+const slideNames = ['Pembuka', 'Kegiatan', 'Isi', 'Bagian 1', 'Informatika', 'Coding', 'Kenapa Belajar', 'Mitos & Fakta', 'Mulai dari Mana', 'Tempat Belajar', 'Penutup'];
 
 type Dir = 'next' | 'prev';
 type SaveState = 'idle' | 'saving' | 'saved' | 'error';

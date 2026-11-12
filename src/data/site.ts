@@ -101,8 +101,8 @@ export type PptTemplate = {
 // Template PPT untuk tugas. Taruh file .pptx di public/templates/ lalu tulis path-nya di sini.
 export const pptTemplates: PptTemplate[] = [
   {
-    title: 'Template Tugas Presentasi',
-    description: 'Template resmi kelas untuk tugas presentasi. Buka untuk melihat semua slidenya.',
+    title: 'Kenalan sama Dunia Coding',
+    description: 'Presentasi singkat buat kenalan sama Informatika dan coding. Bisa juga dipakai sebagai contoh susunan PPT tugas.',
     file: '/templates/template-tugas.pptx',
   },
 ];

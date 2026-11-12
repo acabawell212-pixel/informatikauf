@@ -430,7 +430,7 @@
   font-size: calc(12 * var(--pt));
 }
 .tpl-image-slot svg { width: calc(.7 * var(--in)); height: calc(.7 * var(--in)); }
-.tpl-image-slot span { color: var(--muted); }
+.tpl-image-slot span { color: var(--teal-deep); font-family: var(--mono), monospace; font-size: calc(14 * var(--pt)); }
 
 .tpl-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: calc(.25 * var(--in)); margin-top: calc(.15 * var(--in)); }
 .tpl-stat {
