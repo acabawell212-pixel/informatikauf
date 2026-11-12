@@ -3,7 +3,7 @@
    Slide 16:9 memakai unit cqw: 1 inci slide = 10cqw, 1pt ≈ 0.139cqw — sama
    dengan ukuran di public/templates/template-tugas.pptx (10in × 5.625in).
    ============================================================================= */
-.ppt-viewer {
+.tpl-viewer {
   position: fixed;
   inset: 0;
   z-index: var(--z-lightbox);
@@ -17,7 +17,7 @@
 }
 
 /* Panel kertas — sama dengan papan jadwal & kartu lain di tema fantasy */
-.ppt-panel {
+.tpl-panel {
   position: relative;
   width: min(1060px, 100%, calc((100dvh - 300px) * 16 / 9 + 140px));
   min-width: min(300px, 100%);
@@ -37,16 +37,16 @@
   animation: lightboxRise var(--duration-md) var(--ease-card) both;
 }
 
-.ppt-panel-head {
+.tpl-panel-head {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 16px;
 }
 
-.ppt-panel-head .eyebrow { margin-bottom: 8px; }
+.tpl-panel-head .eyebrow { margin-bottom: 8px; }
 
-.ppt-panel-head h3 {
+.tpl-panel-head h3 {
   margin: 0;
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: clamp(24px, 3vw, 34px);
@@ -55,16 +55,16 @@
   color: var(--palette-teal-ink);
 }
 
-.ppt-panel-head h3 span {
+.tpl-panel-head h3 span {
   background: var(--gradient-heading-text);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
-.ppt-panel-head .button { flex-shrink: 0; white-space: nowrap; }
+.tpl-panel-head .button { flex-shrink: 0; white-space: nowrap; }
 
-.ppt-close {
+.tpl-close {
   position: fixed;
   z-index: calc(var(--z-lightbox) + 1);
   top: max(12px, env(safe-area-inset-top));
@@ -85,17 +85,17 @@
   transition: transform var(--duration-xs), background var(--duration-xs);
 }
 
-.ppt-close:hover { transform: scale(1.05); background: var(--palette-parchment-warm); }
+.tpl-close:hover { transform: scale(1.05); background: var(--palette-parchment-warm); }
 
 /* Batang progres — gradient yang sama dengan progres scroll halaman */
-.ppt-progress {
+.tpl-progress {
   height: 3px;
   border-radius: var(--radius-pill);
   background: rgba(120, 91, 48, .12);
   overflow: hidden;
 }
 
-.ppt-progress i {
+.tpl-progress i {
   display: block;
   height: 100%;
   border-radius: inherit;
@@ -103,7 +103,7 @@
   transition: width var(--duration-lg) var(--ease-out);
 }
 
-.ppt-stage-wrap {
+.tpl-stage-wrap {
   position: relative;
   display: grid;
   grid-template-columns: auto 1fr auto;
@@ -111,7 +111,7 @@
   gap: 12px;
 }
 
-.ppt-stage {
+.tpl-stage {
   container-type: inline-size;
   position: relative;
   aspect-ratio: 16 / 9;
@@ -123,7 +123,7 @@
   perspective: 1400px;
 }
 
-.ppt-arrow {
+.tpl-arrow {
   width: 46px;
   height: 46px;
   display: grid;
@@ -137,14 +137,14 @@
   transition: transform var(--duration-xs) var(--ease-out), background var(--duration-xs), opacity var(--duration-xs);
 }
 
-.ppt-arrow:hover:not(:disabled) { background: var(--gradient-tab-active); transform: scale(1.08); }
-.ppt-arrow svg { transition: transform var(--duration-xs); }
-.ppt-arrow.is-prev:hover:not(:disabled) svg { transform: translateX(-2px); }
-.ppt-arrow.is-next:hover:not(:disabled) svg { transform: translateX(2px); }
-.ppt-arrow:disabled { opacity: .35; cursor: default; }
+.tpl-arrow:hover:not(:disabled) { background: var(--gradient-tab-active); transform: scale(1.08); }
+.tpl-arrow svg { transition: transform var(--duration-xs); }
+.tpl-arrow.is-prev:hover:not(:disabled) svg { transform: translateX(-2px); }
+.tpl-arrow.is-next:hover:not(:disabled) svg { transform: translateX(2px); }
+.tpl-arrow:disabled { opacity: .35; cursor: default; }
 
 /* Tab slide — gaya sama dengan tab hari di Jadwal MK */
-.ppt-tabs {
+.tpl-tabs {
   display: flex;
   gap: 6px;
   overflow-x: auto;
@@ -152,7 +152,7 @@
   scrollbar-width: thin;
 }
 
-.ppt-tab {
+.tpl-tab {
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
@@ -167,28 +167,28 @@
   transition: border-color var(--duration-xs), background var(--duration-xs), color var(--duration-xs), transform var(--duration-xs);
 }
 
-.ppt-tab > span { font-family: var(--mono); font-size: 9px; letter-spacing: .1em; color: #8b866e; }
-.ppt-tab > strong { font-size: 11px; font-weight: 600; white-space: nowrap; }
-.ppt-tab:hover { border-color: rgba(174, 134, 57, .5); background: rgba(248, 238, 215, .95); color: var(--palette-teal-ink); transform: translateY(-2px); }
+.tpl-tab > span { font-family: var(--mono); font-size: 9px; letter-spacing: .1em; color: #8b866e; }
+.tpl-tab > strong { font-size: 11px; font-weight: 600; white-space: nowrap; }
+.tpl-tab:hover { border-color: rgba(174, 134, 57, .5); background: rgba(248, 238, 215, .95); color: var(--palette-teal-ink); transform: translateY(-2px); }
 
-.ppt-tab.active {
+.tpl-tab.active {
   border-color: rgba(174, 134, 57, .55);
   background: var(--gradient-tab-active);
   color: var(--palette-teal-ink);
   box-shadow: 0 5px 14px rgba(72, 111, 95, .12);
 }
 
-.ppt-tab.active > span { color: var(--palette-gold-dark); }
+.tpl-tab.active > span { color: var(--palette-gold-dark); }
 
-.ppt-help { margin: 0; font-family: var(--mono); font-size: 9px; letter-spacing: .08em; color: #8b866e; text-align: center; }
+.tpl-help { margin: 0; font-family: var(--mono); font-size: 9px; letter-spacing: .08em; color: #8b866e; text-align: center; }
 
 /* ---------- Efek ganti slide ---------- */
-.ppt-frame { position: absolute; inset: 0; }
-.ppt-frame.is-next { animation: pptInNext .6s var(--ease-card) both; }
-.ppt-frame.is-prev { animation: pptInPrev .6s var(--ease-card) both; }
+.tpl-frame { position: absolute; inset: 0; }
+.tpl-frame.is-next { animation: pptInNext .6s var(--ease-card) both; }
+.tpl-frame.is-prev { animation: pptInPrev .6s var(--ease-card) both; }
 
 /* Kilau emas yang menyapu slide saat muncul (sama seperti sheen pada kartu) */
-.ppt-sheen {
+.tpl-sheen {
   position: absolute;
   inset: 0;
   z-index: 5;
@@ -198,41 +198,41 @@
   animation: pptSheen .9s var(--ease-standard) .1s both;
 }
 
-.ppt-frame.is-prev .ppt-sheen { animation-name: pptSheenBack; }
+.tpl-frame.is-prev .tpl-sheen { animation-name: pptSheenBack; }
 
 /* Isi slide muncul bertahap */
-.ppt-frame .ppt-kicker,
-.ppt-frame .ppt-slide h1,
-.ppt-frame .ppt-sub,
-.ppt-frame .ppt-id-card,
-.ppt-frame .ppt-closing,
-.ppt-frame .ppt-big-number,
-.ppt-frame .ppt-divider h2,
-.ppt-frame .ppt-title,
-.ppt-frame .ppt-body > * > *,
-.ppt-frame .ppt-body > p {
+.tpl-frame .tpl-kicker,
+.tpl-frame .tpl-slide h1,
+.tpl-frame .tpl-sub,
+.tpl-frame .tpl-id-card,
+.tpl-frame .tpl-closing,
+.tpl-frame .tpl-big-number,
+.tpl-frame .tpl-divider h2,
+.tpl-frame .tpl-title,
+.tpl-frame .tpl-body > * > *,
+.tpl-frame .tpl-body > p {
   animation: pptRise .55s var(--ease-out) both;
 }
 
-.ppt-frame .ppt-title,
-.ppt-frame .ppt-kicker,
-.ppt-frame .ppt-big-number { animation-delay: .12s; }
-.ppt-frame .ppt-slide h1,
-.ppt-frame .ppt-divider h2 { animation-delay: .2s; }
-.ppt-frame .ppt-sub,
-.ppt-frame .ppt-body > p,
-.ppt-frame .ppt-body > * > :nth-child(1) { animation-delay: .24s; }
-.ppt-frame .ppt-body > * > :nth-child(2) { animation-delay: .32s; }
-.ppt-frame .ppt-id-card,
-.ppt-frame .ppt-closing,
-.ppt-frame .ppt-body > * > :nth-child(3) { animation-delay: .4s; }
-.ppt-frame .ppt-body > * > :nth-child(4) { animation-delay: .48s; }
-.ppt-frame .ppt-body > * > :nth-child(n + 5) { animation-delay: .56s; }
+.tpl-frame .tpl-title,
+.tpl-frame .tpl-kicker,
+.tpl-frame .tpl-big-number { animation-delay: .12s; }
+.tpl-frame .tpl-slide h1,
+.tpl-frame .tpl-divider h2 { animation-delay: .2s; }
+.tpl-frame .tpl-sub,
+.tpl-frame .tpl-body > p,
+.tpl-frame .tpl-body > * > :nth-child(1) { animation-delay: .24s; }
+.tpl-frame .tpl-body > * > :nth-child(2) { animation-delay: .32s; }
+.tpl-frame .tpl-id-card,
+.tpl-frame .tpl-closing,
+.tpl-frame .tpl-body > * > :nth-child(3) { animation-delay: .4s; }
+.tpl-frame .tpl-body > * > :nth-child(4) { animation-delay: .48s; }
+.tpl-frame .tpl-body > * > :nth-child(n + 5) { animation-delay: .56s; }
 
-.ppt-frame .ppt-cover > .ppt-dot,
-.ppt-frame .ppt-side-art .ppt-dot { animation: pptPop .7s var(--ease-emphasis) .3s both; }
-.ppt-frame .ppt-orbits i,
-.ppt-frame .ppt-side-art i { animation: pptOrbit .9s var(--ease-out) .15s both; }
+.tpl-frame .tpl-cover > .tpl-dot,
+.tpl-frame .tpl-side-art .tpl-dot { animation: pptPop .7s var(--ease-emphasis) .3s both; }
+.tpl-frame .tpl-orbits i,
+.tpl-frame .tpl-side-art i { animation: pptOrbit .9s var(--ease-out) .15s both; }
 
 @keyframes pptInNext {
   from { opacity: 0; transform: translateX(7%) rotateY(-9deg) scale(.96); filter: blur(4px); }
@@ -251,15 +251,15 @@
 @keyframes pptOrbit { from { opacity: 0; transform: scale(.75) rotate(-20deg); } to { opacity: 1; transform: none; } }
 
 @media (prefers-reduced-motion: reduce) {
-  .ppt-viewer,
-  .ppt-panel,
-  .ppt-frame,
-  .ppt-frame * { animation: none !important; }
-  .ppt-sheen { display: none; }
+  .tpl-viewer,
+  .tpl-panel,
+  .tpl-frame,
+  .tpl-frame * { animation: none !important; }
+  .tpl-sheen { display: none; }
 }
 
 /* ---------- Slide dasar ---------- */
-.ppt-slide {
+.tpl-slide {
   --pt: .1389cqw;
   --in: 10cqw;
   --teal: #267c7a;
@@ -281,51 +281,51 @@
   text-align: left;
 }
 
-.ppt-slide h1,
-.ppt-slide h2,
-.ppt-big-number,
-.ppt-stat strong,
-.ppt-avatar,
-.ppt-toc span {
+.tpl-slide h1,
+.tpl-slide h2,
+.tpl-big-number,
+.tpl-stat strong,
+.tpl-avatar,
+.tpl-toc span {
   font-family: Cambria, Georgia, serif;
   font-weight: 700;
   letter-spacing: 0;
 }
 
-.ppt-slide p,
-.ppt-slide ul,
-.ppt-slide ol,
-.ppt-slide h1,
-.ppt-slide h2 { margin: 0; }
+.tpl-slide p,
+.tpl-slide ul,
+.tpl-slide ol,
+.tpl-slide h1,
+.tpl-slide h2 { margin: 0; }
 
-.ppt-slide svg { width: 50%; height: 50%; }
+.tpl-slide svg { width: 50%; height: 50%; }
 
-.ppt-dot { display: grid; place-items: center; flex-shrink: 0; border-radius: 50%; background: var(--teal); color: #fff; }
-.ppt-dot.is-gold { background: var(--gold); }
-.ppt-dot-sm { width: calc(.5 * var(--in)); height: calc(.5 * var(--in)); }
-.ppt-dot-md { width: calc(.8 * var(--in)); height: calc(.8 * var(--in)); }
-.ppt-dot-lg { width: calc(1.3 * var(--in)); height: calc(1.3 * var(--in)); }
+.tpl-dot { display: grid; place-items: center; flex-shrink: 0; border-radius: 50%; background: var(--teal); color: #fff; }
+.tpl-dot.is-gold { background: var(--gold); }
+.tpl-dot-sm { width: calc(.5 * var(--in)); height: calc(.5 * var(--in)); }
+.tpl-dot-md { width: calc(.8 * var(--in)); height: calc(.8 * var(--in)); }
+.tpl-dot-lg { width: calc(1.3 * var(--in)); height: calc(1.3 * var(--in)); }
 
-.ppt-card { border-radius: calc(.12 * var(--in)); background: var(--parchment); }
+.tpl-card { border-radius: calc(.12 * var(--in)); background: var(--parchment); }
 
 /* ---------- Cover, penutup, pembatas ---------- */
-.ppt-cover,
-.ppt-divider { padding: calc(.75 * var(--in)) calc(.6 * var(--in)); background: var(--teal); color: #fff; }
-.ppt-divider { background: var(--teal-deep); padding-top: calc(1.35 * var(--in)); }
+.tpl-cover,
+.tpl-divider { padding: calc(.75 * var(--in)) calc(.6 * var(--in)); background: var(--teal); color: #fff; }
+.tpl-divider { background: var(--teal-deep); padding-top: calc(1.35 * var(--in)); }
 
-.ppt-orbits i { position: absolute; border-radius: 50%; border: 1px solid rgba(231, 203, 132, .45); }
-.ppt-orbits-cover i:first-child { width: calc(4.2 * var(--in)); height: calc(4.2 * var(--in)); left: calc(6.55 * var(--in)); top: calc(-.6 * var(--in)); }
-.ppt-orbits-cover i:last-child { width: calc(3 * var(--in)); height: calc(3 * var(--in)); left: calc(7.15 * var(--in)); top: 0; border-color: rgba(124, 203, 189, .4); }
-.ppt-orbits-divider i:first-child { width: calc(3.8 * var(--in)); height: calc(3.8 * var(--in)); left: calc(6.9 * var(--in)); top: calc(.9 * var(--in)); }
-.ppt-orbits-divider i:last-child { display: none; }
+.tpl-orbits i { position: absolute; border-radius: 50%; border: 1px solid rgba(231, 203, 132, .45); }
+.tpl-orbits-cover i:first-child { width: calc(4.2 * var(--in)); height: calc(4.2 * var(--in)); left: calc(6.55 * var(--in)); top: calc(-.6 * var(--in)); }
+.tpl-orbits-cover i:last-child { width: calc(3 * var(--in)); height: calc(3 * var(--in)); left: calc(7.15 * var(--in)); top: 0; border-color: rgba(124, 203, 189, .4); }
+.tpl-orbits-divider i:first-child { width: calc(3.8 * var(--in)); height: calc(3.8 * var(--in)); left: calc(6.9 * var(--in)); top: calc(.9 * var(--in)); }
+.tpl-orbits-divider i:last-child { display: none; }
 
-.ppt-cover > .ppt-dot { position: absolute; left: calc(7.95 * var(--in)); top: calc(.8 * var(--in)); }
+.tpl-cover > .tpl-dot { position: absolute; left: calc(7.95 * var(--in)); top: calc(.8 * var(--in)); }
 
-.ppt-kicker { display: block; font-size: calc(12 * var(--pt)); font-weight: 700; letter-spacing: .25em; color: var(--gold-pale); }
-.ppt-cover h1 { max-width: calc(6.2 * var(--in)); margin-top: calc(.12 * var(--in)); font-size: calc(40 * var(--pt)); line-height: 1.1; color: #fff; }
-.ppt-sub { max-width: calc(7.5 * var(--in)); margin-top: calc(.15 * var(--in)) !important; font-size: calc(16 * var(--pt)); color: var(--mint); }
+.tpl-kicker { display: block; font-size: calc(12 * var(--pt)); font-weight: 700; letter-spacing: .25em; color: var(--gold-pale); }
+.tpl-cover h1 { max-width: calc(6.2 * var(--in)); margin-top: calc(.12 * var(--in)); font-size: calc(40 * var(--pt)); line-height: 1.1; color: #fff; }
+.tpl-sub { max-width: calc(7.5 * var(--in)); margin-top: calc(.15 * var(--in)) !important; font-size: calc(16 * var(--pt)); color: var(--mint); }
 
-.ppt-id-card {
+.tpl-id-card {
   position: absolute;
   left: calc(.6 * var(--in));
   top: calc(3.85 * var(--in));
@@ -340,27 +340,27 @@
   color: var(--mint);
 }
 
-.ppt-id-card small { font-size: calc(10 * var(--pt)); font-weight: 700; color: var(--gold-pale); }
-.ppt-id-card b { font-size: calc(14 * var(--pt)); color: #fff; }
+.tpl-id-card small { font-size: calc(10 * var(--pt)); font-weight: 700; color: var(--gold-pale); }
+.tpl-id-card b { font-size: calc(14 * var(--pt)); color: #fff; }
 
-.ppt-closing { position: absolute; left: calc(.6 * var(--in)); top: calc(4.6 * var(--in)); font-size: calc(12 * var(--pt)); color: var(--gold-pale); }
+.tpl-closing { position: absolute; left: calc(.6 * var(--in)); top: calc(4.6 * var(--in)); font-size: calc(12 * var(--pt)); color: var(--gold-pale); }
 
-.ppt-big-number { display: block; font-size: calc(72 * var(--pt)); line-height: 1; color: var(--gold); }
-.ppt-divider h2 { margin-top: calc(.25 * var(--in)); font-size: calc(36 * var(--pt)); color: #fff; }
+.tpl-big-number { display: block; font-size: calc(72 * var(--pt)); line-height: 1; color: var(--gold); }
+.tpl-divider h2 { margin-top: calc(.25 * var(--in)); font-size: calc(36 * var(--pt)); color: #fff; }
 
 /* ---------- Slide isi ---------- */
-.ppt-content { padding: calc(.4 * var(--in)) calc(.6 * var(--in)) 0; }
-.ppt-title { height: calc(.75 * var(--in)); display: flex; align-items: center; font-size: calc(32 * var(--pt)); color: var(--teal-deep); }
-.ppt-body { margin-top: calc(.3 * var(--in)); }
+.tpl-content { padding: calc(.4 * var(--in)) calc(.6 * var(--in)) 0; }
+.tpl-title { height: calc(.75 * var(--in)); display: flex; align-items: center; font-size: calc(32 * var(--pt)); color: var(--teal-deep); }
+.tpl-body { margin-top: calc(.3 * var(--in)); }
 
-.ppt-footer,
-.ppt-number { position: absolute; top: calc(5.2 * var(--in)); font-size: calc(10 * var(--pt)); color: var(--muted); }
-.ppt-footer { left: calc(.6 * var(--in)); }
-.ppt-number { right: calc(.6 * var(--in)); }
+.tpl-footer,
+.tpl-number { position: absolute; top: calc(5.2 * var(--in)); font-size: calc(10 * var(--pt)); color: var(--muted); }
+.tpl-footer { left: calc(.6 * var(--in)); }
+.tpl-number { right: calc(.6 * var(--in)); }
 
-.ppt-members { display: grid; grid-template-columns: repeat(4, 1fr); gap: calc(.25 * var(--in)); }
+.tpl-members { display: grid; grid-template-columns: repeat(4, 1fr); gap: calc(.25 * var(--in)); }
 
-.ppt-member {
+.tpl-member {
   height: calc(2.95 * var(--in));
   display: flex;
   flex-direction: column;
@@ -372,7 +372,7 @@
   color: var(--muted);
 }
 
-.ppt-avatar {
+.tpl-avatar {
   width: calc(.9 * var(--in));
   height: calc(.9 * var(--in));
   display: grid;
@@ -384,14 +384,14 @@
   font-size: calc(28 * var(--pt));
 }
 
-.ppt-avatar.is-gold { background: var(--gold); }
-.ppt-member b { font-size: calc(14 * var(--pt)); color: var(--ink); }
-.ppt-member em { font-style: normal; font-size: calc(11 * var(--pt)); color: var(--teal); }
+.tpl-avatar.is-gold { background: var(--gold); }
+.tpl-member b { font-size: calc(14 * var(--pt)); color: var(--ink); }
+.tpl-member em { font-style: normal; font-size: calc(11 * var(--pt)); color: var(--teal); }
 
-.ppt-split { display: grid; grid-template-columns: 1fr calc(4.2 * var(--in)); gap: calc(.4 * var(--in)); }
+.tpl-split { display: grid; grid-template-columns: 1fr calc(4.2 * var(--in)); gap: calc(.4 * var(--in)); }
 
-.ppt-toc { list-style: none; padding: 0; display: grid; gap: calc(.16 * var(--in)); }
-.ppt-toc li {
+.tpl-toc { list-style: none; padding: 0; display: grid; gap: calc(.16 * var(--in)); }
+.tpl-toc li {
   height: calc(.72 * var(--in));
   display: flex;
   align-items: center;
@@ -401,25 +401,25 @@
   font-size: calc(16 * var(--pt));
   font-weight: 700;
 }
-.ppt-toc li.is-tinted { background: var(--parchment); }
-.ppt-toc span { width: calc(.6 * var(--in)); font-size: calc(24 * var(--pt)); color: var(--gold); }
+.tpl-toc li.is-tinted { background: var(--parchment); }
+.tpl-toc span { width: calc(.6 * var(--in)); font-size: calc(24 * var(--pt)); color: var(--gold); }
 
-.ppt-side-art { position: relative; display: grid; place-items: center; }
-.ppt-side-art i { position: absolute; width: calc(2.5 * var(--in)); height: calc(2.5 * var(--in)); border-radius: 50%; border: 1px solid rgba(38, 124, 122, .35); }
-.ppt-side-art.is-gold i { border-color: rgba(178, 131, 60, .4); }
+.tpl-side-art { position: relative; display: grid; place-items: center; }
+.tpl-side-art i { position: absolute; width: calc(2.5 * var(--in)); height: calc(2.5 * var(--in)); border-radius: 50%; border: 1px solid rgba(38, 124, 122, .35); }
+.tpl-side-art.is-gold i { border-color: rgba(178, 131, 60, .4); }
 
-.ppt-rows { display: grid; gap: calc(.38 * var(--in)); }
-.ppt-row { display: flex; gap: calc(.25 * var(--in)); }
-.ppt-row b { font-size: calc(18 * var(--pt)); }
-.ppt-row p { font-size: calc(14 * var(--pt)); color: var(--muted); }
+.tpl-rows { display: grid; gap: calc(.38 * var(--in)); }
+.tpl-row { display: flex; gap: calc(.25 * var(--in)); }
+.tpl-row b { font-size: calc(18 * var(--pt)); }
+.tpl-row p { font-size: calc(14 * var(--pt)); color: var(--muted); }
 
-.ppt-bullets,
-.ppt-refs { display: grid; align-content: start; gap: calc(.14 * var(--in)); margin: 0; padding-left: 1.2em; font-size: calc(16 * var(--pt)); }
-.ppt-refs { font-size: calc(14 * var(--pt)); gap: calc(.17 * var(--in)); }
-.ppt-bullets li::marker,
-.ppt-refs li::marker { color: var(--teal); }
+.tpl-bullets,
+.tpl-refs { display: grid; align-content: start; gap: calc(.14 * var(--in)); margin: 0; padding-left: 1.2em; font-size: calc(16 * var(--pt)); }
+.tpl-refs { font-size: calc(14 * var(--pt)); gap: calc(.17 * var(--in)); }
+.tpl-bullets li::marker,
+.tpl-refs li::marker { color: var(--teal); }
 
-.ppt-image-slot {
+.tpl-image-slot {
   height: calc(3.45 * var(--in));
   display: flex;
   flex-direction: column;
@@ -429,11 +429,11 @@
   color: var(--teal);
   font-size: calc(12 * var(--pt));
 }
-.ppt-image-slot svg { width: calc(.7 * var(--in)); height: calc(.7 * var(--in)); }
-.ppt-image-slot span { color: var(--muted); }
+.tpl-image-slot svg { width: calc(.7 * var(--in)); height: calc(.7 * var(--in)); }
+.tpl-image-slot span { color: var(--muted); }
 
-.ppt-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: calc(.25 * var(--in)); margin-top: calc(.15 * var(--in)); }
-.ppt-stat {
+.tpl-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: calc(.25 * var(--in)); margin-top: calc(.15 * var(--in)); }
+.tpl-stat {
   height: calc(2.6 * var(--in));
   display: flex;
   flex-direction: column;
@@ -442,17 +442,17 @@
   font-size: calc(14 * var(--pt));
   color: var(--muted);
 }
-.ppt-stat strong { font-size: calc(54 * var(--pt)); line-height: 1.1; color: var(--teal); }
-.ppt-stat.is-teal { background: var(--teal); color: var(--parchment); }
-.ppt-stat.is-teal strong { color: #fff; }
-.ppt-source { margin-top: calc(.35 * var(--in)) !important; font-size: calc(10 * var(--pt)); font-style: italic; color: var(--muted); }
+.tpl-stat strong { font-size: calc(54 * var(--pt)); line-height: 1.1; color: var(--teal); }
+.tpl-stat.is-teal { background: var(--teal); color: var(--parchment); }
+.tpl-stat.is-teal strong { color: #fff; }
+.tpl-source { margin-top: calc(.35 * var(--in)) !important; font-size: calc(10 * var(--pt)); font-style: italic; color: var(--muted); }
 
-.ppt-compare { display: grid; grid-template-columns: 1fr 1fr; gap: calc(.2 * var(--in)); }
-.ppt-compare > .ppt-card { height: calc(3.45 * var(--in)); padding: calc(.25 * var(--in)) calc(.3 * var(--in)); }
-.ppt-compare-head { display: flex; align-items: center; gap: calc(.15 * var(--in)); margin-bottom: calc(.3 * var(--in)); font-size: calc(18 * var(--pt)); }
-.ppt-compare .ppt-bullets { font-size: calc(15 * var(--pt)); }
+.tpl-compare { display: grid; grid-template-columns: 1fr 1fr; gap: calc(.2 * var(--in)); }
+.tpl-compare > .tpl-card { height: calc(3.45 * var(--in)); padding: calc(.25 * var(--in)) calc(.3 * var(--in)); }
+.tpl-compare-head { display: flex; align-items: center; gap: calc(.15 * var(--in)); margin-bottom: calc(.3 * var(--in)); font-size: calc(18 * var(--pt)); }
+.tpl-compare .tpl-bullets { font-size: calc(15 * var(--pt)); }
 
-.ppt-key-message {
+.tpl-key-message {
   min-height: calc(1.15 * var(--in));
   display: flex;
   align-items: center;
@@ -465,15 +465,15 @@
   font-style: italic;
 }
 
-.ppt-checks { list-style: none; padding: 0; margin-top: calc(.35 * var(--in)) !important; display: grid; gap: calc(.23 * var(--in)); }
-.ppt-checks li { display: flex; align-items: center; gap: calc(.2 * var(--in)); font-size: calc(15 * var(--pt)); }
+.tpl-checks { list-style: none; padding: 0; margin-top: calc(.35 * var(--in)) !important; display: grid; gap: calc(.23 * var(--in)); }
+.tpl-checks li { display: flex; align-items: center; gap: calc(.2 * var(--in)); font-size: calc(15 * var(--pt)); }
 
 /* ---------- Mode edit admin ---------- */
-.ppt-admin-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-.ppt-admin-actions .button { height: 40px; white-space: nowrap; }
-.ppt-admin-actions .button:disabled { opacity: .55; cursor: default; transform: none; }
+.tpl-admin-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.tpl-admin-actions .button { height: 40px; white-space: nowrap; }
+.tpl-admin-actions .button:disabled { opacity: .55; cursor: default; transform: none; }
 
-.ppt-save-note {
+.tpl-save-note {
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -482,7 +482,7 @@
   color: var(--palette-teal-deep);
 }
 
-.ppt-edit-banner {
+.tpl-edit-banner {
   display: flex;
   align-items: flex-start;
   gap: 8px;
@@ -496,10 +496,10 @@
   color: var(--palette-teal-ink);
 }
 
-.ppt-edit-banner svg { flex-shrink: 0; margin-top: 3px; color: var(--palette-gold-dark); }
-.ppt-edit-banner.is-error { border-style: solid; border-color: rgba(176, 64, 52, .45); background: rgba(252, 232, 226, .85); color: #8a2f25; }
+.tpl-edit-banner svg { flex-shrink: 0; margin-top: 3px; color: var(--palette-gold-dark); }
+.tpl-edit-banner.is-error { border-style: solid; border-color: rgba(176, 64, 52, .45); background: rgba(252, 232, 226, .85); color: #8a2f25; }
 
-.ppt-editable {
+.tpl-editable {
   border-radius: 3px;
   outline: 1px dashed rgba(177, 139, 65, .75);
   outline-offset: 2px;
@@ -507,18 +507,18 @@
   transition: background var(--duration-xs), outline-color var(--duration-xs);
 }
 
-.ppt-editable:hover { background: rgba(226, 176, 74, .14); }
-.ppt-editable:focus { outline: 2px solid var(--palette-gold-bright); background: rgba(226, 176, 74, .2); }
-.ppt-cover .ppt-editable,
-.ppt-divider .ppt-editable,
-.ppt-stat.is-teal .ppt-editable,
-.ppt-key-message .ppt-editable { outline-color: rgba(231, 203, 132, .7); }
+.tpl-editable:hover { background: rgba(226, 176, 74, .14); }
+.tpl-editable:focus { outline: 2px solid var(--palette-gold-bright); background: rgba(226, 176, 74, .2); }
+.tpl-cover .tpl-editable,
+.tpl-divider .tpl-editable,
+.tpl-stat.is-teal .tpl-editable,
+.tpl-key-message .tpl-editable { outline-color: rgba(231, 203, 132, .7); }
 
 /* Saat mengedit, matikan animasi isi slide supaya teks tidak "loncat" */
-.ppt-panel.is-editing .ppt-frame * { animation: none !important; }
-.ppt-panel.is-editing .ppt-sheen { display: none; }
+.tpl-panel.is-editing .tpl-frame * { animation: none !important; }
+.tpl-panel.is-editing .tpl-sheen { display: none; }
 
-.ppt-loading {
+.tpl-loading {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -533,7 +533,7 @@
    Tekstur & ornamen — kosakata visual yang sama dengan effects/textures.css:
    serat kertas, kontur atlas, grid titik, bingkai emas bertitik sudut, sigil ✧.
    ============================================================================= */
-.ppt-viewer {
+.tpl-viewer {
   background:
     radial-gradient(ellipse at 15% 10%, rgba(214, 182, 111, .22), transparent 45%),
     radial-gradient(ellipse at 85% 90%, rgba(95, 159, 142, .24), transparent 45%),
@@ -541,15 +541,15 @@
 }
 
 /* Panel */
-.ppt-panel {
+.tpl-panel {
   isolation: isolate;
   outline: 1px solid rgba(177, 139, 65, .24);
   outline-offset: -7px;
 }
 
-.ppt-panel > * { position: relative; z-index: 1; }
+.tpl-panel > * { position: relative; z-index: 1; }
 
-.ppt-panel::before {
+.tpl-panel::before {
   position: absolute;
   z-index: 0;
   inset: 0;
@@ -569,7 +569,7 @@
 }
 
 /* Bingkai emas dalam dengan titik di keempat sudut */
-.ppt-panel::after {
+.tpl-panel::after {
   position: absolute;
   z-index: 0;
   inset: 12px;
@@ -586,7 +586,7 @@
 }
 
 /* Sigil ✧ yang "bernapas" — seperti di kartu ringkasan jadwal */
-.ppt-sigil {
+.tpl-sigil {
   position: absolute !important;
   z-index: 0 !important;
   right: 18px;
@@ -599,7 +599,7 @@
   animation: sigilBreath 6s ease-in-out infinite alternate;
 }
 
-.ppt-sigil.is-small {
+.tpl-sigil.is-small {
   right: auto;
   bottom: auto;
   left: 46%;
@@ -611,8 +611,8 @@
 }
 
 /* Belah ketupat di ujung eyebrow (sama dengan section heading) */
-.ppt-panel-head .eyebrow { position: relative; width: fit-content; }
-.ppt-panel-head .eyebrow::after {
+.tpl-panel-head .eyebrow { position: relative; width: fit-content; }
+.tpl-panel-head .eyebrow::after {
   position: absolute;
   right: -17px;
   width: 4px;
@@ -624,9 +624,9 @@
 }
 
 /* Garis progres dengan ornamen belah ketupat di kedua ujung */
-.ppt-progress { overflow: visible; margin: 0 8px; }
-.ppt-progress::before,
-.ppt-progress::after {
+.tpl-progress { overflow: visible; margin: 0 8px; }
+.tpl-progress::before,
+.tpl-progress::after {
   position: absolute;
   top: 50%;
   width: 7px;
@@ -636,10 +636,10 @@
   transform: translateY(-50%) rotate(45deg);
   content: '';
 }
-.ppt-progress::before { left: -9px; }
-.ppt-progress::after { right: -9px; }
-.ppt-progress i { position: relative; box-shadow: 0 0 10px rgba(212, 172, 94, .55); }
-.ppt-progress i::after {
+.tpl-progress::before { left: -9px; }
+.tpl-progress::after { right: -9px; }
+.tpl-progress i { position: relative; box-shadow: 0 0 10px rgba(212, 172, 94, .55); }
+.tpl-progress i::after {
   position: absolute;
   right: -3px;
   top: 50%;
@@ -653,8 +653,8 @@
 }
 
 /* Bingkai ganda di sekeliling slide (seperti jendela kode di hero) */
-.ppt-stage-wrap .ppt-stage { overflow: visible; border-radius: 12px; padding: 6px; background: linear-gradient(145deg, #fff8e8, #e9f2ec); }
-.ppt-stage-wrap .ppt-stage::after {
+.tpl-stage-wrap .tpl-stage { overflow: visible; border-radius: 12px; padding: 6px; background: linear-gradient(145deg, #fff8e8, #e9f2ec); }
+.tpl-stage-wrap .tpl-stage::after {
   position: absolute;
   z-index: 6;
   inset: 3px;
@@ -663,12 +663,12 @@
   content: '';
   pointer-events: none;
 }
-.ppt-stage-wrap .ppt-stage { aspect-ratio: auto; }
-.ppt-stage-wrap .ppt-frame { position: relative; inset: auto; aspect-ratio: 16 / 9; border-radius: 7px; overflow: hidden; }
+.tpl-stage-wrap .tpl-stage { aspect-ratio: auto; }
+.tpl-stage-wrap .tpl-frame { position: relative; inset: auto; aspect-ratio: 16 / 9; border-radius: 7px; overflow: hidden; }
 
 /* Tombol panah dengan cincin putus-putus yang berputar saat hover */
-.ppt-arrow { position: relative; }
-.ppt-arrow::before {
+.tpl-arrow { position: relative; }
+.tpl-arrow::before {
   position: absolute;
   inset: -6px;
   border: 1px dashed rgba(177, 139, 65, .45);
@@ -677,18 +677,18 @@
   transition: transform .8s var(--ease-out), opacity var(--duration-xs);
   opacity: .7;
 }
-.ppt-arrow:hover:not(:disabled)::before { transform: rotate(90deg); opacity: 1; }
-.ppt-arrow:disabled::before { opacity: .3; }
+.tpl-arrow:hover:not(:disabled)::before { transform: rotate(90deg); opacity: 1; }
+.tpl-arrow:disabled::before { opacity: .3; }
 
 /* Tab bertekstur kertas + belah ketupat pada tab aktif */
-.ppt-tab {
+.tpl-tab {
   position: relative;
   background-image:
     repeating-linear-gradient(0deg, rgba(118, 97, 58, .03) 0 1px, transparent 1px 6px),
     linear-gradient(145deg, rgba(255, 255, 255, .8), rgba(243, 238, 220, .76));
 }
-.ppt-tab.active { background-image: repeating-linear-gradient(0deg, rgba(118, 97, 58, .03) 0 1px, transparent 1px 6px), var(--gradient-tab-active); }
-.ppt-tab.active::after {
+.tpl-tab.active { background-image: repeating-linear-gradient(0deg, rgba(118, 97, 58, .03) 0 1px, transparent 1px 6px), var(--gradient-tab-active); }
+.tpl-tab.active::after {
   position: absolute;
   top: 8px;
   right: 8px;
@@ -700,17 +700,17 @@
 }
 
 /* ---------- Tekstur di dalam slide ---------- */
-.ppt-slide { isolation: isolate; }
-.ppt-slide > * { z-index: 1; }
-.ppt-slide > .ppt-kicker,
-.ppt-slide > h1,
-.ppt-slide > h2,
-.ppt-slide > .ppt-sub,
-.ppt-slide > .ppt-title,
-.ppt-slide > .ppt-body,
-.ppt-slide > .ppt-big-number { position: relative; }
+.tpl-slide { isolation: isolate; }
+.tpl-slide > * { z-index: 1; }
+.tpl-slide > .tpl-kicker,
+.tpl-slide > h1,
+.tpl-slide > h2,
+.tpl-slide > .tpl-sub,
+.tpl-slide > .tpl-title,
+.tpl-slide > .tpl-body,
+.tpl-slide > .tpl-big-number { position: relative; }
 
-.ppt-slide::before {
+.tpl-slide::before {
   position: absolute;
   z-index: 0;
   inset: 0;
@@ -719,7 +719,7 @@
 }
 
 /* Slide terang: kertas + kontur emas di kanan bawah + grid titik */
-.ppt-content::before {
+.tpl-content::before {
   background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E"),
     repeating-radial-gradient(ellipse at 100% 100%, transparent 0 1.6cqw, rgba(151, 120, 62, .1) 1.7cqw 1.8cqw, transparent 1.9cqw 3.4cqw),
@@ -732,7 +732,7 @@
 }
 
 /* grid titik hanya di pojok kanan atas */
-.ppt-content::after {
+.tpl-content::after {
   position: absolute;
   z-index: 0;
   top: 1.6cqw;
@@ -748,8 +748,8 @@
 }
 
 /* Slide gelap (cover, pembatas, penutup): kontur atlas + garis halus + cahaya */
-.ppt-cover::before,
-.ppt-divider::before {
+.tpl-cover::before,
+.tpl-divider::before {
   background-image:
     radial-gradient(circle at 12% 0, rgba(226, 176, 74, .22), transparent 42%),
     radial-gradient(circle at 90% 100%, rgba(124, 203, 189, .18), transparent 45%),
@@ -761,7 +761,7 @@
 }
 
 /* Bingkai emas tipis + titik sudut di semua slide */
-.ppt-frame > .ppt-corner {
+.tpl-frame > .tpl-corner {
   position: absolute;
   z-index: 2;
   inset: 1.4cqw;
@@ -775,10 +775,10 @@
   pointer-events: none;
 }
 
-.ppt-frame.is-dark > .ppt-corner { border-color: rgba(231, 203, 132, .3); }
+.tpl-frame.is-dark > .tpl-corner { border-color: rgba(231, 203, 132, .3); }
 
 /* Sigil ✧ besar di slide gelap */
-.ppt-slide > .ppt-slide-sigil {
+.tpl-slide > .tpl-slide-sigil {
   position: absolute;
   z-index: 0;
   right: 4cqw;
@@ -791,43 +791,43 @@
   animation: sigilBreath 6s ease-in-out infinite alternate;
 }
 
-.ppt-content > .ppt-slide-sigil { color: rgba(178, 131, 60, .1); font-size: 11cqw; right: 3cqw; bottom: 3cqw; }
+.tpl-content > .tpl-slide-sigil { color: rgba(178, 131, 60, .1); font-size: 11cqw; right: 3cqw; bottom: 3cqw; }
 
 /* Kartu di dalam slide ikut bertekstur */
-.ppt-card {
+.tpl-card {
   background-image:
     repeating-linear-gradient(0deg, rgba(118, 97, 58, .03) 0 1px, transparent 1px 6px),
     linear-gradient(145deg, #fffbf0, #fbf3df);
   box-shadow: inset 0 0 0 1px rgba(179, 143, 76, .16), 0 .4cqw 1.2cqw rgba(72, 111, 95, .08);
 }
 
-.ppt-stat.is-teal,
-.ppt-key-message {
+.tpl-stat.is-teal,
+.tpl-key-message {
   background-image:
     radial-gradient(circle at 10% 0, rgba(226, 176, 74, .28), transparent 50%),
     repeating-linear-gradient(0deg, rgba(255, 247, 222, .05) 0 1px, transparent 1px 6px),
     linear-gradient(155deg, #2a7a78, #22585c);
 }
 
-.ppt-dot { box-shadow: 0 0 0 .35cqw rgba(255, 255, 255, .55), 0 0 0 .45cqw rgba(179, 143, 76, .35); }
-.ppt-cover .ppt-dot,
-.ppt-divider .ppt-dot { box-shadow: 0 0 0 .5cqw rgba(231, 203, 132, .18), 0 0 3cqw rgba(226, 176, 74, .35); }
+.tpl-dot { box-shadow: 0 0 0 .35cqw rgba(255, 255, 255, .55), 0 0 0 .45cqw rgba(179, 143, 76, .35); }
+.tpl-cover .tpl-dot,
+.tpl-divider .tpl-dot { box-shadow: 0 0 0 .5cqw rgba(231, 203, 132, .18), 0 0 3cqw rgba(226, 176, 74, .35); }
 
 @media (max-width: 560px) {
-  .ppt-sigil { font-size: 80px; }
-  .ppt-sigil.is-small { display: none; }
-  .ppt-panel::after { inset: 8px; }
-  .ppt-arrow::before { display: none; }
+  .tpl-sigil { font-size: 80px; }
+  .tpl-sigil.is-small { display: none; }
+  .tpl-panel::after { inset: 8px; }
+  .tpl-arrow::before { display: none; }
 }
 
 @media (max-width: 560px) {
-  .ppt-viewer { padding: 10px; padding-top: max(10px, calc(env(safe-area-inset-top) + 62px)); }
-  .ppt-panel { width: 100%; padding: 16px 14px 12px; gap: 12px; }
-  .ppt-panel-head { flex-direction: column; align-items: stretch; gap: 12px; }
-  .ppt-panel-head .button { height: 40px; }
-  .ppt-stage-wrap { grid-template-columns: 1fr 1fr; gap: 10px; }
-  .ppt-stage { grid-column: 1 / -1; grid-row: 1; }
-  .ppt-arrow { grid-row: 2; width: 100%; height: 40px; border-radius: var(--radius-md); }
-  .ppt-close span { display: none; }
-  .ppt-close { padding: 0 12px; }
+  .tpl-viewer { padding: 10px; padding-top: max(10px, calc(env(safe-area-inset-top) + 62px)); }
+  .tpl-panel { width: 100%; padding: 16px 14px 12px; gap: 12px; }
+  .tpl-panel-head { flex-direction: column; align-items: stretch; gap: 12px; }
+  .tpl-panel-head .button { height: 40px; }
+  .tpl-stage-wrap { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tpl-stage { grid-column: 1 / -1; grid-row: 1; }
+  .tpl-arrow { grid-row: 2; width: 100%; height: 40px; border-radius: var(--radius-md); }
+  .tpl-close span { display: none; }
+  .tpl-close { padding: 0 12px; }
 }
