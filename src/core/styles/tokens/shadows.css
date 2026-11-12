@@ -1,0 +1,14 @@
+/* =============================================================================
+   TOKEN BAYANGAN (SHADOW) — bayangan standar project.
+   Nilai diambil dari bayangan yang sudah dipakai kartu/tombol di tema aktif.
+   ============================================================================= */
+
+:root {
+  --shadow-sm: 0 5px 15px rgba(111, 132, 118, .12);
+  --shadow-md: 0 10px 30px rgba(51, 69, 60, .07);
+  --shadow-lg: 0 27px 70px rgba(59, 82, 73, .2);
+  --shadow-primary: 0 9px 22px rgba(38, 111, 109, .28);
+  --shadow-primary-hover: 0 11px 26px rgba(38, 111, 109, .3);
+  --shadow-focus: 0 0 0 3px rgba(178, 131, 60, .35);
+  --shadow-inset-hairline: inset 0 0 0 1px rgba(255, 255, 255, .35);
+}

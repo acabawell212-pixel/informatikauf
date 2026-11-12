@@ -1,0 +1,30 @@
+/* =============================================================================
+   TOKEN JARAK (SPACING) — skala jarak standar project.
+   Dipakai untuk padding/margin/gap baru supaya ritme jarak konsisten.
+   ============================================================================= */
+
+:root {
+  --space-2xs: 2px;
+  --space-xs: 4px;
+  --space-sm: 6px;
+  --space-sm-2: 8px;
+  --space-md: 10px;
+  --space-md-2: 12px;
+  --space-md-3: 14px;
+  --space-lg: 16px;
+  --space-lg-2: 18px;
+  --space-xl: 20px;
+  --space-xl-2: 24px;
+  --space-2xl: 28px;
+  --space-3xl: 32px;
+  --space-4xl: 40px;
+  --space-5xl: 48px;
+  --space-6xl: 64px;
+
+  /* Jarak vertikal section (dipakai .section di base) */
+  --section-padding-block: 118px;
+  /* Lebar maksimum kolom isi */
+  --layout-max-width: 1180px;
+  /* Tinggi header tetap */
+  --layout-header-height: 76px;
+}

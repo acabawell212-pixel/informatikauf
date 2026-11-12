@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ArrowUpRight, Menu, X } from 'lucide-react';
 import { Brand } from './Brand';
-import { navItems } from '../data/siteData';
+import { navItems } from '../data/site';
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);

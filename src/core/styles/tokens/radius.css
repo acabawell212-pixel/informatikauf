@@ -1,0 +1,14 @@
+/* =============================================================================
+   TOKEN RADIUS — sudut membulat standar project.
+   ============================================================================= */
+
+:root {
+  --radius-xs: 3px;
+  --radius-sm: 4px;
+  --radius-md: 5px;   /* radius paling sering dipakai (kartu, tombol, panel) */
+  --radius-lg: 6px;
+  --radius-xl: 9px;
+  --radius-2xl: 10px;
+  --radius-pill: 99px;
+  --radius-circle: 50%;
+}

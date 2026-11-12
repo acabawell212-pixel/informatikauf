@@ -1,0 +1,59 @@
+/* Section "Template PPT" — kartu template tugas dengan tombol Buka PPT */
+.template-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 14px;
+  margin-top: 42px;
+}
+
+.template-card {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 22px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.template-icon {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-md);
+  background: var(--color-brand);
+  color: var(--palette-parchment-lightest);
+}
+
+.template-copy h3 {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.template-copy p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--color-text-muted);
+}
+
+.template-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: auto;
+}
+
+@media (max-width: 560px) {
+  .template-grid {
+    grid-template-columns: 1fr;
+    margin-top: 29px;
+  }
+
+  .template-actions .button {
+    flex: 1;
+  }
+}

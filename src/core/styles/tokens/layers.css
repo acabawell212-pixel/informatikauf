@@ -1,0 +1,15 @@
+/* =============================================================================
+   TOKEN LAPISAN (Z-INDEX) — urutan tumpukan elemen yang mengambang.
+   Ditulis sebagai token supaya tidak ada nilai z-index liar di komponen.
+   ============================================================================= */
+
+:root {
+  --z-texture: 9;      /* tekstur kertas & kontur peta */
+  --z-cursor-glow: 15; /* cahaya yang mengikuti kursor */
+  --z-header: 20;      /* navigasi tetap */
+  --z-progress: 60;    /* batang progres scroll */
+  --z-sound: 70;       /* tombol kendali suara */
+  --z-intro: 850;      /* splash pembuka */
+  --z-lightbox: 1000;  /* tampilan foto besar */
+  --z-hint: 1000;      /* tooltip interaktif */
+}

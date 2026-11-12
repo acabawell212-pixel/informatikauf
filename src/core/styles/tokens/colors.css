@@ -1,0 +1,88 @@
+/* =============================================================================
+   TOKEN WARNA — satu-satunya sumber nilai warna website.
+   -----------------------------------------------------------------------------
+   Struktur dua lapis:
+   1. PALET  : nilai warna mentah (mis. --palette-teal-deep). Jangan dipakai
+               langsung oleh banyak komponen; pakai token semantik di bawahnya.
+   2. SEMANTIK: nama berdasarkan PERAN (mis. --color-text, --color-border).
+
+   Sebagian token semantik mengalias ke token tema (--bg, --panel, --panel-2,
+   --white, --muted, --dim, --blue, --cyan, --line) yang didefinisikan di
+   lapisan tema (base/globals.css, theme/vibrant.css, theme/fantasy.css).
+   Alias bersifat "lazy": nilainya otomatis ikut tema yang menang.
+   ============================================================================= */
+
+:root {
+  /* ---------- PALET: hijau teal (warna utama brand) ---------- */
+  --palette-teal-deep: #267c7a;
+  --palette-teal: #287e7d;
+  --palette-teal-ink: #315e61;      /* teks hijau tua di atas permukaan terang */
+  --palette-teal-soft: #418f82;
+  --palette-teal-soft-alt: #438d83; /* varian tipis dari --palette-teal-soft (tema lama) */
+  --palette-teal-mint: #7ccbbd;
+
+  /* ---------- PALET: emas ---------- */
+  --palette-gold-dark: #a47b36;
+  --palette-gold: #b2833c;
+  --palette-gold-mid: #b99655;
+  --palette-gold-bright: #e2b04a;
+  --palette-gold-pale: #e7cb84;
+
+  /* ---------- PALET: kertas/parchment (permukaan terang) ---------- */
+  --palette-parchment-lightest: #fffdf7;
+  --palette-parchment-light: #fffaf0;
+  --palette-parchment: #fff9e9;
+  --palette-parchment-warm: #f8eed7;
+  --palette-parchment-soft: #fff4d9;
+  --palette-cream: #f6f0e2;
+  --palette-cream-alt: #f3ecd9;
+  --palette-mint-wash: #e2f0e9;
+
+  /* ---------- PALET: gelap (lightbox, intro, halaman admin) ---------- */
+  --palette-ink-deepest: #080e19;
+  --palette-ink-deep: #0b121f;
+  --palette-ink-panel: #0d1523;
+  --palette-ink-panel-2: #111b2b;
+  --palette-navy: #202744;
+  --palette-navy-soft: #303956;
+  --palette-indigo: #5146c2;
+  --palette-mist: #f0f3fa;
+  --palette-lilac: #f0efff;
+  --palette-danger: #b5402f;
+  --palette-white: #ffffff;
+
+  /* ---------- PALET: transparansi yang dipakai berulang ---------- */
+  --palette-overlay: rgba(2, 18, 26, .44);
+  --palette-overlay-deep: rgba(5, 10, 18, .42);
+
+  /* ---------- SEMANTIK: permukaan & teks (mengikuti tema aktif) ---------- */
+  --color-background: var(--bg);
+  --color-surface: var(--panel);
+  --color-surface-alt: var(--panel-2);
+  --color-text: var(--white);
+  --color-text-muted: var(--muted);
+  --color-text-dim: var(--dim);
+  --color-accent: var(--blue);
+  --color-accent-soft: var(--cyan);
+  --color-border: var(--line);
+
+  /* ---------- SEMANTIK: brand (nilai tetap, tidak berubah oleh tema) ---------- */
+  --color-brand: var(--palette-teal-deep);
+  --color-brand-ink: var(--palette-teal-ink);
+  --color-brand-soft: var(--palette-teal-soft);
+  --color-brand-mint: var(--palette-teal-mint);
+  --color-gold: var(--palette-gold);
+  --color-gold-bright: var(--palette-gold-bright);
+
+  /* ---------- SEMANTIK: status ---------- */
+  --color-success: var(--palette-teal-soft-alt);
+  --color-warning: var(--palette-gold-bright);
+  --color-error: var(--palette-danger);
+  --color-info: var(--color-accent);
+
+  /* ---------- SEMANTIK: lapisan gelap (overlay & lightbox) ---------- */
+  --color-overlay: var(--palette-overlay);
+  --color-overlay-deep: var(--palette-overlay-deep);
+  --color-surface-dark: var(--palette-ink-deepest);
+  --color-surface-dark-alt: var(--palette-ink-deep);
+}

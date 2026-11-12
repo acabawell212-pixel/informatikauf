@@ -1,0 +1,20 @@
+/* =============================================================================
+   TOKEN MOTION — durasi & kurva animasi standar.
+   ============================================================================= */
+
+:root {
+  /* Kurva (easing) */
+  --ease-out: cubic-bezier(.2, .75, .25, 1);       /* masuk/kembali ke posisi */
+  --ease-smooth: cubic-bezier(.2, .65, .25, 1);    /* reveal & hover umum */
+  --ease-emphasis: cubic-bezier(.16, .8, .23, 1);  /* animasi huruf hero */
+  --ease-standard: cubic-bezier(.4, 0, .2, 1);     /* sapuan/sheen */
+  --ease-card: cubic-bezier(.2, .7, .2, 1);        /* transisi kartu */
+
+  /* Durasi */
+  --duration-instant: .12s;
+  --duration-xs: .2s;
+  --duration-sm: .25s;
+  --duration-md: .3s;
+  --duration-lg: .7s;
+  --duration-xl: .9s;
+}

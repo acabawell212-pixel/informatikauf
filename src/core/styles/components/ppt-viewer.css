@@ -1,0 +1,833 @@
+/* =============================================================================
+   Penampil PPT di web (src/features/PptViewer.tsx)
+   Slide 16:9 memakai unit cqw: 1 inci slide = 10cqw, 1pt ≈ 0.139cqw — sama
+   dengan ukuran di public/templates/template-tugas.pptx (10in × 5.625in).
+   ============================================================================= */
+.ppt-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-lightbox);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  padding-top: max(16px, calc(env(safe-area-inset-top) + 56px));
+  background: rgba(24, 48, 50, .55);
+  backdrop-filter: blur(12px);
+  animation: lightboxFade var(--duration-xs) ease both;
+}
+
+/* Panel kertas — sama dengan papan jadwal & kartu lain di tema fantasy */
+.ppt-panel {
+  position: relative;
+  width: min(1060px, 100%, calc((100dvh - 300px) * 16 / 9 + 140px));
+  min-width: min(300px, 100%);
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px 22px 16px;
+  overflow: hidden auto;
+  border: 1px solid rgba(120, 91, 48, .22);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(circle at 100% 0, rgba(185, 147, 70, .16), transparent 40%),
+    radial-gradient(circle at 0 100%, rgba(77, 162, 145, .14), transparent 45%),
+    var(--gradient-card);
+  box-shadow: 0 30px 90px rgba(20, 40, 38, .35);
+  animation: lightboxRise var(--duration-md) var(--ease-card) both;
+}
+
+.ppt-panel-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.ppt-panel-head .eyebrow { margin-bottom: 8px; }
+
+.ppt-panel-head h3 {
+  margin: 0;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(24px, 3vw, 34px);
+  font-weight: 600;
+  line-height: 1.05;
+  color: var(--palette-teal-ink);
+}
+
+.ppt-panel-head h3 span {
+  background: var(--gradient-heading-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.ppt-panel-head .button { flex-shrink: 0; white-space: nowrap; }
+
+.ppt-close {
+  position: fixed;
+  z-index: calc(var(--z-lightbox) + 1);
+  top: max(12px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 16px;
+  border: 1px solid rgba(174, 134, 57, .5);
+  border-radius: var(--radius-pill);
+  background: rgba(255, 251, 239, .96);
+  box-shadow: 0 6px 20px rgba(20, 40, 38, .25);
+  color: var(--palette-teal-ink);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform var(--duration-xs), background var(--duration-xs);
+}
+
+.ppt-close:hover { transform: scale(1.05); background: var(--palette-parchment-warm); }
+
+/* Batang progres — gradient yang sama dengan progres scroll halaman */
+.ppt-progress {
+  height: 3px;
+  border-radius: var(--radius-pill);
+  background: rgba(120, 91, 48, .12);
+  overflow: hidden;
+}
+
+.ppt-progress i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--gradient-scroll-progress);
+  transition: width var(--duration-lg) var(--ease-out);
+}
+
+.ppt-stage-wrap {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.ppt-stage {
+  container-type: inline-size;
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(120, 91, 48, .2);
+  background: var(--palette-parchment);
+  box-shadow: 0 18px 42px rgba(42, 67, 59, .16);
+  perspective: 1400px;
+}
+
+.ppt-arrow {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(174, 134, 57, .45);
+  border-radius: var(--radius-circle);
+  background: rgba(255, 251, 239, .9);
+  color: var(--palette-teal-ink);
+  cursor: pointer;
+  box-shadow: 0 5px 14px rgba(72, 111, 95, .12);
+  transition: transform var(--duration-xs) var(--ease-out), background var(--duration-xs), opacity var(--duration-xs);
+}
+
+.ppt-arrow:hover:not(:disabled) { background: var(--gradient-tab-active); transform: scale(1.08); }
+.ppt-arrow svg { transition: transform var(--duration-xs); }
+.ppt-arrow.is-prev:hover:not(:disabled) svg { transform: translateX(-2px); }
+.ppt-arrow.is-next:hover:not(:disabled) svg { transform: translateX(2px); }
+.ppt-arrow:disabled { opacity: .35; cursor: default; }
+
+/* Tab slide — gaya sama dengan tab hari di Jadwal MK */
+.ppt-tabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 2px 2px 6px;
+  scrollbar-width: thin;
+}
+
+.ppt-tab {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 7px 12px;
+  border: 1px solid rgba(120, 91, 48, .18);
+  border-radius: var(--radius-md);
+  background: rgba(255, 251, 239, .84);
+  color: #647276;
+  cursor: pointer;
+  transition: border-color var(--duration-xs), background var(--duration-xs), color var(--duration-xs), transform var(--duration-xs);
+}
+
+.ppt-tab > span { font-family: var(--mono); font-size: 9px; letter-spacing: .1em; color: #8b866e; }
+.ppt-tab > strong { font-size: 11px; font-weight: 600; white-space: nowrap; }
+.ppt-tab:hover { border-color: rgba(174, 134, 57, .5); background: rgba(248, 238, 215, .95); color: var(--palette-teal-ink); transform: translateY(-2px); }
+
+.ppt-tab.active {
+  border-color: rgba(174, 134, 57, .55);
+  background: var(--gradient-tab-active);
+  color: var(--palette-teal-ink);
+  box-shadow: 0 5px 14px rgba(72, 111, 95, .12);
+}
+
+.ppt-tab.active > span { color: var(--palette-gold-dark); }
+
+.ppt-help { margin: 0; font-family: var(--mono); font-size: 9px; letter-spacing: .08em; color: #8b866e; text-align: center; }
+
+/* ---------- Efek ganti slide ---------- */
+.ppt-frame { position: absolute; inset: 0; }
+.ppt-frame.is-next { animation: pptInNext .6s var(--ease-card) both; }
+.ppt-frame.is-prev { animation: pptInPrev .6s var(--ease-card) both; }
+
+/* Kilau emas yang menyapu slide saat muncul (sama seperti sheen pada kartu) */
+.ppt-sheen {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background: var(--gradient-sheen);
+  transform: translateX(-110%);
+  animation: pptSheen .9s var(--ease-standard) .1s both;
+}
+
+.ppt-frame.is-prev .ppt-sheen { animation-name: pptSheenBack; }
+
+/* Isi slide muncul bertahap */
+.ppt-frame .ppt-kicker,
+.ppt-frame .ppt-slide h1,
+.ppt-frame .ppt-sub,
+.ppt-frame .ppt-id-card,
+.ppt-frame .ppt-closing,
+.ppt-frame .ppt-big-number,
+.ppt-frame .ppt-divider h2,
+.ppt-frame .ppt-title,
+.ppt-frame .ppt-body > * > *,
+.ppt-frame .ppt-body > p {
+  animation: pptRise .55s var(--ease-out) both;
+}
+
+.ppt-frame .ppt-title,
+.ppt-frame .ppt-kicker,
+.ppt-frame .ppt-big-number { animation-delay: .12s; }
+.ppt-frame .ppt-slide h1,
+.ppt-frame .ppt-divider h2 { animation-delay: .2s; }
+.ppt-frame .ppt-sub,
+.ppt-frame .ppt-body > p,
+.ppt-frame .ppt-body > * > :nth-child(1) { animation-delay: .24s; }
+.ppt-frame .ppt-body > * > :nth-child(2) { animation-delay: .32s; }
+.ppt-frame .ppt-id-card,
+.ppt-frame .ppt-closing,
+.ppt-frame .ppt-body > * > :nth-child(3) { animation-delay: .4s; }
+.ppt-frame .ppt-body > * > :nth-child(4) { animation-delay: .48s; }
+.ppt-frame .ppt-body > * > :nth-child(n + 5) { animation-delay: .56s; }
+
+.ppt-frame .ppt-cover > .ppt-dot,
+.ppt-frame .ppt-side-art .ppt-dot { animation: pptPop .7s var(--ease-emphasis) .3s both; }
+.ppt-frame .ppt-orbits i,
+.ppt-frame .ppt-side-art i { animation: pptOrbit .9s var(--ease-out) .15s both; }
+
+@keyframes pptInNext {
+  from { opacity: 0; transform: translateX(7%) rotateY(-9deg) scale(.96); filter: blur(4px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+
+@keyframes pptInPrev {
+  from { opacity: 0; transform: translateX(-7%) rotateY(9deg) scale(.96); filter: blur(4px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+
+@keyframes pptSheen { from { transform: translateX(-110%); } to { transform: translateX(110%); } }
+@keyframes pptSheenBack { from { transform: translateX(110%); } to { transform: translateX(-110%); } }
+@keyframes pptRise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes pptPop { from { opacity: 0; transform: scale(.4) rotate(-25deg); } to { opacity: 1; transform: none; } }
+@keyframes pptOrbit { from { opacity: 0; transform: scale(.75) rotate(-20deg); } to { opacity: 1; transform: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .ppt-viewer,
+  .ppt-panel,
+  .ppt-frame,
+  .ppt-frame * { animation: none !important; }
+  .ppt-sheen { display: none; }
+}
+
+/* ---------- Slide dasar ---------- */
+.ppt-slide {
+  --pt: .1389cqw;
+  --in: 10cqw;
+  --teal: #267c7a;
+  --teal-deep: #1d5f5e;
+  --ink: #1e3b3d;
+  --muted: #5d7372;
+  --gold: #b2833c;
+  --gold-pale: #e7cb84;
+  --mint: #7ccbbd;
+  --parchment: #fff9e9;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: Calibri, 'Plus Jakarta Sans', sans-serif;
+  line-height: 1.25;
+  color: var(--ink);
+  background: #fff;
+  text-align: left;
+}
+
+.ppt-slide h1,
+.ppt-slide h2,
+.ppt-big-number,
+.ppt-stat strong,
+.ppt-avatar,
+.ppt-toc span {
+  font-family: Cambria, Georgia, serif;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.ppt-slide p,
+.ppt-slide ul,
+.ppt-slide ol,
+.ppt-slide h1,
+.ppt-slide h2 { margin: 0; }
+
+.ppt-slide svg { width: 50%; height: 50%; }
+
+.ppt-dot { display: grid; place-items: center; flex-shrink: 0; border-radius: 50%; background: var(--teal); color: #fff; }
+.ppt-dot.is-gold { background: var(--gold); }
+.ppt-dot-sm { width: calc(.5 * var(--in)); height: calc(.5 * var(--in)); }
+.ppt-dot-md { width: calc(.8 * var(--in)); height: calc(.8 * var(--in)); }
+.ppt-dot-lg { width: calc(1.3 * var(--in)); height: calc(1.3 * var(--in)); }
+
+.ppt-card { border-radius: calc(.12 * var(--in)); background: var(--parchment); }
+
+/* ---------- Cover, penutup, pembatas ---------- */
+.ppt-cover,
+.ppt-divider { padding: calc(.75 * var(--in)) calc(.6 * var(--in)); background: var(--teal); color: #fff; }
+.ppt-divider { background: var(--teal-deep); padding-top: calc(1.35 * var(--in)); }
+
+.ppt-orbits i { position: absolute; border-radius: 50%; border: 1px solid rgba(231, 203, 132, .45); }
+.ppt-orbits-cover i:first-child { width: calc(4.2 * var(--in)); height: calc(4.2 * var(--in)); left: calc(6.55 * var(--in)); top: calc(-.6 * var(--in)); }
+.ppt-orbits-cover i:last-child { width: calc(3 * var(--in)); height: calc(3 * var(--in)); left: calc(7.15 * var(--in)); top: 0; border-color: rgba(124, 203, 189, .4); }
+.ppt-orbits-divider i:first-child { width: calc(3.8 * var(--in)); height: calc(3.8 * var(--in)); left: calc(6.9 * var(--in)); top: calc(.9 * var(--in)); }
+.ppt-orbits-divider i:last-child { display: none; }
+
+.ppt-cover > .ppt-dot { position: absolute; left: calc(7.95 * var(--in)); top: calc(.8 * var(--in)); }
+
+.ppt-kicker { display: block; font-size: calc(12 * var(--pt)); font-weight: 700; letter-spacing: .25em; color: var(--gold-pale); }
+.ppt-cover h1 { max-width: calc(6.2 * var(--in)); margin-top: calc(.12 * var(--in)); font-size: calc(40 * var(--pt)); line-height: 1.1; color: #fff; }
+.ppt-sub { max-width: calc(7.5 * var(--in)); margin-top: calc(.15 * var(--in)) !important; font-size: calc(16 * var(--pt)); color: var(--mint); }
+
+.ppt-id-card {
+  position: absolute;
+  left: calc(.6 * var(--in));
+  top: calc(3.85 * var(--in));
+  width: calc(5.6 * var(--in));
+  display: flex;
+  flex-direction: column;
+  gap: calc(.03 * var(--in));
+  padding: calc(.15 * var(--in)) calc(.25 * var(--in));
+  border-radius: calc(.12 * var(--in));
+  background: var(--teal-deep);
+  font-size: calc(12 * var(--pt));
+  color: var(--mint);
+}
+
+.ppt-id-card small { font-size: calc(10 * var(--pt)); font-weight: 700; color: var(--gold-pale); }
+.ppt-id-card b { font-size: calc(14 * var(--pt)); color: #fff; }
+
+.ppt-closing { position: absolute; left: calc(.6 * var(--in)); top: calc(4.6 * var(--in)); font-size: calc(12 * var(--pt)); color: var(--gold-pale); }
+
+.ppt-big-number { display: block; font-size: calc(72 * var(--pt)); line-height: 1; color: var(--gold); }
+.ppt-divider h2 { margin-top: calc(.25 * var(--in)); font-size: calc(36 * var(--pt)); color: #fff; }
+
+/* ---------- Slide isi ---------- */
+.ppt-content { padding: calc(.4 * var(--in)) calc(.6 * var(--in)) 0; }
+.ppt-title { height: calc(.75 * var(--in)); display: flex; align-items: center; font-size: calc(32 * var(--pt)); color: var(--teal-deep); }
+.ppt-body { margin-top: calc(.3 * var(--in)); }
+
+.ppt-footer,
+.ppt-number { position: absolute; top: calc(5.2 * var(--in)); font-size: calc(10 * var(--pt)); color: var(--muted); }
+.ppt-footer { left: calc(.6 * var(--in)); }
+.ppt-number { right: calc(.6 * var(--in)); }
+
+.ppt-members { display: grid; grid-template-columns: repeat(4, 1fr); gap: calc(.25 * var(--in)); }
+
+.ppt-member {
+  height: calc(2.95 * var(--in));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(.04 * var(--in));
+  padding-top: calc(.3 * var(--in));
+  text-align: center;
+  font-size: calc(12 * var(--pt));
+  color: var(--muted);
+}
+
+.ppt-avatar {
+  width: calc(.9 * var(--in));
+  height: calc(.9 * var(--in));
+  display: grid;
+  place-items: center;
+  margin-bottom: calc(.2 * var(--in));
+  border-radius: 50%;
+  background: var(--teal);
+  color: #fff;
+  font-size: calc(28 * var(--pt));
+}
+
+.ppt-avatar.is-gold { background: var(--gold); }
+.ppt-member b { font-size: calc(14 * var(--pt)); color: var(--ink); }
+.ppt-member em { font-style: normal; font-size: calc(11 * var(--pt)); color: var(--teal); }
+
+.ppt-split { display: grid; grid-template-columns: 1fr calc(4.2 * var(--in)); gap: calc(.4 * var(--in)); }
+
+.ppt-toc { list-style: none; padding: 0; display: grid; gap: calc(.16 * var(--in)); }
+.ppt-toc li {
+  height: calc(.72 * var(--in));
+  display: flex;
+  align-items: center;
+  gap: calc(.3 * var(--in));
+  padding-left: calc(.25 * var(--in));
+  border-radius: calc(.12 * var(--in));
+  font-size: calc(16 * var(--pt));
+  font-weight: 700;
+}
+.ppt-toc li.is-tinted { background: var(--parchment); }
+.ppt-toc span { width: calc(.6 * var(--in)); font-size: calc(24 * var(--pt)); color: var(--gold); }
+
+.ppt-side-art { position: relative; display: grid; place-items: center; }
+.ppt-side-art i { position: absolute; width: calc(2.5 * var(--in)); height: calc(2.5 * var(--in)); border-radius: 50%; border: 1px solid rgba(38, 124, 122, .35); }
+.ppt-side-art.is-gold i { border-color: rgba(178, 131, 60, .4); }
+
+.ppt-rows { display: grid; gap: calc(.38 * var(--in)); }
+.ppt-row { display: flex; gap: calc(.25 * var(--in)); }
+.ppt-row b { font-size: calc(18 * var(--pt)); }
+.ppt-row p { font-size: calc(14 * var(--pt)); color: var(--muted); }
+
+.ppt-bullets,
+.ppt-refs { display: grid; align-content: start; gap: calc(.14 * var(--in)); margin: 0; padding-left: 1.2em; font-size: calc(16 * var(--pt)); }
+.ppt-refs { font-size: calc(14 * var(--pt)); gap: calc(.17 * var(--in)); }
+.ppt-bullets li::marker,
+.ppt-refs li::marker { color: var(--teal); }
+
+.ppt-image-slot {
+  height: calc(3.45 * var(--in));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(.15 * var(--in));
+  color: var(--teal);
+  font-size: calc(12 * var(--pt));
+}
+.ppt-image-slot svg { width: calc(.7 * var(--in)); height: calc(.7 * var(--in)); }
+.ppt-image-slot span { color: var(--muted); }
+
+.ppt-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: calc(.25 * var(--in)); margin-top: calc(.15 * var(--in)); }
+.ppt-stat {
+  height: calc(2.6 * var(--in));
+  display: flex;
+  flex-direction: column;
+  gap: calc(.1 * var(--in));
+  padding: calc(.35 * var(--in)) calc(.25 * var(--in));
+  font-size: calc(14 * var(--pt));
+  color: var(--muted);
+}
+.ppt-stat strong { font-size: calc(54 * var(--pt)); line-height: 1.1; color: var(--teal); }
+.ppt-stat.is-teal { background: var(--teal); color: var(--parchment); }
+.ppt-stat.is-teal strong { color: #fff; }
+.ppt-source { margin-top: calc(.35 * var(--in)) !important; font-size: calc(10 * var(--pt)); font-style: italic; color: var(--muted); }
+
+.ppt-compare { display: grid; grid-template-columns: 1fr 1fr; gap: calc(.2 * var(--in)); }
+.ppt-compare > .ppt-card { height: calc(3.45 * var(--in)); padding: calc(.25 * var(--in)) calc(.3 * var(--in)); }
+.ppt-compare-head { display: flex; align-items: center; gap: calc(.15 * var(--in)); margin-bottom: calc(.3 * var(--in)); font-size: calc(18 * var(--pt)); }
+.ppt-compare .ppt-bullets { font-size: calc(15 * var(--pt)); }
+
+.ppt-key-message {
+  min-height: calc(1.15 * var(--in));
+  display: flex;
+  align-items: center;
+  padding: 0 calc(.35 * var(--in));
+  border-radius: calc(.12 * var(--in));
+  background: var(--teal);
+  color: #fff;
+  font-size: calc(18 * var(--pt));
+  font-weight: 700;
+  font-style: italic;
+}
+
+.ppt-checks { list-style: none; padding: 0; margin-top: calc(.35 * var(--in)) !important; display: grid; gap: calc(.23 * var(--in)); }
+.ppt-checks li { display: flex; align-items: center; gap: calc(.2 * var(--in)); font-size: calc(15 * var(--pt)); }
+
+/* ---------- Mode edit admin ---------- */
+.ppt-admin-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.ppt-admin-actions .button { height: 40px; white-space: nowrap; }
+.ppt-admin-actions .button:disabled { opacity: .55; cursor: default; transform: none; }
+
+.ppt-save-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--palette-teal-deep);
+}
+
+.ppt-edit-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  padding: 10px 14px;
+  border: 1px dashed rgba(177, 139, 65, .55);
+  border-radius: var(--radius-md);
+  background: rgba(248, 238, 215, .75);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--palette-teal-ink);
+}
+
+.ppt-edit-banner svg { flex-shrink: 0; margin-top: 3px; color: var(--palette-gold-dark); }
+.ppt-edit-banner.is-error { border-style: solid; border-color: rgba(176, 64, 52, .45); background: rgba(252, 232, 226, .85); color: #8a2f25; }
+
+.ppt-editable {
+  border-radius: 3px;
+  outline: 1px dashed rgba(177, 139, 65, .75);
+  outline-offset: 2px;
+  cursor: text;
+  transition: background var(--duration-xs), outline-color var(--duration-xs);
+}
+
+.ppt-editable:hover { background: rgba(226, 176, 74, .14); }
+.ppt-editable:focus { outline: 2px solid var(--palette-gold-bright); background: rgba(226, 176, 74, .2); }
+.ppt-cover .ppt-editable,
+.ppt-divider .ppt-editable,
+.ppt-stat.is-teal .ppt-editable,
+.ppt-key-message .ppt-editable { outline-color: rgba(231, 203, 132, .7); }
+
+/* Saat mengedit, matikan animasi isi slide supaya teks tidak "loncat" */
+.ppt-panel.is-editing .ppt-frame * { animation: none !important; }
+.ppt-panel.is-editing .ppt-sheen { display: none; }
+
+.ppt-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--palette-teal-ink);
+  background: var(--palette-parchment);
+}
+
+/* =============================================================================
+   Tekstur & ornamen — kosakata visual yang sama dengan effects/textures.css:
+   serat kertas, kontur atlas, grid titik, bingkai emas bertitik sudut, sigil ✧.
+   ============================================================================= */
+.ppt-viewer {
+  background:
+    radial-gradient(ellipse at 15% 10%, rgba(214, 182, 111, .22), transparent 45%),
+    radial-gradient(ellipse at 85% 90%, rgba(95, 159, 142, .24), transparent 45%),
+    rgba(24, 48, 50, .55);
+}
+
+/* Panel */
+.ppt-panel {
+  isolation: isolate;
+  outline: 1px solid rgba(177, 139, 65, .24);
+  outline-offset: -7px;
+}
+
+.ppt-panel > * { position: relative; z-index: 1; }
+
+.ppt-panel::before {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.2'/%3E%3C/svg%3E"),
+    repeating-radial-gradient(ellipse at 0% 100%, transparent 0 17px, rgba(151, 120, 62, .12) 18px 19px, transparent 20px 37px),
+    repeating-radial-gradient(ellipse at 100% 0%, transparent 0 25px, rgba(54, 125, 115, .09) 26px 27px, transparent 28px 49px),
+    radial-gradient(circle, rgba(65, 120, 111, .2) .85px, transparent 1px),
+    repeating-linear-gradient(0deg, rgba(118, 97, 58, .03) 0 1px, transparent 1px 6px);
+  background-position: 0 0, left bottom, right top, right 22px top 24px, 0 0;
+  background-size: 180px 180px, 520px 300px, 440px 300px, 25px 25px, auto;
+  background-repeat: repeat, no-repeat, no-repeat, repeat, repeat;
+  content: '';
+  opacity: .8;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+
+/* Bingkai emas dalam dengan titik di keempat sudut */
+.ppt-panel::after {
+  position: absolute;
+  z-index: 0;
+  inset: 12px;
+  border: 1px solid rgba(179, 143, 76, .2);
+  border-radius: calc(var(--radius-lg) - 6px);
+  background:
+    radial-gradient(circle at 0 0, var(--palette-gold-mid) 0 2.2px, transparent 3px),
+    radial-gradient(circle at 100% 0, var(--palette-gold-mid) 0 2.2px, transparent 3px),
+    radial-gradient(circle at 0 100%, var(--palette-gold-mid) 0 2.2px, transparent 3px),
+    radial-gradient(circle at 100% 100%, var(--palette-gold-mid) 0 2.2px, transparent 3px);
+  content: '';
+  opacity: .75;
+  pointer-events: none;
+}
+
+/* Sigil ✧ yang "bernapas" — seperti di kartu ringkasan jadwal */
+.ppt-sigil {
+  position: absolute !important;
+  z-index: 0 !important;
+  right: 18px;
+  bottom: 4px;
+  color: rgba(178, 131, 60, .2);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 120px;
+  line-height: 1;
+  pointer-events: none;
+  animation: sigilBreath 6s ease-in-out infinite alternate;
+}
+
+.ppt-sigil.is-small {
+  right: auto;
+  bottom: auto;
+  left: 46%;
+  top: 6px;
+  font-size: 54px;
+  color: rgba(54, 125, 115, .16);
+  animation-duration: 8s;
+  animation-direction: alternate-reverse;
+}
+
+/* Belah ketupat di ujung eyebrow (sama dengan section heading) */
+.ppt-panel-head .eyebrow { position: relative; width: fit-content; }
+.ppt-panel-head .eyebrow::after {
+  position: absolute;
+  right: -17px;
+  width: 4px;
+  height: 4px;
+  border: 1px solid #b18b4b;
+  transform: rotate(45deg);
+  content: '';
+  opacity: .72;
+}
+
+/* Garis progres dengan ornamen belah ketupat di kedua ujung */
+.ppt-progress { overflow: visible; margin: 0 8px; }
+.ppt-progress::before,
+.ppt-progress::after {
+  position: absolute;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  border: 1px solid rgba(177, 139, 65, .6);
+  background: var(--palette-parchment-light);
+  transform: translateY(-50%) rotate(45deg);
+  content: '';
+}
+.ppt-progress::before { left: -9px; }
+.ppt-progress::after { right: -9px; }
+.ppt-progress i { position: relative; box-shadow: 0 0 10px rgba(212, 172, 94, .55); }
+.ppt-progress i::after {
+  position: absolute;
+  right: -3px;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--palette-gold-bright);
+  box-shadow: 0 0 0 3px rgba(226, 176, 74, .25), 0 0 12px rgba(226, 176, 74, .8);
+  transform: translateY(-50%);
+  content: '';
+}
+
+/* Bingkai ganda di sekeliling slide (seperti jendela kode di hero) */
+.ppt-stage-wrap .ppt-stage { overflow: visible; border-radius: 12px; padding: 6px; background: linear-gradient(145deg, #fff8e8, #e9f2ec); }
+.ppt-stage-wrap .ppt-stage::after {
+  position: absolute;
+  z-index: 6;
+  inset: 3px;
+  border: 1px solid rgba(176, 140, 69, .3);
+  border-radius: 10px;
+  content: '';
+  pointer-events: none;
+}
+.ppt-stage-wrap .ppt-stage { aspect-ratio: auto; }
+.ppt-stage-wrap .ppt-frame { position: relative; inset: auto; aspect-ratio: 16 / 9; border-radius: 7px; overflow: hidden; }
+
+/* Tombol panah dengan cincin putus-putus yang berputar saat hover */
+.ppt-arrow { position: relative; }
+.ppt-arrow::before {
+  position: absolute;
+  inset: -6px;
+  border: 1px dashed rgba(177, 139, 65, .45);
+  border-radius: inherit;
+  content: '';
+  transition: transform .8s var(--ease-out), opacity var(--duration-xs);
+  opacity: .7;
+}
+.ppt-arrow:hover:not(:disabled)::before { transform: rotate(90deg); opacity: 1; }
+.ppt-arrow:disabled::before { opacity: .3; }
+
+/* Tab bertekstur kertas + belah ketupat pada tab aktif */
+.ppt-tab {
+  position: relative;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(118, 97, 58, .03) 0 1px, transparent 1px 6px),
+    linear-gradient(145deg, rgba(255, 255, 255, .8), rgba(243, 238, 220, .76));
+}
+.ppt-tab.active { background-image: repeating-linear-gradient(0deg, rgba(118, 97, 58, .03) 0 1px, transparent 1px 6px), var(--gradient-tab-active); }
+.ppt-tab.active::after {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 5px;
+  height: 5px;
+  background: var(--palette-gold);
+  transform: rotate(45deg);
+  content: '';
+}
+
+/* ---------- Tekstur di dalam slide ---------- */
+.ppt-slide { isolation: isolate; }
+.ppt-slide > * { z-index: 1; }
+.ppt-slide > .ppt-kicker,
+.ppt-slide > h1,
+.ppt-slide > h2,
+.ppt-slide > .ppt-sub,
+.ppt-slide > .ppt-title,
+.ppt-slide > .ppt-body,
+.ppt-slide > .ppt-big-number { position: relative; }
+
+.ppt-slide::before {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  content: '';
+  pointer-events: none;
+}
+
+/* Slide terang: kertas + kontur emas di kanan bawah + grid titik */
+.ppt-content::before {
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E"),
+    repeating-radial-gradient(ellipse at 100% 100%, transparent 0 1.6cqw, rgba(151, 120, 62, .1) 1.7cqw 1.8cqw, transparent 1.9cqw 3.4cqw),
+    radial-gradient(circle, rgba(65, 120, 111, .22) .08cqw, transparent .1cqw),
+    repeating-linear-gradient(0deg, rgba(118, 97, 58, .025) 0 1px, transparent 1px 6px),
+    linear-gradient(160deg, #fffdf7, #fbf7ec);
+  background-position: 0 0, right bottom, right 2cqw top 2cqw, 0 0, 0 0;
+  background-size: 180px 180px, 38cqw 24cqw, 2.4cqw 2.4cqw, auto, auto;
+  background-repeat: repeat, no-repeat, no-repeat, repeat, no-repeat;
+}
+
+/* grid titik hanya di pojok kanan atas */
+.ppt-content::after {
+  position: absolute;
+  z-index: 0;
+  top: 1.6cqw;
+  right: 1.6cqw;
+  width: 16cqw;
+  height: 9cqw;
+  background-image: radial-gradient(circle, rgba(65, 120, 111, .28) .1cqw, transparent .13cqw);
+  background-size: 1.6cqw 1.6cqw;
+  -webkit-mask-image: linear-gradient(225deg, #000 20%, transparent 75%);
+  mask-image: linear-gradient(225deg, #000 20%, transparent 75%);
+  content: '';
+  pointer-events: none;
+}
+
+/* Slide gelap (cover, pembatas, penutup): kontur atlas + garis halus + cahaya */
+.ppt-cover::before,
+.ppt-divider::before {
+  background-image:
+    radial-gradient(circle at 12% 0, rgba(226, 176, 74, .22), transparent 42%),
+    radial-gradient(circle at 90% 100%, rgba(124, 203, 189, .18), transparent 45%),
+    repeating-radial-gradient(ellipse at 0% 100%, transparent 0 2cqw, rgba(231, 203, 132, .12) 2.1cqw 2.2cqw, transparent 2.3cqw 4cqw),
+    repeating-linear-gradient(0deg, rgba(255, 247, 222, .04) 0 1px, transparent 1px 6px);
+  background-size: auto, auto, 46cqw 30cqw, auto;
+  background-position: 0 0, 0 0, left bottom, 0 0;
+  background-repeat: no-repeat, no-repeat, no-repeat, repeat;
+}
+
+/* Bingkai emas tipis + titik sudut di semua slide */
+.ppt-frame > .ppt-corner {
+  position: absolute;
+  z-index: 2;
+  inset: 1.4cqw;
+  border: 1px solid rgba(179, 143, 76, .22);
+  border-radius: .8cqw;
+  background:
+    radial-gradient(circle at 0 0, var(--palette-gold-mid) 0 .22cqw, transparent .3cqw),
+    radial-gradient(circle at 100% 0, var(--palette-gold-mid) 0 .22cqw, transparent .3cqw),
+    radial-gradient(circle at 0 100%, var(--palette-gold-mid) 0 .22cqw, transparent .3cqw),
+    radial-gradient(circle at 100% 100%, var(--palette-gold-mid) 0 .22cqw, transparent .3cqw);
+  pointer-events: none;
+}
+
+.ppt-frame.is-dark > .ppt-corner { border-color: rgba(231, 203, 132, .3); }
+
+/* Sigil ✧ besar di slide gelap */
+.ppt-slide > .ppt-slide-sigil {
+  position: absolute;
+  z-index: 0;
+  right: 4cqw;
+  bottom: 1cqw;
+  color: rgba(238, 214, 158, .14);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 16cqw;
+  line-height: 1;
+  pointer-events: none;
+  animation: sigilBreath 6s ease-in-out infinite alternate;
+}
+
+.ppt-content > .ppt-slide-sigil { color: rgba(178, 131, 60, .1); font-size: 11cqw; right: 3cqw; bottom: 3cqw; }
+
+/* Kartu di dalam slide ikut bertekstur */
+.ppt-card {
+  background-image:
+    repeating-linear-gradient(0deg, rgba(118, 97, 58, .03) 0 1px, transparent 1px 6px),
+    linear-gradient(145deg, #fffbf0, #fbf3df);
+  box-shadow: inset 0 0 0 1px rgba(179, 143, 76, .16), 0 .4cqw 1.2cqw rgba(72, 111, 95, .08);
+}
+
+.ppt-stat.is-teal,
+.ppt-key-message {
+  background-image:
+    radial-gradient(circle at 10% 0, rgba(226, 176, 74, .28), transparent 50%),
+    repeating-linear-gradient(0deg, rgba(255, 247, 222, .05) 0 1px, transparent 1px 6px),
+    linear-gradient(155deg, #2a7a78, #22585c);
+}
+
+.ppt-dot { box-shadow: 0 0 0 .35cqw rgba(255, 255, 255, .55), 0 0 0 .45cqw rgba(179, 143, 76, .35); }
+.ppt-cover .ppt-dot,
+.ppt-divider .ppt-dot { box-shadow: 0 0 0 .5cqw rgba(231, 203, 132, .18), 0 0 3cqw rgba(226, 176, 74, .35); }
+
+@media (max-width: 560px) {
+  .ppt-sigil { font-size: 80px; }
+  .ppt-sigil.is-small { display: none; }
+  .ppt-panel::after { inset: 8px; }
+  .ppt-arrow::before { display: none; }
+}
+
+@media (max-width: 560px) {
+  .ppt-viewer { padding: 10px; padding-top: max(10px, calc(env(safe-area-inset-top) + 62px)); }
+  .ppt-panel { width: 100%; padding: 16px 14px 12px; gap: 12px; }
+  .ppt-panel-head { flex-direction: column; align-items: stretch; gap: 12px; }
+  .ppt-panel-head .button { height: 40px; }
+  .ppt-stage-wrap { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .ppt-stage { grid-column: 1 / -1; grid-row: 1; }
+  .ppt-arrow { grid-row: 2; width: 100%; height: 40px; border-radius: var(--radius-md); }
+  .ppt-close span { display: none; }
+  .ppt-close { padding: 0 12px; }
+}

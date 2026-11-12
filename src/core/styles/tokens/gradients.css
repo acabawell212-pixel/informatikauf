@@ -1,0 +1,50 @@
+/* =============================================================================
+   TOKEN GRADIENT — satu-satunya sumber gradient website.
+   Nilai default di bawah = gradient yang sedang tampil (tema fantasy).
+   Tema lain meng-override token ini di :root-nya sendiri:
+     theme/vibrant.css  → --gradient-* versi indigo/cyan
+   Selalu pakai token (mis. `background: var(--gradient-primary)`), jangan
+   menulis ulang gradient baru di komponen.
+   ============================================================================= */
+
+:root {
+  /* Logo/brand mark */
+  --gradient-brand: linear-gradient(145deg, #fff9e8, #e4f2ee);
+  /* Tombol utama */
+  --gradient-primary: linear-gradient(115deg, #286f70, #3d9087 58%, #4b9d91);
+  --gradient-primary-hover: linear-gradient(115deg, #205f62, #357f79 58%, #438f86);
+  /* Judul section (teks bergradasi) */
+  --gradient-heading-text: linear-gradient(95deg, #257d79, #a87a38 60%, #438d83);
+  /* Judul hero lama (.hero h1 span) */
+  --gradient-hero-text: linear-gradient(100deg, #267c7a, #b2833c 47%, #418f82 88%);
+  /* Judul hero "INFORMATIKA" yang warnanya mengalir */
+  --gradient-hero-flow: linear-gradient(90deg, var(--palette-teal-deep) 0%, var(--palette-gold) 34%, var(--palette-teal-soft) 68%, var(--palette-teal-deep) 100%);
+  /* Garis aksen kecil (eyebrow, garis separator) */
+  --gradient-accent-line: linear-gradient(90deg, #b68a45, #438d83);
+  /* Garis bawah tautan navigasi aktif */
+  --gradient-nav-active: linear-gradient(90deg, #c49d55, #4e9991);
+  /* Tab hari yang aktif */
+  --gradient-tab-active: linear-gradient(120deg, #f8eed7, #e2f0e9);
+  /* Permukaan kartu & kartu detail */
+  --gradient-card: linear-gradient(145deg, #fffdf7, #f5f0e2);
+  --gradient-card-soft: linear-gradient(110deg, #fffdf7, #f7f4e9);
+  --gradient-card-hover: linear-gradient(110deg, #fffdf7, #eaf4ed);
+  /* Pita section (jadwal & galeri) */
+  --gradient-section-wash: linear-gradient(180deg, #eaf3ef, #f3f4e9 72%, #f6f0e2);
+  /* Batang progres scroll */
+  --gradient-scroll-progress: linear-gradient(90deg, #2d817c, #d4ac5e, #84b2a0, #d19c54);
+  /* Pita teks berjalan di bawah hero */
+  --gradient-marquee: linear-gradient(90deg, #f8eed7, #e2f0e9, #f8eed7);
+  /* Cahaya lembut di belakang adegan hero */
+  --gradient-glow: radial-gradient(circle, rgba(77, 162, 145, .2), rgba(224, 184, 100, .1) 48%, transparent 73%);
+  /* Kilau yang menyapu di atas tombol saat disentuh */
+  --gradient-sheen: linear-gradient(105deg, transparent 25%, rgba(255, 241, 196, .25) 48%, transparent 70%);
+  /* Riak saat tombol ditekan */
+  --gradient-ripple: radial-gradient(circle, rgba(255, 255, 255, .55), rgba(232, 190, 104, .28) 45%, transparent 70%);
+  /* Kilau yang mengikuti kursor di atas kartu */
+  --gradient-tilt-glare: radial-gradient(circle 240px at var(--gx, 50%) var(--gy, 50%), rgba(255, 255, 255, .3), transparent 100%);
+  /* Cahaya kursor */
+  --gradient-cursor-glow: radial-gradient(circle, rgba(232, 190, 104, .16), rgba(96, 186, 168, .07) 42%, transparent 68%);
+  /* Selubung gelap di bawah gambar galeri/portrait */
+  --gradient-image-shade: linear-gradient(180deg, rgba(5, 10, 18, .12) 0%, transparent 33%, rgba(5, 10, 18, .18) 48%, rgba(5, 10, 18, .7) 100%);
+}

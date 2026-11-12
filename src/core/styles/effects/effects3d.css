@@ -1,0 +1,249 @@
+/* Efek 3D & animasi tambahan. Dimuat paling akhir agar menimpa gaya dasar. */
+
+/* ---------- Intro 3D ---------- */
+.intro-3d {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.intro-content h1 {
+  animation: none;
+  clip-path: none;
+  transform-style: preserve-3d;
+}
+
+.intro-letter {
+  display: inline-block;
+  transform-origin: 50% 100%;
+  animation:
+    letterFlip 1s calc(.55s + var(--i) * 70ms) both var(--ease-emphasis),
+    letterGlow 3.4s calc(2s + var(--i) * 140ms) ease-in-out infinite;
+}
+
+.opening-intro.is-leaving .intro-content {
+  transform: translateZ(400px) scale(1.5);
+  filter: blur(8px);
+  opacity: 0;
+  transition: transform .7s cubic-bezier(.5, 0, .9, .4), filter .7s, opacity .6s;
+}
+
+.opening-intro.is-leaving {
+  transition-duration: .72s;
+}
+
+@keyframes letterFlip {
+  from { opacity: 0; transform: perspective(600px) translateY(46px) rotateX(-95deg) translateZ(-70px); filter: blur(8px); }
+  55% { opacity: 1; }
+  to { opacity: 1; transform: perspective(600px) translateY(0) rotateX(0) translateZ(0); filter: blur(0); }
+}
+
+@keyframes letterGlow {
+  0%, 100% { text-shadow: 0 1px rgba(255, 246, 219, .45), 0 3px rgba(144, 121, 75, .45), 0 12px 28px rgba(2, 18, 26, .44); }
+  50% { text-shadow: 0 1px rgba(255, 246, 219, .6), 0 0 22px rgba(240, 206, 128, .55), 0 12px 28px rgba(2, 18, 26, .44); }
+}
+
+/* ---------- Cahaya kursor ---------- */
+.cursor-glow {
+  position: fixed;
+  z-index: var(--z-cursor-glow);
+  top: 0;
+  left: 0;
+  width: 520px;
+  height: 520px;
+  border-radius: var(--radius-circle);
+  background: var(--gradient-cursor-glow);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .4s;
+  will-change: transform;
+}
+
+.cursor-glow.is-on { opacity: 1; }
+
+/* ---------- Tilt 3D kartu ---------- */
+.is-tilting {
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(-4px) !important;
+  transition: transform .12s ease-out, border-color .25s, box-shadow .3s !important;
+  box-shadow: 0 22px 46px rgba(20, 45, 52, .22) !important;
+  z-index: 2;
+}
+
+.member-card.is-tilting { box-shadow: none !important; }
+.member-card.is-tilting .member-portrait { box-shadow: 0 24px 44px rgba(20, 45, 52, .32); }
+
+.tilt-release {
+  transition: transform .55s var(--ease-card) !important;
+}
+
+.tilt-glare {
+  position: absolute;
+  z-index: 4;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--gradient-tilt-glare);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s;
+}
+
+.is-tilting > .tilt-glare { opacity: 1; }
+
+/* ---------- Riak klik ---------- */
+.button, .nav-cta, .gallery-filter, .schedule-day-tab, .filter-pill {
+  position: relative;
+  overflow: hidden;
+}
+
+.fx-ripple {
+  position: absolute;
+  border-radius: var(--radius-circle);
+  background: var(--gradient-ripple);
+  transform: scale(0);
+  opacity: .9;
+  pointer-events: none;
+  animation: fxRipple .7s ease-out forwards;
+}
+
+@keyframes fxRipple {
+  to { transform: scale(1); opacity: 0; }
+}
+
+/* ---------- Parallax hero ---------- */
+.hero-art .code-window { translate: 0 calc(var(--py, 0) * -.06px); }
+.hero-art .art-orbit { translate: 0 calc(var(--py, 0) * .1px); }
+.hero-art .art-glow { translate: 0 calc(var(--py, 0) * .14px); }
+
+/* ---------- Teks gradien berkilau ---------- */
+.hero h1 span,
+.section-heading h2 span {
+  background-size: 220% 100%;
+  animation: textShimmer 7s ease-in-out infinite alternate;
+}
+
+@keyframes textShimmer {
+  from { background-position: 0% 50%; }
+  to { background-position: 100% 50%; }
+}
+
+/* ---------- Kartu masuk dengan flip 3D ---------- */
+.motion-ready :is(.member-card, .activity-card, .project-card, .article-card, .gallery-card, .principle-card).motion-item {
+  transform: perspective(900px) rotateX(18deg) translateY(34px);
+  transform-origin: 50% 100%;
+  transition:
+    opacity .62s cubic-bezier(.2, .72, .25, 1),
+    translate .72s cubic-bezier(.16, .78, .28, 1),
+    scale .72s cubic-bezier(.16, .78, .28, 1),
+    filter .62s ease,
+    transform .95s cubic-bezier(.16, .78, .28, 1),
+    border-color .25s, box-shadow .3s;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.motion-ready :is(.member-card, .activity-card, .project-card, .article-card, .gallery-card, .principle-card).motion-item.is-visible {
+  transform: none;
+}
+
+.motion-ready :is(.activity-card, .project-card, .article-card, .gallery-card).motion-item.is-visible:hover {
+  transform: translateY(-4px);
+}
+
+/* Kartu jadwal & baris kelas: geser masuk dari samping */
+.motion-ready .course-row.motion-item { translate: -26px 0; }
+.motion-ready .course-row.motion-item.is-visible { translate: 0 0; }
+
+/* ---------- Adegan 3D hero ---------- */
+.hero-scene {
+  position: absolute;
+  z-index: 0;
+  inset: -50px -24px -50px -60px;
+  width: calc(100% + 84px);
+  height: calc(100% + 100px);
+  pointer-events: none;
+}
+
+/* ---------- Pita teks berjalan ---------- */
+.marquee {
+  position: relative;
+  z-index: 3;
+  overflow: hidden;
+  padding: 26px 0 30px;
+}
+
+.marquee-band {
+  width: 106%;
+  margin-left: -3%;
+  transform: rotate(-1.4deg);
+  border-block: 1px solid rgba(174, 134, 57, .4);
+  background: linear-gradient(90deg, rgba(248, 238, 215, .92), rgba(226, 240, 233, .92), rgba(248, 238, 215, .92));
+  box-shadow: 0 14px 34px rgba(42, 67, 59, .14);
+  backdrop-filter: blur(6px);
+}
+
+.marquee-row {
+  overflow: hidden;
+  padding: 13px 0;
+}
+
+.marquee-row + .marquee-row {
+  border-top: 1px dashed rgba(174, 134, 57, .32);
+  background: rgba(255, 255, 255, .28);
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marqueeMove 38s linear infinite;
+}
+
+.marquee-row.is-reverse .marquee-track {
+  animation-direction: reverse;
+  animation-duration: 46s;
+}
+
+.marquee:hover .marquee-track { animation-play-state: paused; }
+
+.marquee-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 28px;
+  padding-right: 28px;
+  color: var(--palette-teal-ink);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(26px, 3.6vw, 44px);
+  font-weight: 600;
+  letter-spacing: .04em;
+  white-space: nowrap;
+}
+
+.marquee-row.is-reverse .marquee-item {
+  color: transparent;
+  -webkit-text-stroke: 1px #7c6a3c;
+}
+
+.marquee-item i {
+  color: #c8963a;
+  font-size: .5em;
+  font-style: normal;
+  animation: marqueeStar 2.4s ease-in-out infinite;
+}
+
+@keyframes marqueeMove {
+  to { transform: translateX(-50%); }
+}
+
+@keyframes marqueeStar {
+  0%, 100% { transform: rotate(0) scale(1); }
+  50% { transform: rotate(180deg) scale(1.35); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-scene { display: none; }
+  .marquee-track, .marquee-item i { animation: none !important; }
+  .intro-letter, .hero h1 span, .section-heading h2 span { animation: none !important; }
+  .cursor-glow, .fx-ripple { display: none; }
+  .hero-art .code-window, .hero-art .art-orbit, .hero-art .art-glow { translate: none; }
+}

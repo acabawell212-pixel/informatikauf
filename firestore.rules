@@ -18,5 +18,22 @@ service cloud.firestore {
         && request.auth.token.email_verified == true
         && request.auth.token.email in ['informatikauf2026@gmail.com', 'acabawell212@gmail.com'];
     }
+
+    // Teks template PPT (diubah lewat tombol "Edit teks" di tampilan PPT).
+    match /pptTemplate/{id} {
+      // Semua pengunjung boleh membaca supaya teks terbaru tampil di web.
+      allow read: if true;
+
+      // Hanya admin yang boleh mengubah, dengan bentuk data yang dibatasi.
+      allow create, update: if id == 'main'
+        && request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.email in ['informatikauf2026@gmail.com', 'acabawell212@gmail.com']
+        && request.resource.data.keys().hasOnly(['texts', 'updatedAt', 'updatedBy'])
+        && request.resource.data.texts is map
+        && request.resource.data.texts.size() <= 200
+        && request.resource.data.updatedBy == request.auth.token.email
+        && request.resource.data.updatedAt == request.time;
+    }
   }
 }

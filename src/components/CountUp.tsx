@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { prefersReducedMotion } from '../core/lib/motion';
 
 export function CountUp({ target, pad = 0 }: { target: number; pad?: number }) {
   const [value, setValue] = useState(0);
@@ -7,7 +8,7 @@ export function CountUp({ target, pad = 0 }: { target: number; pad?: number }) {
   useEffect(() => {
     const element = elementRef.current;
     if (!element) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (prefersReducedMotion()) {
       setValue(target);
       return;
     }

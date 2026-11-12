@@ -1,0 +1,58 @@
+/* =============================================================================
+   ENTRY STYLE — satu-satunya file CSS yang diimpor aplikasi (dari src/main.tsx).
+   -----------------------------------------------------------------------------
+   URUTAN IMPOR = URUTAN CASCADE. Jangan diubah sembarangan: lapisan tema dan
+   lapisan override memang sengaja dimuat terakhir supaya bisa menimpa lapisan
+   sebelumnya (pola "layered override" project ini).
+
+   1. tokens/    : nilai desain (warna, gradient, tipografi, jarak, radius,
+                   bayangan, motion, lapisan z-index) — TIDAK boleh bergantung
+                   pada file lain di bawahnya.
+   2. base/      : reset + layout dasar + tema dasar (gelap).
+   3. effects/   : sistem motion & tekstur (juga dipakai sebagai lapisan awal).
+   4. components/: gaya per komponen/section.
+   5. theme/     : tema warna (vibrant lalu fantasy — yang terakhir menang).
+   6. overrides/ : penyempurnaan akhir (keterbacaan, performa, responsif,
+                   jenis layar lebar).
+   ============================================================================= */
+
+/* 1. Tokens — fondasi design system */
+@import './tokens/colors.css';
+@import './tokens/gradients.css';
+@import './tokens/typography.css';
+@import './tokens/spacing.css';
+@import './tokens/radius.css';
+@import './tokens/shadows.css';
+@import './tokens/motion.css';
+@import './tokens/layers.css';
+
+/* 2. Base */
+@import './base/globals.css';
+
+/* 3. Effects */
+@import './effects/motion.css';
+
+/* 4. Komponen & section */
+@import './overrides/polish.css';
+@import './components/schedule.css';
+@import './components/gallery.css';
+
+/* 5. Tema */
+@import './theme/vibrant.css';
+@import './theme/fantasy.css';
+
+/* 6. Penyempurnaan akhir */
+@import './overrides/readability.css';
+@import './components/interactive-hints.css';
+@import './effects/textures.css';
+@import './effects/scroll-motion.css';
+@import './components/opening-intro.css';
+@import './effects/effects3d.css';
+@import './overrides/perf.css';
+@import './components/hero-title.css';
+@import './overrides/mobile.css';
+@import './overrides/wide.css';
+@import './components/admin.css';
+@import './components/ui-sounds.css';
+@import './components/templates.css';
+@import './components/ppt-viewer.css';
