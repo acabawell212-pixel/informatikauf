@@ -54,5 +54,7 @@
 @import './overrides/wide.css';
 @import './components/admin.css';
 @import './components/ui-sounds.css';
+@import './components/ppt.css';
+@import './components/ppt-theme.css';
 @import './components/templates.css';
 @import './components/ppt-viewer.css';

@@ -17,7 +17,11 @@ function shouldPlayIntro() {
   }
 }
 
-export function OpeningIntro() {
+interface OpeningIntroProps {
+  onIntroEnd?: () => void;
+}
+
+export function OpeningIntro({ onIntroEnd }: OpeningIntroProps = {}) {
   const [phase, setPhase] = useState<IntroPhase>(() => shouldPlayIntro() ? 'showing' : 'hidden');
   const hideTimer = useRef<number | undefined>(undefined);
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -41,6 +45,14 @@ export function OpeningIntro() {
   useBodyScrollLock(phase !== 'hidden');
 
   useEffect(() => () => window.clearTimeout(hideTimer.current), []);
+
+  const introEndCalled = useRef(false);
+  useEffect(() => {
+    if (phase === 'hidden' && !introEndCalled.current) {
+      introEndCalled.current = true;
+      onIntroEnd?.();
+    }
+  }, [phase, onIntroEnd]);
 
   if (phase === 'hidden') return null;
 

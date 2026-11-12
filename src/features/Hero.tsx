@@ -1,10 +1,14 @@
 import { type CSSProperties } from 'react';
-import { ArrowDown, ArrowRight, ArrowUpRight, Sparkles } from 'lucide-react';
+import { ArrowDown, ArrowRight, ArrowUpRight, Presentation, Sparkles } from 'lucide-react';
 import { HeroScene } from './HeroScene';
 
 const HERO_WORD = 'INFORMATIKA';
 
-export function Hero() {
+interface HeroProps {
+  onOpenPpt?: () => void;
+}
+
+export function Hero({ onOpenPpt }: HeroProps) {
   return (
     <section className="hero wrap" id="home">
       <div className="hero-copy">
@@ -21,6 +25,17 @@ export function Hero() {
         <p className="hero-description">Ruang bertemu ide, tumbuh bersama teknologi, dan menciptakan dampak. Kami adalah keluarga Informatika Universitas Faletehan.</p>
         <div className="hero-actions">
           <a className="button button-primary" href="#about" data-hint="Lompat ke profil, visi, dan misi komunitas.">Kenali kami <ArrowRight size={16} /></a>
+          {onOpenPpt && (
+            <button
+              type="button"
+              className="button button-ppt"
+              onClick={onOpenPpt}
+              data-hint="Buka presentasi 14 slide interaktif tentang pengenalan dunia coding."
+            >
+              <Presentation size={16} />
+              <span>Buka PPT Coding</span>
+            </button>
+          )}
           <a className="button button-quiet" href="#schedule" data-hint="Lihat dan pilih jadwal mata kuliah per hari.">Lihat jadwal kuliah <ArrowDown size={15} /></a>
         </div>
         <div className="hero-social-proof"><div className="mini-avatars"><span>N</span><span>R</span><span>A</span><span>+</span></div><p><strong>Tempat semua ide dimulai.</strong><br />Komunitas belajar yang terbuka untukmu.</p></div>
