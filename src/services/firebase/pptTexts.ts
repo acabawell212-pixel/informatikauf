@@ -47,6 +47,38 @@ export async function loadPptTexts(): Promise<PptTexts> {
   }
 }
 
+/**
+ * Gambar slide (dipilih admin dari galeri HP/laptop) disimpan sebagai JPEG data URL,
+ * satu dokumen per gambar: pptImages/{id} = { dataUrl, updatedAt, updatedBy }.
+ */
+export type PptImages = Record<string, string>;
+
+export async function loadPptImages(): Promise<PptImages> {
+  if (!firebaseReady) return {};
+  try {
+    const { db } = await getFirebase();
+    const { collection, getDocs } = await import('firebase/firestore');
+    const snap = await getDocs(collection(db, 'pptImages'));
+    const images: PptImages = {};
+    snap.forEach((d) => {
+      const url = d.data().dataUrl;
+      if (typeof url === 'string' && url.startsWith('data:image/')) images[d.id] = url;
+    });
+    return images;
+  } catch {
+    return {};
+  }
+}
+
+/** Simpan gambar yang berubah; nilai kosong = hapus gambar (kembali ke kotak kosong). */
+export async function savePptImages(changes: PptImages, email: string): Promise<void> {
+  const { db } = await getFirebase();
+  const { deleteDoc, doc, serverTimestamp, setDoc } = await import('firebase/firestore');
+  await Promise.all(Object.entries(changes).map(([id, dataUrl]) => (dataUrl
+    ? setDoc(doc(db, 'pptImages', id), { dataUrl, updatedAt: serverTimestamp(), updatedBy: email })
+    : deleteDoc(doc(db, 'pptImages', id)))));
+}
+
 export async function savePptTexts(texts: PptTexts, email: string): Promise<void> {
   const { db } = await getFirebase();
   const { doc, serverTimestamp, setDoc } = await import('firebase/firestore');

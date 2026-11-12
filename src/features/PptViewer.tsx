@@ -1,8 +1,9 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState, type ClipboardEvent, type KeyboardEvent as ReactKeyboardEvent, type ReactNode, type TouchEvent } from 'react';
+import { createContext, useCallback, useContext, useEffect, useRef, useState, type ChangeEvent, type ClipboardEvent, type KeyboardEvent as ReactKeyboardEvent, type ReactNode, type TouchEvent } from 'react';
 import { createPortal } from 'react-dom';
 import { useBodyScrollLock } from '../core/lib/hooks';
-import { BookOpen, Check, ChevronLeft, ChevronRight, Cog, Image, Laptop, Lightbulb, Loader2, MessageCircle, Pencil, Save, Target, ThumbsDown, ThumbsUp, X } from 'lucide-react';
-import { isAdminUser, loadPptTexts, savePptTexts, useAuthUser, type PptTexts } from '../services/firebase/pptTexts';
+import { compressImage } from '../core/lib/image';
+import { BookOpen, Check, ChevronLeft, ChevronRight, Cog, Image, ImagePlus, Laptop, Lightbulb, Loader2, MessageCircle, Pencil, Save, Target, ThumbsDown, ThumbsUp, Trash2, X } from 'lucide-react';
+import { isAdminUser, loadPptImages, loadPptTexts, savePptImages, savePptTexts, useAuthUser, type PptImages, type PptTexts } from '../services/firebase/pptTexts';
 
 /*
  * Versi web dari template tugas PPT. Ukuran memakai unit `cqw` (lebar slide),
@@ -13,8 +14,59 @@ import { isAdminUser, loadPptTexts, savePptTexts, useAuthUser, type PptTexts } f
  * Firestore (pptTemplate/main) dan terlihat oleh semua pengunjung.
  */
 
-type TextState = { texts: PptTexts; editing: boolean; setText: (id: string, value: string) => void };
-const TextContext = createContext<TextState>({ texts: {}, editing: false, setText: () => {} });
+type TextState = {
+  texts: PptTexts;
+  images: PptImages;
+  editing: boolean;
+  setText: (id: string, value: string) => void;
+  setImage: (id: string, dataUrl: string) => void;
+};
+const TextContext = createContext<TextState>({ texts: {}, images: {}, editing: false, setText: () => {}, setImage: () => {} });
+
+/**
+ * Kotak gambar slide. Admin bisa memilih foto langsung dari galeri/kamera HP
+ * (input file `accept="image/*"`); foto diperkecil dulu sebelum disimpan.
+ */
+function ImageSlot({ id, children }: { id: string; children: ReactNode }) {
+  const { images, editing, setImage } = useContext(TextContext);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const src = images[id];
+
+  const onPick = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = ''; // supaya file yang sama bisa dipilih ulang
+    if (!file) return;
+    setBusy(true);
+    setError('');
+    try {
+      setImage(id, await compressImage(file));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Gambar gagal diproses');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className={`tpl-card tpl-image-slot${src ? ' has-image' : ''}`}>
+      {src ? <img src={src} alt="" /> : children}
+      {editing && (
+        <div className="tpl-image-tools">
+          <label className="tpl-image-btn">
+            {busy ? <Loader2 className="spin" /> : <ImagePlus />}
+            <span>{busy ? 'Memproses…' : src ? 'Ganti gambar' : 'Pilih gambar'}</span>
+            <input type="file" accept="image/*" onChange={onPick} disabled={busy} />
+          </label>
+          {src && !busy && (
+            <button className="tpl-image-btn is-ghost" type="button" onClick={() => setImage(id, '')}><Trash2 /><span>Hapus</span></button>
+          )}
+          {error && <span className="tpl-image-error">{error}</span>}
+        </div>
+      )}
+    </div>
+  );
+}
 
 /** Teks slide yang bisa diedit admin. Dikosongkan = kembali ke teks bawaan. */
 function T({ id, children }: { id: string; children: string }) {
@@ -144,7 +196,7 @@ const slides: ReactNode[] = [
           <li key={t}><T id={`text.${i}`}>{t}</T></li>
         ))}
       </ul>
-      <div className="tpl-card tpl-image-slot"><Image /><span><T id="text.imageHint">print("Halo, Faletehan!")</T></span></div>
+      <ImageSlot id="text-image"><Image /><span><T id="text.imageHint">print("Halo, Faletehan!")</T></span></ImageSlot>
     </div>
   </Content>,
 
@@ -245,15 +297,27 @@ export function PptViewer({ title, onClose }: { title: string; onClose: () => vo
   const [saveState, setSaveState] = useState<SaveState>('idle');
   const [saveError, setSaveError] = useState('');
 
+  const [savedImages, setSavedImages] = useState<PptImages>({});
+  const [draftImages, setDraftImages] = useState<PptImages>({});
+  const draftImagesRef = useRef<PptImages>({});
+
   useEffect(() => {
     let alive = true;
     // Jangan tahan slide terlalu lama kalau koneksi lambat: tampilkan teks bawaan dulu.
     const fallback = window.setTimeout(() => alive && setReady(true), 2500);
     loadPptTexts().then((texts) => { if (alive) { setSaved(texts); setReady(true); } });
+    loadPptImages().then((images) => { if (alive) setSavedImages(images); });
     return () => { alive = false; window.clearTimeout(fallback); };
   }, []);
 
-  const dirty = editing && !sameTexts(draft, saved);
+  const setImage = useCallback((id: string, dataUrl: string) => {
+    const next = { ...draftImagesRef.current };
+    if (dataUrl) next[id] = dataUrl; else delete next[id];
+    draftImagesRef.current = next;
+    setDraftImages(next);
+  }, []);
+
+  const dirty = editing && (!sameTexts(draft, saved) || !sameTexts(draftImages, savedImages));
   // Ref ikut diperbarui seketika, jadi tombol Simpan selalu mengirim teks terbaru.
   const draftRef = useRef<PptTexts>({});
   const updateDraft = (next: PptTexts) => { draftRef.current = next; setDraft(next); };
@@ -264,9 +328,16 @@ export function PptViewer({ title, onClose }: { title: string; onClose: () => vo
     setDraft(next);
   }, []);
 
-  const startEdit = () => { updateDraft(saved); setEditing(true); setSaveState('idle'); setSaveError(''); };
+  const startEdit = () => {
+    updateDraft(saved);
+    draftImagesRef.current = savedImages;
+    setDraftImages(savedImages);
+    setEditing(true);
+    setSaveState('idle');
+    setSaveError('');
+  };
   const cancelEdit = () => {
-    if (dirty && !window.confirm('Perubahan teks belum disimpan. Buang perubahan?')) return;
+    if (dirty && !window.confirm('Perubahan slide belum disimpan. Buang perubahan?')) return;
     setEditing(false);
     setSaveState('idle');
   };
@@ -276,9 +347,17 @@ export function PptViewer({ title, onClose }: { title: string; onClose: () => vo
     const toSave = draftRef.current;
     setSaveState('saving');
     setSaveError('');
+    const imagesToSave = draftImagesRef.current;
+    // Hanya gambar yang berubah yang dikirim (gambar besar, jangan tulis ulang tanpa perlu).
+    const imageChanges: PptImages = {};
+    for (const id of new Set([...Object.keys(imagesToSave), ...Object.keys(savedImages)])) {
+      if ((imagesToSave[id] ?? '') !== (savedImages[id] ?? '')) imageChanges[id] = imagesToSave[id] ?? '';
+    }
     try {
-      await savePptTexts(toSave, user.email);
+      if (!sameTexts(toSave, saved)) await savePptTexts(toSave, user.email);
+      if (Object.keys(imageChanges).length) await savePptImages(imageChanges, user.email);
       setSaved(toSave);
+      setSavedImages(imagesToSave);
       setEditing(false);
       setSaveState('saved');
     } catch (e) {
@@ -291,7 +370,7 @@ export function PptViewer({ title, onClose }: { title: string; onClose: () => vo
   };
 
   const close = useCallback(() => {
-    if (dirty && !window.confirm('Perubahan teks belum disimpan. Tutup tanpa menyimpan?')) return;
+    if (dirty && !window.confirm('Perubahan slide belum disimpan. Tutup tanpa menyimpan?')) return;
     onClose();
   }, [dirty, onClose]);
 
@@ -328,7 +407,7 @@ export function PptViewer({ title, onClose }: { title: string; onClose: () => vo
   }, [index]);
 
   const progress = ((index + 1) / total) * 100;
-  const textState: TextState = { texts: editing ? draft : saved, editing, setText };
+  const textState: TextState = { texts: editing ? draft : saved, images: editing ? draftImages : savedImages, editing, setText, setImage };
 
   // Portal ke <body> supaya tidak terjebak di stacking context section (navbar jadi tertutup).
   return createPortal(
@@ -347,8 +426,8 @@ export function PptViewer({ title, onClose }: { title: string; onClose: () => vo
               {!editing ? (
                 <>
                   {saveState === 'saved' && <span className="tpl-save-note"><Check size={13} /> Tersimpan</span>}
-                  <button className="button button-outline" type="button" onClick={startEdit} disabled={!ready} data-hint="Ubah teks slide langsung di sini (khusus admin).">
-                    <Pencil size={15} /> Edit teks
+                  <button className="button button-outline" type="button" onClick={startEdit} disabled={!ready} data-hint="Ubah teks dan gambar slide langsung di sini (khusus admin).">
+                    <Pencil size={15} /> Edit slide
                   </button>
                 </>
               ) : (
@@ -365,7 +444,7 @@ export function PptViewer({ title, onClose }: { title: string; onClose: () => vo
 
         {editing && (
           <p className="tpl-edit-banner" role="status">
-            <Pencil size={13} /> <span><b>Mode edit admin.</b> Klik teks di slide untuk mengubahnya, tekan Enter untuk selesai. Kosongkan teks untuk kembali ke teks bawaan. Pindah slide pakai tombol panah atau tab.</span>
+            <Pencil size={13} /> <span><b>Mode edit admin.</b> Ketuk teks di slide untuk mengubahnya (Enter = selesai, kosongkan = kembali ke teks bawaan). Di slide <b>Coding</b> ada tombol <b>Pilih gambar</b> untuk mengambil foto dari galeri HP. Jangan lupa tekan Simpan.</span>
           </p>
         )}
         {saveState === 'error' && <p className="tpl-edit-banner is-error" role="alert">{saveError}</p>}

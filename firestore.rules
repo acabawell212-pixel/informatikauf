@@ -35,5 +35,25 @@ service cloud.firestore {
         && request.resource.data.updatedBy == request.auth.token.email
         && request.resource.data.updatedAt == request.time;
     }
+
+    // Gambar slide template PPT (dipilih admin dari galeri HP/laptop, disimpan sebagai JPEG kecil).
+    match /pptImages/{id} {
+      allow read: if true;
+
+      allow create, update: if request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.email in ['informatikauf2026@gmail.com', 'acabawell212@gmail.com']
+        && id.matches('^[a-z0-9-]{1,40}$')
+        && request.resource.data.keys().hasOnly(['dataUrl', 'updatedAt', 'updatedBy'])
+        && request.resource.data.dataUrl is string
+        && request.resource.data.dataUrl.matches('^data:image/jpeg;base64,.*')
+        && request.resource.data.dataUrl.size() <= 900000
+        && request.resource.data.updatedBy == request.auth.token.email
+        && request.resource.data.updatedAt == request.time;
+
+      allow delete: if request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.email in ['informatikauf2026@gmail.com', 'acabawell212@gmail.com'];
+    }
   }
 }

@@ -514,8 +514,65 @@
 .tpl-stat.is-teal .tpl-editable,
 .tpl-key-message .tpl-editable { outline-color: rgba(231, 203, 132, .7); }
 
+/* Kotak gambar slide: foto pilihan admin + tombol pilih/hapus saat mode edit */
+.tpl-image-slot { position: relative; overflow: hidden; }
+.tpl-image-slot.has-image > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tpl-image-tools {
+  position: absolute;
+  z-index: 3;
+  inset: auto 0 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1cqw;
+  padding: 1.2cqw;
+  background: linear-gradient(180deg, transparent, rgba(30, 59, 61, .55));
+}
+
+/* Ukuran px (bukan cqw) supaya tetap mudah diketuk jari di layar HP yang kecil */
+.tpl-image-btn {
+  position: relative;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 14px;
+  border: 1px solid rgba(174, 134, 57, .7);
+  border-radius: var(--radius-pill);
+  background: rgba(255, 251, 239, .96);
+  color: var(--palette-teal-ink);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(20, 40, 38, .2);
+}
+
+.tpl-image-slot .tpl-image-btn svg { width: 15px; height: 15px; }
+.tpl-image-slot .tpl-image-btn span { color: inherit; font-family: inherit; font-size: inherit; }
+.tpl-image-btn:hover { background: var(--palette-parchment-warm); }
+.tpl-image-btn.is-ghost { background: rgba(255, 251, 239, .75); }
+.tpl-image-btn input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+
+.tpl-image-slot .tpl-image-error {
+  width: 100%;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  color: #ffe2d9;
+}
+
 /* Saat mengedit, matikan animasi isi slide supaya teks tidak "loncat" */
-.tpl-panel.is-editing .tpl-frame * { animation: none !important; }
+.tpl-panel.is-editing .tpl-frame *:not(.spin) { animation: none !important; }
 .tpl-panel.is-editing .tpl-sheen { display: none; }
 
 .tpl-loading {
