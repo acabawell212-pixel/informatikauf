@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-labelledby="title">
+  <title id="title">Contoh gambar kategori Sad: hujan di jendela malam</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#223a47"/><stop offset="1" stop-color="#2f5359"/></linearGradient>
+    <linearGradient id="night" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#16283a"/><stop offset="1" stop-color="#2a4f5a"/></linearGradient>
+    <radialGradient id="lamp" cx=".5" cy=".5" r=".5"><stop stop-color="#f0c86f" stop-opacity=".55"/><stop offset="1" stop-color="#f0c86f" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#bg)"/>
+  <circle cx="620" cy="700" r="260" fill="url(#lamp)"/>
+  <!-- jendela -->
+  <rect x="130" y="110" width="540" height="520" rx="22" fill="#f7f1e2" stroke="#b58b48" stroke-width="5"/>
+  <rect x="160" y="140" width="480" height="460" rx="10" fill="url(#night)"/>
+  <circle cx="530" cy="230" r="42" fill="#f3e3b5" opacity=".85"/>
+  <circle cx="548" cy="218" r="42" fill="#1c3243"/>
+  <g fill="#9fc3c9" opacity=".75">
+    <circle cx="230" cy="190" r="2.5"/><circle cx="410" cy="170" r="2"/><circle cx="330" cy="250" r="2"/><circle cx="600" cy="320" r="2.5"/><circle cx="250" cy="330" r="2"/>
+  </g>
+  <g stroke="#b9d6da" stroke-width="3" stroke-linecap="round" opacity=".55">
+    <path d="M205 300 l-10 34"/><path d="M290 220 l-10 34"/><path d="M370 330 l-10 34"/><path d="M455 250 l-10 34"/><path d="M520 380 l-10 34"/><path d="M600 450 l-10 34"/>
+    <path d="M240 440 l-10 34"/><path d="M330 480 l-10 34"/><path d="M420 420 l-10 34"/><path d="M560 530 l-10 34"/><path d="M190 540 l-10 34"/>
+  </g>
+  <g fill="#d8ecee" opacity=".7"><path d="M262 360 q8 14 0 22 q-8 -8 0 -22z"/><path d="M482 470 q8 14 0 22 q-8 -8 0 -22z"/><path d="M372 540 q8 14 0 22 q-8 -8 0 -22z"/></g>
+  <rect x="397" y="140" width="6" height="460" fill="#f7f1e2"/>
+  <rect x="160" y="367" width="480" height="6" fill="#f7f1e2"/>
+  <!-- meja & cangkir -->
+  <rect x="0" y="690" width="800" height="310" fill="#3a2f2a"/>
+  <rect x="0" y="690" width="800" height="14" fill="#b58b48" opacity=".55"/>
+  <path d="M300 640 h150 v80 q0 52 -75 52 q-75 0 -75 -52 z" fill="#f7f1e2" stroke="#b58b48" stroke-width="4"/>
+  <path d="M450 668 q48 0 48 34 q0 34 -54 34" fill="none" stroke="#f7f1e2" stroke-width="12"/>
+  <ellipse cx="375" cy="642" rx="75" ry="12" fill="#6b4a33"/>
+  <g fill="none" stroke="#e8dcc0" stroke-width="5" stroke-linecap="round" opacity=".6"><path d="M345 610 q-14 -26 0 -50 q14 -24 0 -48"/><path d="M400 610 q-14 -26 0 -50 q14 -24 0 -48"/></g>
+</svg>
